@@ -1,0 +1,19 @@
+{
+  "name": "tribed-outreach",
+  "owner": {
+    "name": "Alfonso Briceño",
+    "url": "https://alfonso.tech"
+  },
+  "metadata": {
+    "description": "Tribed outreach system — IG, LinkedIn, cold email, and Gojiberry campaign automation",
+    "version": "1.0.0",
+    "repository": "https://github.com/alfonsojbro/tribed-outreach"
+  },
+  "plugins": [
+    {
+      "name": "tribed-outreach",
+      "description": "Full Tribed outreach: gift-first IG/LinkedIn/InMail openers, reply and objection handling, follow-up sequences, cold email, and Gojiberry connection-note + follow-up personalization with a daily IG+LinkedIn pipeline.",
+      "source": "./"
+    }
+  ]
+}
