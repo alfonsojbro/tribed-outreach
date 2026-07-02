@@ -2,7 +2,7 @@
 name: tribed-outreach
 description: Tribed's full Instagram, LinkedIn, and cold-email outreach for wellness, fitness, coaching, and creator prospects. Covers IG cold DMs, reply and objection handling, follow-up sequences, LinkedIn connection notes and InMail, post-demo booking, cold email and email sequences, and Gojiberry campaign ops (personalized connection notes + follow-ups, ICP filtering, daily IG+LinkedIn pipeline). Use for any Tribed outreach: a cold DM, connection note, InMail, cold email, bump, follow-up, objection handling, booking the walkthrough call, or personalizing and scheduling leads into Gojiberry. Trigger even when the user just pastes a profile screenshot, since the default intent is a first-touch message. Handles English, River Plate Spanish, and neutral Latin American Spanish, picked from the profile or the reply.
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 # Tribed Outreach — Full Workflow
@@ -37,6 +37,10 @@ The test: if the opening line could be sent unchanged to 50 other coaches in the
 
 If the source gives nothing that specific (cropped bio, no visible posts), don't pad with generic praise. Ask the user for a scroll of their feed or one detail they noticed. A vague message is worse than a delayed one.
 
+### Rule one: open with their name
+
+Every first-touch message (IG DM, LinkedIn connection note, cold email) opens with the prospect's first name, then goes straight into the anchor. "Kat, that supple-leopards line got me..." Warm and human, never "Dear". Pull the first name from the profile; if there genuinely isn't one, open with the handle. The name never goes in an email subject line, that signals automation.
+
 ### Sound like a person, not a copywriter
 
 Write the way people actually message. Contractions always, fragments fine, a little imperfection reads as human. One slightly rambly sentence beats three polished ones.
@@ -53,7 +57,7 @@ Coaches read these on a phone. Length caps live in each mode file. Don't lecture
 
 If every message runs compliment, bridge, pitch, reveal, question, the account produces recognizably identical messages and prospects who know each other will see the same shape twice. Rotate skeletons for openers, never the same one twice in a row in a session:
 
-**Detail-first.** Open with the specific thing itself, no greeting needed. **Reveal-first.** Lead with the strange fact the thing exists ("so I built you an app. it already exists, that's the weird part."). **Confession.** Admit it's slightly odd ("ok this is a little forward but..."). **Idea-first.** The realization, kept short ("your 30-day reset is basically already an app. so I made the demo.").
+**Detail-first.** After the name, go straight into the specific thing itself. **Reveal-first.** Lead with the strange fact the thing exists ("so I built you an app. it already exists, that's the weird part."). **Confession.** Admit it's slightly odd ("ok this is a little forward but..."). **Idea-first.** The realization, kept short ("your 30-day reset is basically already an app. so I made the demo.").
 
 The reveal that the demo already exists is the hook and stays in every variant. Rotate CTAs too: "want me to send it?", "wanna see it?", "should I shoot it over?", natural Spanish equivalents. Never the same CTA twice in a row.
 
@@ -65,7 +69,7 @@ These sharpen every mode but never override the gift-first spine or the banned l
 - **Lead with their world, not yours.** "You/your" should dominate over "I/we." Never open with who you are or what Tribed does.
 - **One ask, low friction.** Interest-based asks ("wanna see it?") beat commitment asks. One ask per message, phrased as a question, at the end.
 - **Every sentence earns its place.** The best message feels like it could have been shorter. If a sentence doesn't move them toward a reply, cut it.
-- **Follow-ups rotate angles, they never "check in."** Each touch adds one genuinely new thing — a reaction to fresh content, one new detail, a lighter reframe. "Just following up" gives no reason to reply. (See Mode 3 and Mode 6.)
+- **Follow-ups are a value ladder, they never "check in."** Each touch gives the prospect something new: follow-up 1 is a short case study of a similar coach's app (what it included, how it works), follow-up 2 offers a 60-second explainer video of their own demo. "Just following up" gives no reason to reply. (See Mode 3 and Mode 6.)
 
 ### Banned phrases
 

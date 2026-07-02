@@ -11,13 +11,13 @@ Goal: the accept, nothing else. One line anchored on their specific detail, one 
 Vary these as much as DMs. Three notes that all read "your X content is great. I built something around your method." are one template, not three notes. Rotate which half leads: sometimes the detail first, sometimes the odd fact that the thing exists.
 
 **Example (detail-first, English):**
-Your deload-without-losing-your-mind post was the most useful thing I read this week. I ended up building a demo app around your method, it's waiting on the other side of this request.
+James, your deload-without-losing-your-mind post was the most useful thing I read this week. I ended up building a demo app around your method, it's waiting on the other side of this request.
 
 **Example (reveal-first, English):**
-Slightly odd intro: I already built you an app. Your 5-Minute Reset gave me the idea. Accept and I'll show you.
+Maria, slightly odd intro: I already built you an app. Your 5-Minute Reset gave me the idea. Accept and I'll show you.
 
 **Example (neutral Spanish):**
-Tu serie sobre movilidad sin dolor me hizo armar algo: una demo de una app con tu método adentro. Si aceptas te la muestro.
+Ana, tu serie sobre movilidad sin dolor me hizo armar algo: una demo de una app con tu método adentro. Si aceptas te la muestro.
 
 ## 4B — InMail (no prior connection)
 

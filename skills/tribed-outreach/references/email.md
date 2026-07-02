@@ -15,7 +15,7 @@ What to gather: name, niche, the anchor detail (rule zero — a post, a program 
 
 ## Subject lines
 
-Short, boring, internal-looking — the subject's only job is the open, not the sell.
+Short, boring, internal-looking, the subject's only job is the open, not the sell.
 
 - **2–4 words, lowercase, no punctuation tricks, no emoji, no first name.** (First name in the subject signals automation and costs replies.)
 - Should read like a note from a peer, not a pitch. Anchor it on their world when you can: `your 30-day reset`, `deload post`, `your community`, `built you something`, `an app for [program]`.
@@ -28,41 +28,41 @@ The gift-first reveal (the demo already exists, built around their work, free to
 **Detail → reveal → ask (default).** Name the specific thing, reveal you built the demo around it, one soft ask.
 > subject: your deload post
 >
-> Your post on deloading without losing your mind is the clearest take on it I've read. I build branded apps for coaches, and I ended up making a demo of one around your method — your name on it, AI trained on your content, free to look at. Want me to send it over?
+> Dave, your post on deloading without losing your mind is the clearest take on it I've read. I build branded apps for coaches, and I ended up making a demo of one around your method, your name on it, AI trained on your content, free to look at. Want me to send it over?
 
 **Reveal → why them → ask.** Lead with the odd fact, then the anchor.
 > subject: built you an app
 >
-> Slightly strange intro: I already built you a demo app. Your 5-Minute Reset series gave me the idea, so it's your method inside it, not a template. It's done and it's free to look at. Want to see it?
+> Maya, slightly strange intro: I already built you a demo app. Your 5-Minute Reset series gave me the idea, so it's your method inside it, not a template. It's done and it's free to look at. Want to see it?
 
 **Their world → bridge → ask** (for a named program/challenge/book).
 > subject: your reto 21 días
 >
-> Tu Reto 21 Días ya funciona como un programa completo — se nota el método detrás. Se me ocurrió que eso es prácticamente una app, así que armé una demo con tu contenido adentro, coaching con IA y seguimiento para tu gente. Ya existe y verla no cuesta nada. ¿Te la mando?
+> Sofía, tu Reto 21 Días ya funciona como un programa completo, se nota el método detrás. Se me ocurrió que eso es prácticamente una app, así que armé una demo con tu contenido adentro, coaching con IA y seguimiento para tu gente. Ya existe y verla no cuesta nada. ¿Te la mando?
 
 Rotate shapes across prospects the same way you rotate DM skeletons. Three emails that all read "your X is great, I built an app around your method" are one template, not three.
 
 ## Email follow-up sequence (Gojiberry email steps 4 and 6)
 
-55% of replies come from follow-ups, and each one must add something new — never "just checking in." Cap the sequence; stop instantly at any reply, positive signal, or no.
+55% of replies come from follow-ups, and each one is a value ladder, never "just checking in." Open with their first name. Cap the sequence; stop instantly at any reply, positive signal, or no.
 
 | Touch | Timing | Angle |
 |---|---|---|
 | Email 1 (opener) | day 0 | Anchor + gift-first reveal + soft ask |
-| Email 2 (follow-up 1) | day 3–4 | A new angle: react to something they posted since, or reframe the gift (the 30 seconds it takes to look, or one new detail — "put your logo on it"). One soft ask. |
-| Email 3 (follow-up 2 / breakup) | day 10–14 | The takeaway: you'll leave their inbox alone, the demo is theirs whenever with no expiry, wish them well. Lightest CTA or none. Loss aversion, no guilt. |
+| Email 2 (follow-up 1, case study) | day 3-4 | How a similar coach in their niche got a branded app: what it included (their content as guided programs, AI trained on their material, a community space, tracking) and how it works. Honest, no invented names or metrics; a [case study link] placeholder if useful. One soft ask. |
+| Email 3 (follow-up 2, video) | day 10-14 | Offer a short explainer video that walks through their own demo, [video link] placeholder for the user to drop in. Lightest CTA or none, no guilt. |
 
-Best days Tuesday–Thursday, 9–11am or 1–3pm their local time. Each email must stand alone — assume they never read the previous one.
+Best days Tuesday to Thursday, 9-11am or 1-3pm their local time. Each email must stand alone, assume they never read the previous one.
 
-**Follow-up 1 example (English):**
+**Follow-up 1 example (case study, English):**
 > subject: your reset app
 >
-> No pressure at all — just didn't want this to get buried. The demo I built around your Reset is still sitting here, your branding on it, free whenever you want a look. Want the link?
+> Dave, quick one, I built a similar habit coach her own app last month: her programs became guided tracks, the AI answered client questions in her voice, and her community lived in one place instead of scattered DMs. yours would work the same way with your Reset inside. want a look?
 
-**Breakup example (English):**
-> subject: leaving it here
+**Follow-up 2 example (video, English):**
+> subject: 60-second walkthrough
 >
-> Last one from me, promise. The demo's yours whenever you're curious, no expiry and nothing to do. Best of luck with the coaching either way.
+> Dave, I recorded a 60-second video walking through your demo so you don't have to click around. want me to send it over? [video link]
 
 ## Frameworks to borrow (for the body, not for pasting)
 
