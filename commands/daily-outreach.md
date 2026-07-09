@@ -6,6 +6,7 @@ description: Run the daily Tribed IG + LinkedIn pipeline — handle replies, adv
 Run the Tribed daily outreach pipeline. Follow references/linkedin-ops.md (Job C) exactly. Order matters: replies first, then advancing existing leads, then new invites.
 
 1. **Replies.** `get_inbox` (limit 50), match conversations to open LinkedIn leads in the tracker. Any reply: stop that lead's sequence, log the touch, and draft a Mode 2 reply for the user. Replies are never auto-sent.
+   - Interested reply with no demo yet: build the demo first (Job D). Read the thread + profile + their site, then create the community with the Tribed MCP (`get_onboarding_guide` FIRST, then `onboard_community` + content tools), themed as their brand. Save `data.demo_handle` / `data.demo_url` on the lead, then draft the reply. Max 5 demos per run, never a duplicate.
 2. **Acceptances.** Leads awaiting acceptance that are now 1st-degree: send `data.li_followup_1` with `send_message`, log the touch, set the next action.
 3. **Due follow-up 2.** Follow-up 1 sent 3-4+ days ago with no reply: send `data.li_followup_2` and log it. Archive leads 14 days quiet after follow-up 2.
 4. **New leads** (IG-first discovery + anything queued with "Send connection request"):

@@ -1,6 +1,6 @@
 # Mode 7 — LinkedIn ops: personalization + daily pipeline
 
-LinkedIn outreach runs on the self-hosted **LinkedIn MCP** (`linkedin` server, stickerdaniel/linkedin-mcp-server) driving Alfonso's real LinkedIn session, with the **Tribed outreach tracker** as the record of state. This replaced Gojiberry. There is no campaign engine anymore: the daily run IS the campaign engine. Requires the `linkedin` MCP (actions), the Tribed MCP (outreach lead tools), and the Apify MCP (follower enrichment).
+LinkedIn outreach runs on the self-hosted **LinkedIn MCP** (`linkedin` server, stickerdaniel/linkedin-mcp-server) driving Alfonso's real LinkedIn session, with the **Tribed outreach tracker** as the record of state. This replaced Gojiberry. There is no campaign engine anymore: the daily run IS the campaign engine. Requires the `linkedin` MCP (actions), the Tribed MCP (outreach lead tools + community onboarding for demo creation, Job D), and the Apify MCP (follower enrichment).
 
 ## How the stack is wired (know this before touching anything)
 
@@ -55,7 +55,7 @@ Filter on real audience signal, not role or industry fit:
 
 Run once per day. Order matters: replies first, then advancing existing leads, then new invites.
 
-1. **Replies.** `get_inbox({ limit: 50 })` and match conversation names against open LinkedIn leads in the tracker. Any reply: stop that lead's sequence (`nextAction: "Handle reply (Mode 2)"`), `log_outreach_touch`, read the thread with `get_conversation`, and draft a Mode 2 reply for the user. Replies are never auto-sent.
+1. **Replies.** `get_inbox({ limit: 50 })` and match conversation names against open LinkedIn leads in the tracker. Any reply: stop that lead's sequence (`nextAction: "Handle reply (Mode 2)"`), `log_outreach_touch`, read the thread with `get_conversation`, and draft a Mode 2 reply for the user. Replies are never auto-sent. If the reply shows interest and the lead has no demo yet, build the demo first (Job D) so the Mode 2 draft has something real behind it.
 2. **Acceptances → follow-up 1.** For leads with `nextAction: "Awaiting acceptance"`: check degree with `get_person_profile` (or one `search_people` name query with `network: ["F"]`). Accepted: send `data.li_followup_1` via `send_message` (with `profile_urn` if stored), log the touch, set `nextAction: "Follow-up 2 in 3-4 days"`. If `send_message` fails because they are not messageable, they have not accepted; leave them for the next run.
 3. **Due follow-up 2.** Follow-up 1 sent 3-4+ days ago (check the touch log) and no reply: send `data.li_followup_2`, log it, `nextAction: "Awaiting reply"`. No reply 14 days after follow-up 2: archive the lead.
 4. **New leads.** The day's new prospects (from the IG-first pipeline or queued on the tracker): ICP filter (Job B), personalize the survivors (Job A), then `connect_with_person` with the note for as many as today's invite budget allows. Log each touch, set `nextAction: "Awaiting acceptance"`. The rest keep `nextAction: "Send connection request"` for tomorrow.
@@ -91,6 +91,19 @@ The daily job targets one person across all three channels. Start on Instagram a
 6. **Notify Martin** (WhatsApp) and report per channel.
 
 Canonical routing: IG → digital_university pipeline (VA sends); LinkedIn → tracker + `linkedin` MCP (Claude sends in the daily run); email → Instantly. The digital_university pipeline (admin.tribed.io) is the dashboard of record.
+
+## Job D — build the demo from the conversation
+
+The gift-first promise is that the demo already exists. When a prospect's reply shows interest, make it true before the reply goes back: read the conversation, build their real demo community, and put the link on the lead.
+
+1. **Trigger.** A reply classified as interested (asks to see it, "send it over", a curious question about the app) AND the lead has no `data.demo_url` yet. One demo per prospect, ever: re-read the lead with `get_outreach_lead` and check `list_communities` for an existing community before creating anything. Never recreate or duplicate; demos are real communities in the shared Firebase project and deleting one is a manual decision.
+2. **Gather the material.** Three sources, in order of weight:
+   - The conversation itself (`get_conversation`): what they call their program, what they reacted to, the words they use for their people. What earned the reply shapes the demo's front door.
+   - The LinkedIn profile (`get_person_profile` with `sections: "posts,experience,contact_info"`): voice, method, program names, credentials.
+   - Their site or bio link if one exists (fetch it): pricing, program structure, brand colors, testimonials.
+3. **Build it with the Tribed MCP.** Call `get_onboarding_guide` FIRST and follow it exactly: extract the author, brand, habits, a starter plan, and questionnaire from the gathered material, then `onboard_community` plus the content tools the guide prescribes. Name and theme it as THEIR brand, not Tribed's. Where the material runs thin, build the smallest demo that still feels like theirs (a tight demo beats an empty shell) and note the gaps in `data.demo_notes`.
+4. **Record it.** Save `data.demo_handle` and `data.demo_url` (app.tribed.io/[handle]) on the lead, `log_outreach_touch`, set `nextAction: "Send demo link (Mode 2)"`. The Mode 2 draft still uses the `[demo link]` placeholder per the hard rules; the user pastes `data.demo_url` when sending.
+5. **Cap and report.** Max 5 demos per daily run; queue the rest for tomorrow. Report every demo created (lead, community id, demo URL) in the daily report.
 
 ## Guardrails
 

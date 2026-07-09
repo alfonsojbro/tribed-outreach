@@ -19,7 +19,7 @@ This file holds the shared core. The mode-specific playbooks and examples live i
 | LinkedIn profile, connection note or InMail | 4. LinkedIn | references/linkedin.md |
 | Prospect opened the demo (replied or went quiet after) | 5. Objections → book the walkthrough call | references/postdemo.md |
 | Cold email or email follow-up sequence (sent via Instantly) | 6. Cold email | references/email.md |
-| Personalize + enroll LinkedIn leads, or run the daily lead pipeline | 7. LinkedIn ops | references/linkedin-ops.md |
+| Personalize + enroll LinkedIn leads, run the daily lead pipeline, or build a demo from a conversation | 7. LinkedIn ops | references/linkedin-ops.md |
 
 Ambiguous input: ask one quick question.
 
