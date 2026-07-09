@@ -14,6 +14,6 @@ Run the Tribed daily outreach pipeline. Follow references/linkedin-ops.md (Job C
    - Personalize the survivors (Job A) in the Tribed voice, anchored on one real detail (rule zero): connection note (<280 chars, no CTA, no price), follow-up 1 (light bump), follow-up 2 (new angle / soft close). Save to the tracker `data` bag.
    - Send connection requests with `connect_with_person` within today's invite budget.
 5. **Instagram.** Draft DM + two follow-ups onto the tracker for the VA (unchanged; the VA sends by hand).
-6. **Report** per channel: replies, follow-ups sent, invites sent, kept vs removed by ICP, and held-for-review.
+6. **Report** per channel: replies, follow-ups sent, invites sent, kept vs removed by ICP, and held-for-review. Then push the day's funnel snapshot with `upsert_outreach_metrics` (stage counts from `list_outreach_leads`, per channel) so the dashboard history stays live.
 
 Hard limits: max 15 connection requests and 25 messages per day, one run per day. Do not enroll out-of-ICP leads. Do not send a message that fails rule zero — hold it for manual review. If LinkedIn throws a checkpoint, captcha, or verification wall, stop immediately and tell the user.

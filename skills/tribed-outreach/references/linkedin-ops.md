@@ -60,6 +60,7 @@ Run once per day. Preflight first: one cheap `get_my_profile` call — if it fai
 3. **Due follow-up 2.** Leads due today with `nextAction: "Send follow-up 2"` and still no reply (verify against the thread with `get_conversation` before sending — the touch log can lag a crashed run): send `data.li_followup_2`, log it with `nextAction: "Archive if still quiet"` and `nextActionAt` 14 days out. Due again and still quiet: mark `stage: "lost"`.
 4. **New leads.** The day's new prospects (from the IG-first pipeline or queued on the tracker): ICP filter (Job B), personalize the survivors (Job A), then `connect_with_person` with the note for as many as today's invite budget allows. Log each with `advanceTo: "reached"`, `nextAction: "Check acceptance"`, `nextActionAt` tomorrow. The rest keep `nextAction: "Send connection request"` for tomorrow.
 5. **Report:** replies found, acceptances messaged, follow-up 2s sent, new invites sent, kept vs removed by ICP, and leads held for manual review (no usable anchor). Per channel.
+6. **Snapshot the funnel.** Close the run by pushing a metrics snapshot with `upsert_outreach_metrics` (schema v1: account, generatedAt, channels[] with normalized stages) so the Outreach dashboard's funnel and history stay live post-Gojiberry. Compute the stage counts from `list_outreach_leads` per channel. Idempotent on the snapshot date, so re-running the same day is safe.
 
 ### Volume + account safety (hard limits)
 
