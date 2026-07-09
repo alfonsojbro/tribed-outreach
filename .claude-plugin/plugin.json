@@ -1,7 +1,7 @@
 {
   "name": "tribed-outreach",
-  "description": "Tribed's full IG + LinkedIn + cold-email outreach system for wellness, fitness, coaching, and creator prospects. Gift-first messaging, reply/objection handling, follow-up sequences, and Gojiberry campaign personalization + daily scheduling.",
-  "version": "1.1.0",
+  "description": "Tribed's full IG + LinkedIn + cold-email outreach system for wellness, fitness, coaching, and creator prospects. Gift-first messaging, reply/objection handling, follow-up sequences, and LinkedIn sequence personalization + daily pipeline via the LinkedIn MCP.",
+  "version": "1.2.0",
   "author": {
     "name": "Alfonso Brice\u00f1o",
     "url": "https://alfonso.tech"

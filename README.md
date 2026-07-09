@@ -1,6 +1,6 @@
 # tribed-outreach
 
-Tribed's full outreach system as a Claude/Cowork plugin — Instagram + LinkedIn + cold email, reply and objection handling, follow-up sequences, and Gojiberry campaign automation (personalized connection notes + follow-ups, ICP filtering, and a daily IG+LinkedIn pipeline).
+Tribed's full outreach system as a Claude/Cowork plugin — Instagram + LinkedIn + cold email, reply and objection handling, follow-up sequences, and a LinkedIn sequence pipeline (personalized connection notes + follow-ups, ICP filtering, and a daily IG+LinkedIn pipeline) run through a self-hosted LinkedIn MCP.
 
 ## What's inside
 
@@ -10,7 +10,7 @@ tribed-outreach/
 │   ├── plugin.json          # plugin manifest
 │   └── marketplace.json     # lets this repo act as its own marketplace
 ├── commands/
-│   └── daily-outreach.md    # /daily-outreach — runs the daily Gojiberry pipeline
+│   └── daily-outreach.md    # /daily-outreach — runs the daily LinkedIn + IG pipeline
 └── skills/
     └── tribed-outreach/
         ├── SKILL.md         # shared core: gift-first move, rule zero, banned phrases, ICP, pricing
@@ -21,7 +21,7 @@ tribed-outreach/
             ├── linkedin.md  # Mode 4 — connection note + InMail
             ├── postdemo.md  # Mode 5 — post-demo objections → book the walkthrough
             ├── email.md     # Mode 6 — cold email + email follow-ups (Corey-informed, Tribed voice)
-            └── gojiberry.md # Mode 7 — Gojiberry personalization + ICP filter + daily pipeline
+            └── linkedin-ops.md # Mode 7 — LinkedIn MCP sequences + ICP filter + daily pipeline
 ```
 
 ## What changed from the old `tribed` skill
@@ -29,6 +29,7 @@ tribed-outreach/
 - Renamed to **tribed-outreach** and packaged as a plugin so it can be shared and versioned.
 - Added **Mode 6 — cold email** (subject lines, frameworks, cadence) adapted from Corey Haines' cold-email method into the Tribed gift-first voice, and folded its transferable principles into the core (personalization must connect to the point, angle-rotating follow-ups, one low-friction ask).
 - Added **Mode 7 — Gojiberry ops**: the campaign step map, per-contact `personalizedMessages` workflow, the 2,000-followers-or-creator ICP filter, and the daily IG+LinkedIn pipeline, plus a `/daily-outreach` command.
+- **v1.2.0 — migrated off Gojiberry.** Mode 7 is now **LinkedIn ops** (`references/linkedin-ops.md`): sequences run through the self-hosted LinkedIn MCP (stickerdaniel/linkedin-mcp-server, registered as `linkedin` in NobleAdmin/.mcp.json) with lead state in the Tribed outreach tracker. Connection notes go out via `connect_with_person`, follow-ups via `send_message`, replies are read from `get_inbox`. Emails moved fully to Instantly. Same ICP filter, same craft rules, hard daily caps (15 invites / 25 messages).
 
 ## Install (you and your VA — shared source of truth)
 

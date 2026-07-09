@@ -1,6 +1,6 @@
 # Mode 6 — Cold email + email follow-ups
 
-Same gift-first move as the DMs, but this is a real inbox, not a chat. It earns deletion just as fast as a DM earns a scroll-past, so the craft is tighter. This mode powers cold email openers and the Gojiberry campaign's email steps (steps 1, 4, 6). Adapted from Corey Haines' cold-email method, kept in Tribed's voice; where the two conflict, the Tribed core (gift-first, no banned phrases, no call ask pre-demo) wins.
+Same gift-first move as the DMs, but this is a real inbox, not a chat. It earns deletion just as fast as a DM earns a scroll-past, so the craft is tighter. This mode powers cold email openers and the sequence's email touches, sent through Instantly. Adapted from Corey Haines' cold-email method, kept in Tribed's voice; where the two conflict, the Tribed core (gift-first, no banned phrases, no call ask pre-demo) wins.
 
 What to gather: name, niche, the anchor detail (rule zero — a post, a program name, a book, a launch), follower/creator context for the price tier if it ever comes up, language. If no anchor is visible, ask; don't pad.
 
@@ -42,7 +42,7 @@ The gift-first reveal (the demo already exists, built around their work, free to
 
 Rotate shapes across prospects the same way you rotate DM skeletons. Three emails that all read "your X is great, I built an app around your method" are one template, not three.
 
-## Email follow-up sequence (Gojiberry email steps 4 and 6)
+## Email follow-up sequence (Instantly touches 2 and 3)
 
 55% of replies come from follow-ups, and each one is a value ladder, never "just checking in." Open with their first name. Cap the sequence; stop instantly at any reply, positive signal, or no.
 

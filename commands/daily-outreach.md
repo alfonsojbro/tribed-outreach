@@ -1,21 +1,18 @@
 ---
 name: daily-outreach
-description: Run the daily Tribed IG + LinkedIn Gojiberry pipeline — filter new leads to ICP, then write personalized connection notes and follow-ups onto the survivors.
+description: Run the daily Tribed IG + LinkedIn pipeline — handle replies, advance LinkedIn sequences through the LinkedIn MCP, and ICP-filter + personalize the day's new leads.
 ---
 
-Run the Tribed daily outreach pipeline. Follow references/gojiberry.md (Job C) exactly.
+Run the Tribed daily outreach pipeline. Follow references/linkedin-ops.md (Job C) exactly. Order matters: replies first, then advancing existing leads, then new invites.
 
-For each active Gojiberry campaign/list (LinkedIn first, then Instagram):
+1. **Replies.** `get_inbox` (limit 50), match conversations to open LinkedIn leads in the tracker. Any reply: stop that lead's sequence, log the touch, and draft a Mode 2 reply for the user. Replies are never auto-sent.
+2. **Acceptances.** Leads awaiting acceptance that are now 1st-degree: send `data.li_followup_1` with `send_message`, log the touch, set the next action.
+3. **Due follow-up 2.** Follow-up 1 sent 3-4+ days ago with no reply: send `data.li_followup_2` and log it. Archive leads 14 days quiet after follow-up 2.
+4. **New leads** (IG-first discovery + anything queued with "Send connection request"):
+   - ICP filter (Job B): enrich via Apify `harvestapi/linkedin-profile-scraper` and keep only `followerCount >= 2000` OR `creator` OR `influencer`.
+   - Personalize the survivors (Job A) in the Tribed voice, anchored on one real detail (rule zero): connection note (<280 chars, no CTA, no price), follow-up 1 (light bump), follow-up 2 (new angle / soft close). Save to the tracker `data` bag.
+   - Send connection requests with `connect_with_person` within today's invite budget.
+5. **Instagram.** Draft DM + two follow-ups onto the tracker for the VA (unchanged; the VA sends by hand).
+6. **Report** per channel: replies, follow-ups sent, invites sent, kept vs removed by ICP, and held-for-review.
 
-1. Pull the leads added since yesterday (`list_contacts` with `dateFrom` = today, or diff ids).
-2. ICP filter (Job B): enrich followers via Apify `harvestapi/linkedin-profile-scraper` and keep only `followerCount >= 2000` OR `creator` OR `influencer`. Remove the rest from the list.
-3. Personalize the survivors (Job A) in the Tribed voice, anchored on one real detail (rule zero):
-   - step 0 connection note (<280 chars, no CTA, no price)
-   - step 2 follow-up 1 (light bump)
-   - step 5 follow-up 2 (new angle / soft close)
-   - steps 1/4/6 emails only if email is enabled for that campaign (Mode 6 / email.md)
-   Write with `update_contact({ id, personalizedMessages: [...] })`.
-4. Hold any lead with no usable anchor for manual review instead of shipping a generic message.
-5. Report: new leads found, kept vs removed, personalized, and held-for-review, per channel.
-
-Do not enroll out-of-ICP leads. Do not send a message that fails rule zero.
+Hard limits: max 15 connection requests and 25 messages per day, one run per day. Do not enroll out-of-ICP leads. Do not send a message that fails rule zero — hold it for manual review. If LinkedIn throws a checkpoint, captcha, or verification wall, stop immediately and tell the user.

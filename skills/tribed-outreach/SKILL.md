@@ -1,8 +1,8 @@
 ---
 name: tribed-outreach
-description: Tribed's full Instagram, LinkedIn, and cold-email outreach for wellness, fitness, coaching, and creator prospects. Covers IG cold DMs, reply and objection handling, follow-up sequences, LinkedIn connection notes and InMail, post-demo booking, cold email and email sequences, and Gojiberry campaign ops (personalized connection notes + follow-ups, ICP filtering, daily IG+LinkedIn pipeline). Use for any Tribed outreach: a cold DM, connection note, InMail, cold email, bump, follow-up, objection handling, booking the walkthrough call, or personalizing and scheduling leads into Gojiberry. Trigger even when the user just pastes a profile screenshot, since the default intent is a first-touch message. Handles English, River Plate Spanish, and neutral Latin American Spanish, picked from the profile or the reply.
+description: Tribed's full Instagram, LinkedIn, and cold-email outreach for wellness, fitness, coaching, and creator prospects. Covers IG cold DMs, reply and objection handling, follow-up sequences, LinkedIn connection notes and InMail, post-demo booking, cold email and email sequences, and LinkedIn sequence ops via the LinkedIn MCP (personalized connection notes + follow-ups, ICP filtering, daily IG+LinkedIn pipeline). Use for any Tribed outreach: a cold DM, connection note, InMail, cold email, bump, follow-up, objection handling, booking the walkthrough call, or personalizing and enrolling leads into the LinkedIn sequence. Trigger even when the user just pastes a profile screenshot, since the default intent is a first-touch message. Handles English, River Plate Spanish, and neutral Latin American Spanish, picked from the profile or the reply.
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 # Tribed Outreach — Full Workflow
@@ -18,8 +18,8 @@ This file holds the shared core. The mode-specific playbooks and examples live i
 | No reply to the opener, user wants a bump/nudge/sequence | 3. Follow-ups | references/followups.md |
 | LinkedIn profile, connection note or InMail | 4. LinkedIn | references/linkedin.md |
 | Prospect opened the demo (replied or went quiet after) | 5. Objections → book the walkthrough call | references/postdemo.md |
-| Cold email or email follow-up sequence (incl. Gojiberry email steps) | 6. Cold email | references/email.md |
-| Personalize + write messages into Gojiberry, or run the daily lead pipeline | 7. Gojiberry ops | references/gojiberry.md |
+| Cold email or email follow-up sequence (sent via Instantly) | 6. Cold email | references/email.md |
+| Personalize + enroll LinkedIn leads, or run the daily lead pipeline | 7. LinkedIn ops | references/linkedin-ops.md |
 
 Ambiguous input: ask one quick question.
 
@@ -93,7 +93,7 @@ No em dashes. No bullet points or lists inside a message. No call ask before the
 
 ## ICP (who we keep)
 
-Tribed's ICP is a coach/creator/expert who already has an **audience** — someone whose body of work could become a branded app people actually use. Not just anyone interested in coaching or teaching. On Gojiberry the practical bar is: **2,000+ LinkedIn followers OR a creator/influencer flag on their profile.** Everyone below that with no creator flag is out of ICP and should not be enrolled. See references/gojiberry.md for how to enforce this on a lead list.
+Tribed's ICP is a coach/creator/expert who already has an **audience** — someone whose body of work could become a branded app people actually use. Not just anyone interested in coaching or teaching. On LinkedIn the practical bar is: **2,000+ LinkedIn followers OR a creator/influencer flag on their profile.** Everyone below that with no creator flag is out of ICP and should not be enrolled. See references/linkedin-ops.md for how to enforce this on a lead batch.
 
 ## Price reference
 
