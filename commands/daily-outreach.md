@@ -3,7 +3,7 @@ name: daily-outreach
 description: Run the daily Tribed IG + LinkedIn pipeline — handle replies, advance LinkedIn sequences through the LinkedIn MCP, and ICP-filter + personalize the day's new leads.
 ---
 
-Run the Tribed daily outreach pipeline. Follow references/linkedin-ops.md (Job C) exactly. Order matters: replies first, then advancing existing leads, then new invites.
+Run the Tribed daily outreach pipeline. Follow references/linkedin-ops.md (Job C) exactly. Preflight the LinkedIn session (`get_my_profile`; abort and tell the user on auth errors), then pull the day's due work with `list_outreach_leads({ channel: "li", dueBefore: today, activeOnly: true })`. Order matters: replies first, then advancing existing leads, then new invites. Always set `externalId` (the LinkedIn publicIdentifier) on upserts and schedule everything forward with `nextActionAt`.
 
 1. **Replies.** `get_inbox` (limit 50), match conversations to open LinkedIn leads in the tracker. Any reply: stop that lead's sequence, log the touch, and draft a Mode 2 reply for the user. Replies are never auto-sent.
    - Interested reply with no demo yet: build the demo first (Job D). Read the thread + profile + their site, then create the community with the Tribed MCP (`get_onboarding_guide` FIRST, then `onboard_community` + content tools), themed as their brand. Save `data.demo_handle` / `data.demo_url` on the lead, then draft the reply. Max 5 demos per run, never a duplicate.
