@@ -5,8 +5,8 @@
     "url": "https://alfonso.tech"
   },
   "metadata": {
-    "description": "Tribed outreach system — IG, LinkedIn, cold email, and Gojiberry campaign automation",
-    "version": "1.0.0",
+    "description": "Tribed outreach system - IG, LinkedIn, cold email, and Gojiberry campaign automation",
+    "version": "1.3.0",
     "repository": "https://github.com/alfonsojbro/tribed-outreach"
   },
   "plugins": [
