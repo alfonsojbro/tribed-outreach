@@ -5,14 +5,14 @@
     "url": "https://alfonso.tech"
   },
   "metadata": {
-    "description": "Tribed outreach system - IG, LinkedIn, cold email, and Gojiberry campaign automation",
-    "version": "1.3.0",
+    "description": "Tribed outreach system - IG, LinkedIn, and cold email with a daily cross-channel pipeline",
+    "version": "1.5.0",
     "repository": "https://github.com/alfonsojbro/tribed-outreach"
   },
   "plugins": [
     {
       "name": "tribed-outreach",
-      "description": "Full Tribed outreach: gift-first IG/LinkedIn/InMail openers, reply and objection handling, follow-up sequences, cold email, and Gojiberry connection-note + follow-up personalization with a daily IG+LinkedIn pipeline.",
+      "description": "Full Tribed outreach: gift-first IG/LinkedIn/InMail openers, reply and objection handling, follow-up sequences, cold email, and a daily IG + LinkedIn + email pipeline running on our self-hosted LinkedIn MCP with the Tribed outreach tracker and review queue.",
       "source": "./"
     }
   ]

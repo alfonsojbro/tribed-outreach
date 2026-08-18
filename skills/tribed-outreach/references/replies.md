@@ -34,7 +34,7 @@ These give the concern and the direction of the answer. Write a fresh reply each
 
 **Price, English, small profile:**
 Prospect: "Looks interesting, how much does it cost?"
-Setup's on me, it's already built. If you decide to keep it live it's $99 a month, but see it first, no commitment either way. Want me to send it?
+Setup's on me, it's already built. If you decide to keep it live it's $149 a month, but see it first, no commitment either way. Want me to send it?
 
 **No time, neutral Spanish:**
 Prospect: "Se ve bueno pero no tengo tiempo para manejar otra cosa"

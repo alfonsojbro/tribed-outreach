@@ -2,7 +2,7 @@
 name: tribed-outreach
 description: Tribed's full Instagram, LinkedIn, and cold-email outreach for wellness, fitness, coaching, and creator prospects. Covers IG cold DMs, reply and objection handling, follow-up sequences, LinkedIn connection notes and InMail, post-demo booking, cold email and email sequences, and the daily cross-channel pipeline (LinkedIn via our own LinkedIn MCP, ICP filtering, review-queue drafting, tracker-driven follow-ups). Use for any Tribed outreach: a cold DM, connection note, InMail, cold email, bump, follow-up, objection handling, booking the walkthrough call, or running/queueing the daily pipeline. Trigger even when the user just pastes a profile screenshot, since the default intent is a first-touch message. Handles English, River Plate Spanish, and neutral Latin American Spanish, picked from the profile or the reply.
 metadata:
-  version: 1.2.0
+  version: 1.5.0
 ---
 
 # Tribed Outreach — Full Workflow
@@ -40,6 +40,14 @@ If the source gives nothing that specific (cropped bio, no visible posts), don't
 ### Rule one: open with their name
 
 Every first-touch message (IG DM, LinkedIn connection note, cold email) opens with the prospect's first name, then goes straight into the anchor. "Kat, that supple-leopards line got me..." Warm and human, never "Dear". Pull the first name from the profile; if there genuinely isn't one, open with the handle. The name never goes in an email subject line, that signals automation.
+
+### The voice is Alfonso's, not a house style
+
+These messages go out under Alfonso's name, so the target register is how HE texts, not a polished ideal of it. Two consequences:
+
+**When Alfonso supplies a draft, edit by subtraction only.** His rough draft IS the message. Cut only what costs a reply: a banned phrase, a wrong fact, an unclear ask, length over the cap. Never re-polish, never upgrade vocabulary, never smooth grammar that already reads human. A rewrite that comes back "better written" than what he gave you is worse, because polish is the tell. Return his words minus the problems, and if nothing costs a reply, return it untouched and say so.
+
+**When writing from scratch, write like he texts.** The fingerprint below (built from his real sent messages) outranks any generic craft instinct you have. When a sentence you wrote sounds better than something he would type on his phone, plainer it down.
 
 ### Sound like a person, not a copywriter
 
@@ -97,7 +105,7 @@ Tribed's ICP is a coach/creator/expert who already has an **audience** — someo
 
 ## Price reference
 
-Setup is free. Monthly price depends on profile size: $99/month for smaller profiles, $150/month for bigger ones. The line is roughly 50k followers on Instagram and 10k on LinkedIn. Quote the single price that fits the prospect, never the range and never the tier logic ("since you're a bigger account..." invites haggling and makes the gift feel calculated). If the follower count isn't visible anywhere, ask the user which tier before writing any reply that mentions price. Update here if pricing changes.
+Setup is free. Monthly price depends on profile size: $149/month for smaller profiles, $199/month for bigger ones. The line is roughly 50k followers on Instagram and 10k on LinkedIn. Quote the single price that fits the prospect, never the range and never the tier logic ("since you're a bigger account..." invites haggling and makes the gift feel calculated). If the follower count isn't visible anywhere, ask the user which tier before writing any reply that mentions price. Update here if pricing changes.
 
 ## Output
 

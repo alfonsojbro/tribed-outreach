@@ -49,7 +49,7 @@ Prospect: "looks nice but I don't really get what my clients would do in it"
 fair, a screenshot tour beats me typing paragraphs. give me 15 minutes and I'll show you what a client sees day one, you'll get it instantly. [booking link]
 
 **Price (neutral Spanish):**
-Prospect: "Está buena pero 99 al mes es bastante"
+Prospect: "Está buena pero 149 al mes es bastante"
 Te entiendo. Para la mayoría de los coaches una sola sesión o un cliente nuevo ya lo cubre, pero es más fácil juzgarlo viendo todo lo que hace. ¿Te la muestro en vivo? Son 15 minutos: [booking link]
 
 **Doesn't do calls (River Plate):**
