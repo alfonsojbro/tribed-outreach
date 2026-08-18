@@ -25,7 +25,13 @@ PENDING INTERVIEW — being captured. Until this section has content, follow SKI
 
 <!-- Real messages Alfonso sent or typed in the interview. Same rule as all examples: they demonstrate register, they are not stock parts. -->
 
-PENDING INTERVIEW.
+Thread fragments identified as Alfonso's own hand (tracker mining, 2026-08-18 — mid-conversation register, not openers):
+
+- "glad you like it! and yeah, we've got the experience, this is all we do..." (Stoicism.art thread, after a positive reply)
+- "ha, good surprise or bad one? curious what you had in mind" (Ashutosh thread)
+- "...instead of a folder of PDFs they lose track of" (Chris Pineda, explaining the app)
+
+What these already show: lowercase starts mid-thread, exclamation warmth without emoji, answers a question with a question back, concrete household imagery over feature language. Openers PENDING INTERVIEW.
 
 ## 3. Learned corrections (append-only, dated)
 

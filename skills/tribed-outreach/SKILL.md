@@ -2,12 +2,12 @@
 name: tribed-outreach
 description: Tribed's full Instagram, LinkedIn, and cold-email outreach for wellness, fitness, coaching, and creator prospects. Covers IG cold DMs, reply and objection handling, follow-up sequences, LinkedIn connection notes and InMail, post-demo booking, cold email and email sequences, and the daily cross-channel pipeline (LinkedIn via our own LinkedIn MCP, ICP filtering, review-queue drafting, tracker-driven follow-ups). Use for any Tribed outreach: a cold DM, connection note, InMail, cold email, bump, follow-up, objection handling, booking the walkthrough call, or running/queueing the daily pipeline. Trigger even when the user just pastes a profile screenshot, since the default intent is a first-touch message. Handles English, River Plate Spanish, and neutral Latin American Spanish, picked from the profile or the reply.
 metadata:
-  version: 1.5.0
+  version: 1.5.1
 ---
 
 # Tribed Outreach — Full Workflow
 
-This file holds the shared core. The mode-specific playbooks and examples live in references/. Read ONLY the one file for the mode at hand; the core below applies to all of them.
+This file holds the shared core. The mode-specific playbooks and examples live in references/. Read ONLY the one file for the mode at hand, plus references/voice.md whenever the task involves writing or editing message copy; the core below applies to all of them.
 
 ## Pick the mode, then read its reference file
 
@@ -47,7 +47,9 @@ These messages go out under Alfonso's name, so the target register is how HE tex
 
 **When Alfonso supplies a draft, edit by subtraction only.** His rough draft IS the message. Cut only what costs a reply: a banned phrase, a wrong fact, an unclear ask, length over the cap. Never re-polish, never upgrade vocabulary, never smooth grammar that already reads human. A rewrite that comes back "better written" than what he gave you is worse, because polish is the tell. Return his words minus the problems, and if nothing costs a reply, return it untouched and say so.
 
-**When writing from scratch, write like he texts.** The fingerprint below (built from his real sent messages) outranks any generic craft instinct you have. When a sentence you wrote sounds better than something he would type on his phone, plainer it down.
+**When writing from scratch, write like he texts.** The fingerprint lives in references/voice.md (built from his real messages and his corrections) and outranks any generic craft instinct you have. When a sentence you wrote sounds better than something he would type on his phone, plainer it down.
+
+**Self-upgrade.** When Alfonso edits your draft or says a line doesn't sound like him, that delta is voice data: log it in references/voice.md per the loop described there. The skill gets more him with every correction.
 
 ### Sound like a person, not a copywriter
 
@@ -68,6 +70,17 @@ If every message runs compliment, bridge, pitch, reveal, question, the account p
 **Detail-first.** After the name, go straight into the specific thing itself. **Reveal-first.** Lead with the strange fact the thing exists ("so I built you an app. it already exists, that's the weird part."). **Confession.** Admit it's slightly odd ("ok this is a little forward but..."). **Idea-first.** The realization, kept short ("your 30-day reset is basically already an app. so I made the demo.").
 
 The reveal that the demo already exists is the hook and stays in every variant. Rotate CTAs too: "want me to send it?", "wanna see it?", "should I shoot it over?", natural Spanish equivalents. Never the same CTA twice in a row.
+
+### What has measurably worked (tracker evidence, 2026-08-18)
+
+Mined from 1,292 tracked leads, ~91 reply-positive with the sent copy on record. Facts, not taste — let them bias every draft:
+
+- **The opener does the work.** Of ~38 attributable replies, ~27 came from the connection note / cold DM, ~8 from follow-up 1, ~2 from follow-up 2. On Instagram every recorded reply credits the cold DM.
+- **The winning shape is detail-first** (~80% of winners): their OWN named method, book, or program quoted back, one line on why it's rare, the demo already exists, question CTA. Rotate skeletons as the core says, but detail-first is the proven default when in doubt.
+- **Quote their exact phrase.** The fastest replies (a voice note in 2h, a thumbs-up in 1 minute) came when the note repeated the lead's own title or trademarked phrase verbatim.
+- **Winning notes average 33 words.** Two sentences. Zero links.
+- **The proven follow-up 1** is the social-proof case study ("built one for another framework-driven coach, her method as practice modules... members actually did the reps"). The proven follow-up 2 closer is the proposal offer: "want me to put together a customized proposal of everything that would go inside your app?" — it pulled serious replies from leads the case study didn't move.
+- **The old corporate template register** ("Open to a quick 10-minute chat?", benefits pitches) exists only among never-replied records. Zero winners.
 
 ### Cross-channel principles (borrowed from cold-email craft, adapted)
 
