@@ -98,9 +98,25 @@ The tells that a message came from a template or a model. Never use them, in any
 
 Never lift a phrase verbatim from any example in this skill. Examples demonstrate register, they are not stock parts. If a sentence you wrote appeared in a previous message this session, rewrite it.
 
+### Structural AI tells (distilled from the humanizer skill, 2026-08-18)
+
+The banned list catches words. These catch shapes. A model reaches for these rhythms on its own, so scan the draft for the shape even when every word is clean. All of these were found in our own sent copy, they are not hypothetical:
+
+- **Triads and fragment runs.** "Free, done, zero setup." Three-beat lists and stacked clipped fragments read as copy, not texting. One fragment is fine. A row is a tell. (Caught in a sent DM 2026-08-07.)
+- **Announcing the point before making it.** "So, odd fact:", "here's the thing", "ok so get this". State the fact, skip the drumroll. The confession skeleton ("ok this is a little forward but...") is the one allowed exception, and only as the opener.
+- **Fake-candid hooks.** "Honestly?", "Look,", "real talk" as a standalone beat before an ordinary point.
+- **"Not X but Y" and tailing negation.** "It's not just a course, it's a system", or bolting "no fluff" / "zero hassle" onto a sentence end. Say the real clause.
+- **Stacked "instead of".** One "instead of a pdf they open once" lands. Two in the same message is a pattern the reader feels. (Caught in a sent DM 2026-08-17: two in three sentences.)
+- **Formulaic sayings.** "X is the language of Y", "...is the bit almost nobody does", "the real question is". Replace the saying with the specific claim.
+- **Generic upbeat closers.** Ending on vague momentum ("excited to see where you take it") instead of the CTA question.
+- **Agreeable padding.** "Love this!", "great stuff" before the point. The anchor detail IS the compliment; saying it twice cheapens both.
+- **Chatbot residue.** "Let me know if...", "hope this helps", any offer to expand. A text to a friend never ends that way.
+
+One tell alone is not a rewrite order, his real texting has fragments and the occasional "honestly". Two or more shapes in one short message means redraft the message, not patch the phrase. Same false-positive rule as the humanizer: match `voice.md` first, these rules never outrank his sample bank.
+
 ### Self-check before output
 
-Read the draft as the coach receiving it. Could the opening line go to anyone else in their niche? Rewrite the anchor. Any landing-page sentence or banned phrase? Cut. Would the user say it out loud? Loosen it. Over the mode's length cap? Trim. Same skeleton or CTA as the previous message this session? Switch.
+Read the draft as the coach receiving it. Could the opening line go to anyone else in their niche? Rewrite the anchor. Any landing-page sentence or banned phrase? Cut. Any structural tell from the list above, twice? Redraft. Would the user say it out loud? Loosen it. Over the mode's length cap? Trim. Same skeleton or CTA as the previous message this session? Switch.
 
 ## Language selection (all modes)
 
