@@ -36,3 +36,8 @@ What these already show: lowercase starts mid-thread, exclamation warmth without
 ## 3. Learned corrections (append-only, dated)
 
 <!-- Format: - 2026-08-18: <one-line lesson>. Mine: "<what I wrote>" -> His: "<what he made it>" -->
+
+- 2026-08-20: The connection note closes on the ASK, not on the build story. He cut the whole "why I built it" clause. Mine: "I built your course as an app to see whether therapists would actually use it between cases. It already exists." -> His: "I made an initial version of the Running Repairs app, want me to send it over?"
+- 2026-08-20: Name the app after THEIR method, never "a demo app". Generic: "I made a demo app around your method." His: "the Running Repairs app", "the Only You app", "the Airway Mouth Doctor app", "the Mini Residency app". The possessive does the personalization work that an extra sentence used to.
+- 2026-08-20: Say "initial version", not "demo". A demo is a sales prop; an initial version is their product already underway. Rotate the phrasing across a batch: "I made an initial version of..." / "I built a first version of..." / "I put together an early version of..." / "There's a first version of ... sitting ready" / "I made a first cut of...".
+- 2026-08-20: Batch-level tell, caught by Alfonso reading five notes side by side ("is that the best you can think of"). Four of five ended in the identical sentence "It already exists." Rotating the OPENER is not enough; the CLOSING construction must vary across the batch too, because prospects in the same niche know each other.

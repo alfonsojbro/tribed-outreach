@@ -28,3 +28,36 @@ Hey Sarah, your post on why maintenance phases fail stuck with me, I've quoted i
 
 **Example (neutral Spanish, mindset coach, reveal-first):**
 Hola Carlos, esto va a sonar raro pero ya te hice una app. Tu publicación sobre disciplina sin motivación me dio la idea y terminé armando una demo con tu método, coaching con IA y seguimiento para tu gente. Ya existe y verla no cuesta nada. ¿Te la mando?
+
+## 4C — When the invite is never accepted
+
+Policy agreed 2026-08-23, final form settled the same day across two sessions. The drip enforces it (`mcp/src/repos/linkedinDrip.ts`); this section governs what you write and what you stamp.
+
+**Retire at 21 days, unconditionally.** `PENDING_LOST_DAYS` is a hard floor. An owed InMail does NOT extend it (Alfonso rejected a 42-day exemption explicitly), so the InMail escalation window is day 3 to day 21. A perfect-tier lead that reaches day 21 without its InMail is an upstream failure (authoring job, credit ledger), not a reason to keep the lead alive. The retire also fires from the error path when the profile read fails, because that unconditional +1 day defer is exactly how the 2026-07-23 cohort reached 31 days against a 21 day floor.
+
+**Never write a second connection note.** No withdraw, no re-invite, no second note in different copy.
+
+- **No withdraw.** LinkedIn's weekly cap counts invites SENT, not outstanding, so withdrawing refunds no quota we can spend. Its one real effect is re-invite eligibility after a ~3-week block, which we never use. There is no withdraw endpoint on the worker either. The pending invite is left to expire on LinkedIn's own schedule.
+- **No re-invite.** The first note not landing is not evidence that better copy would have.
+- **No follow-up**, and nothing fires if they accept months later. They fall out of the sequence.
+
+The retire is terminal: `li_state` goes to `"done"` and `nextActionAt` is cleared. Both are needed. A lead left in `awaiting_accept` with only its date cleared looks parked but re-arms the moment anything writes a date back. The retire note names an undelivered demo (`data.demo_url`) when one exists.
+
+**The Open Profile exception.** The ONE thing that survives the floor. A 2nd-degree profile whose TOP CARD shows a Message control is an Open Profile: a free message reaches them with no connection and no InMail credit. Verified live 2026-08-23 on leadwithak, denisehansard-executivelifecoach and emily-bouchard-5a9a049, all three 31 days pending, all three reachable, all three carrying a finished demo. The drip stamps `data.li_open_profile_at`, logs ONE touch naming the demo, and hands to the daily session for same-day copy; later ticks defer quietly. Detection is scoped to the top card (cut at "Explore Premium profiles" / "· 3rd", whole-line "Message") because the Premium rail below lists other people with their own Message buttons.
+
+**Do not invent a park value.** The drip owns exactly three `li_state` values and treats every other value as somebody else's lead. Since 2026-08-23 an unknown `li_state` write is REJECTED at the repo layer (`assertKnownLiState` in `mcp/src/repos/linkedinLeadState.ts`). Allowed: `to_invite`, `awaiting_accept`, `await_fu2`, `human`, `done`, `connected`. Need a new one? Add it there first.
+
+### The InMail escalation gate (both, not either)
+
+- `data.li_source === "sales_navigator"` — which LinkedIn surface the lead came from, `"sales_navigator"` or `"search"`. **Stamp it at discovery.** Never inferred; an unstamped lead reads as not-Sales-Navigator and never escalates. It lives in the `data` bag, NOT in `channel`: `channel` stays `"li"` for every LinkedIn lead, because it is the routing key the drip and the reply sync filter on, and a second value there drops the lead out of both.
+- `data.icp_tier === "perfect"` — the strict Job B step 5 bar in `pipeline.md`.
+
+A perfect-ICP lead blocked only on the missing source tag is called out in the drip's daily touch rather than going quiet. Stamp the real source and it escalates on the next tick.
+
+One InMail, ever, authored the day it ships, day 3 to day 21. Copy it like 4B. **Read the thread and the note we sent first** (`data.li_note` is on the record): if the note already promised a demo, the InMail delivers the link (`data.demo_url`) instead of teasing a second time. Where no demo exists, use the 4B tease.
+
+**Sending the InMail closes the lead.** `li_state` goes to `"done"`, `nextActionAt` clears, the stage stays. The drip does not poll it afterwards: a reply bubbles the thread to the top of the inbox and the daily run's Pass A reads it there. Known gap, accepted by Alfonso: a silent ACCEPTANCE after the InMail (no message) is not noticed and follow-up 1 never fires.
+
+### Do not build a demo for an unaccepted invite
+
+Three of the 2026-07-23 cohort had a full demo built three weeks after their invite had already gone unaccepted. When the retire fires it now names the undelivered demo in the touch note. Check the invite was accepted, or that the lead is an Open Profile, or that an InMail is going out, before queueing demo work.
