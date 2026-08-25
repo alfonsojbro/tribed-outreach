@@ -8,28 +8,31 @@ allowed to call and which safety rule applies to which action.
 
 ## Two rails, two engines, one account
 
-X outreach runs on TWO independent rails. They may act as the same X account,
-but they share no code, no gate and no cap ledger. Confusing them is the main
-way this leg goes wrong — it is what produced both the 2026-08-24 idle queue and
-the 2026-08-25 deliberately-empty one.
+X outreach runs on TWO independent rails. They act as the SAME X account —
+`@alfonsojbro`, confirmed on both sides 2026-08-25 — but they share no code, no
+gate and no cap ledger. Confusing them is the main way this leg goes wrong — it
+is what produced both the 2026-08-24 idle queue and the 2026-08-25
+deliberately-empty one.
 
 | | Hosted **x-drip** | **Session worker** |
 |---|---|---|
 | Code | `mcp/src/repos/xDrip.ts` → `repos/x.ts` | `mcp/src/repos/xWorker.ts` (`x-worker/`) |
 | Engine | X **API v2 over OAuth** (`XConnection`) | logged-in **Playwright browser** |
 | Runs | hourly job, unattended, 13–23 UTC | only when a run or operator calls a tool |
-| Public comment | `x.createComment` → `POST /2/tweets` | `reply_x_post_session` |
+| Public comment | `x.createComment` → `POST /2/tweets`, under the PINNED post | `reply_x_post_session` |
 | Like | `x.reactToPost` | — |
 | Follow | `x.followUser` | `follow_x_profile_session` |
 | DM | `x.sendDm` (needs `X_DRIP_DM_ENABLED`) | `ship_x_outreach_draft` / `send_x_dm_session` |
 | Reads the DM inbox | **cannot** | `read_x_session_inbox` |
 | `messageAvailable` probe | cannot | `view_x_profile` |
-| Cap ledger | **none** | `get_x_session_account_health` → `caps` |
+| Cap ledger | **none** (must borrow the worker's — see below) | `get_x_session_account_health` → `caps` |
 | Gate | `X_DRIP_ENABLED` only | `caps.gates.browserAdapterReady`, `sessionStatus` |
 
-**The drip owns the daily outbound leg**, as of 2026-08-24. Like, public
-comment, follow, and — when `X_DRIP_DM_ENABLED` is on — the DM all ship from the
-drip, off copy the morning run staged onto the lead. Staging it is **Fill 4 in
+**The drip owns the daily outbound leg** by design, as of 2026-08-24 — though
+as of 2026-08-25 it has never actually shipped a touch; see "What the split
+actually costs you". Like, public comment, follow, and — when
+`X_DRIP_DM_ENABLED` is on — the DM all ship from the drip, off copy the morning
+run staged onto the lead. Staging it is **Fill 4 in
 references/pipeline.md**, and that is the only place the outbound X leg is
 driven from now.
 
@@ -57,7 +60,8 @@ connected account via the API". Nothing about the unverified browser reply
 applies to the drip.
 
 **So Fill 4 staging is NOT on hold.** Stage X leads with `x_state: "to_touch"`,
-`nextActionAt` today and `data.x_comment`, normally. The 2026-08-25 run withheld
+`nextActionAt` today, `data.x_comment` and its pinned post
+(`data.x_comment_post_url` + `data.x_comment_post_at`), normally. The 2026-08-25 run withheld
 `x_state` and `nextActionAt` from its 6 new channel-`"x"` leads because it read
 the reply ban as covering the drip. That reading was wrong, and those leads are
 invisible to the drip until the fields are backfilled — do that on the next run.
@@ -74,17 +78,84 @@ shuffled lead order, a 20–90s pause between leads, inside the send window. So
 "the X rail is disarmed" is only ever a statement about the browser rail — never
 report it as the X leg being down.
 
-**2. The two ledgers do not know about each other.** The drip's writes charge
-nothing against `caps.reply`, `caps.follow` or `caps.dm`. If the OAuth
-connection on `XConnection/digital_university` is the same handle as the session
-worker's login, then one real X account is being worked by two rails that each
-believe they are inside budget. **Confirm the identity before raising volume on
-either rail**: read the connected username with `x_connection_status`
-(`communityId: "digital_university"`) and compare it to the session worker's
-account handle. If they match — the expected case, both being the founder's
-`@alfonsojbro` — then the drip's 40-per-run is spending the same real-world
-budget the session `caps` describe, and the session rail must stay on reads.
-This is an open item, not a settled one: nothing in the code enforces it.
+**2. Both rails drive the same real account. Settled 2026-08-25 — do not
+re-derive.** The session worker's `x-accounts.json` gives account
+`digital_university` an `expectedHandle` of `alfonsojbro`. Firestore holds
+exactly ONE `XConnection` document: its id is `tribed` and its `username` is
+`alfonsojbro`. Same handle, both rails. So the drip's writes and the session
+`caps` are two ledgers over one real-world budget, and **neither can see the
+other** — the drip charges nothing against `caps.reply`, `caps.follow` or
+`caps.dm`.
+
+### The arithmetic
+
+`MAX_LEADS_PER_RUN` (40) is the page size, not the spend. The spend is
+`MAX_LEADS_PER_TICK` (5) times the ticks that fire: a 13–23 UTC window is 10
+hourly ticks and ~25% sit out, so **up to ~37 leads a day** — each one a like, a
+public comment, a follow, and (DM step on) a DM.
+
+| per day | drip, if it ran | session ramp, week one | ratio |
+|---|---|---|---|
+| replies | ~37 | 5 | ~7x |
+| follows | ~37 | 6 | ~6x |
+| DMs | ~37 | 3 | ~12x |
+
+Those ramp figures are the real `/health` reading on 2026-08-25 for a session
+**one day old**. The drip does not know they exist.
+
+### The decision
+
+**The session worker's `/health` ledger is the one X budget for `@alfonsojbro`,
+and the drip's WRITE steps stay off until the drip reads it and charges against
+it.** Plan every X number off `get_x_session_account_health`, and only that.
+
+Not "lower `MAX_LEADS_PER_RUN`": a smaller unmetered number is still unmetered,
+and it still runs on a rail with no warmup ramp, no action gap and no proxy. Not
+"session rail to reads only" either — the session rail is the one carrying the
+safety machinery (warmup ramp, `minActionGapSeconds` 900, `minSendGapSeconds`
+3600, attempt-charged counters, per-account sticky egress). Disarming the
+careful rail to protect the careless one is backwards. The session rail keeps
+its reads AND its metered writes; the drip is the one that has to earn its.
+
+Treat a like as riding with its comment: one reply charge, one action.
+
+### The drip has never actually shipped, and it is inert BY ACCIDENT
+
+`X_DRIP_ENABLED=true` and `X_DRIP_DM_ENABLED=true` on mcp-ops, with
+`X_DRIP_ACCOUNT=digital_university`. But the OAuth token lives at
+`XConnection/`**`tribed`** — there is no `XConnection/digital_university`. So the
+preflight `x.connectionStatus()` returns `connected: false` and **every tick
+returns null.** `JobRuns/x-drip` has never been written; the only line in the ops
+log is `[jobs] x-drip enabled (every 3600s)`. The 6 channel-`"x"` leads staged on
+2026-08-25 now carry `x_state: "to_touch"`, today's `nextActionAt` and
+`data.x_comment` — the backfill is done — and nothing has touched them.
+
+So "the drip owns the daily outbound leg" is the design, not yet the behaviour.
+Do not report drip touches you have not seen in `JobRuns/x-drip`.
+
+**And there is no value of `X_DRIP_ACCOUNT` that works today.** The one string
+is used as a key in TWO namespaces that disagree — `outreach.listLeadsPage(account)`
+for the lead pool and `x.connectionStatus(account)` for the OAuth token — and
+neither value satisfies both (counted 2026-08-25):
+
+| `X_DRIP_ACCOUNT` | x-channel leads | `XConnection` doc | result |
+|---|---|---|---|
+| `digital_university` | 6 | **missing** | preflight fails, ticks null |
+| `tribed` | **0** (retired pool) | present, `@alfonsojbro` | empty queue, ticks null |
+
+So repointing the key does not fix the drip, it just moves which half is broken —
+and if the `tribed` pool is ever given X leads, that same one-word edit arms an
+unmetered rail at ~37 leads/day against a one-day-old session. The real fix is
+to stop overloading one identifier: give the drip a separate connection key from
+its lead-pool key. Before the drip writes again, all three:
+
+1. `X_DRIP_ENABLED=false` on mcp-ops, so "off" is a decision and not a typo.
+2. `runXDrip` calls `readAccountCaps` first; stands down on `capsError` or on
+   `gates.enabled` / `armed` / `browserAdapterReady` false; and stops each action
+   class at its `remainingToday`.
+3. Atomic reservation is a worker-side endpoint that does not exist yet, so
+   `remainingToday` is advisory only. Until it exists the two rails must not
+   write on the same UTC day — the daily leg owns the day.
 
 ## The constraint that shapes DM work: most people cannot be cold-DMed
 
@@ -175,16 +246,52 @@ schema, so object inputs may not bind from some clients — use an actor-specifi
 Apify tool or the REST API with `APIFY_TOKEN`. And never let a paid scrape stand
 in for the free `view_x_profile` check.
 
-## Comment copy — write about the person, never about one post
+## Comment copy — react to ONE real post, and stage that post with the copy
 
-`data.x_comment` fires against whatever their MOST RECENT post is **at send
-time**, not the post you read when you staged it. The drip resolves the latest
-post itself. So write the comment about the person and their body of work; a
-comment about one specific post lands as a non sequitur under something newer.
+Changed 2026-08-25 (Alfonso: "we should reference the comment to the post, not
+the latest"). `data.x_comment` is PINNED to the post it was written about. The
+drip resolves that post and replies under it, and it never falls back to
+whatever is newest at send time. Stage three fields in the same write:
 
-Follow the outreach comment rule: one or two phone-reply sentences reacting to
-ONE thing they actually say. Never the three-beat critic essay, never "most
-people miss this", never an aphorism.
+| Field | What goes in it |
+|---|---|
+| `data.x_comment` | the copy, written about that one post |
+| `data.x_comment_post_url` (or `data.x_comment_post_id`) | `https://x.com/<handle>/status/<id>`, or the bare numeric id |
+| `data.x_comment_post_at` | that post's OWN timestamp, ISO, off the scrape |
+
+**This is the copy-quality fix, not just a plumbing one.** The old rule forbade
+referencing a post, so the writer had nothing to react to and reacted to the
+coach's POSITIONING instead — "naming it for menopause instead of just 'over
+40' is a real difference" — which is the consultant-voice critic essay wearing
+a disguise. Six were staged that way on 2026-08-25 and all six were rewritten by
+hand. With a post pinned, react to the post's SUBJECT: the topic, the people it
+serves, the problem. One or two phone-reply sentences on ONE thing they actually
+say, lowercase register. Never the three-beat critic essay, never "most people
+miss this", never a closing aphorism, never a verdict on their choices.
+
+**The drip fails closed on the pin.** Deleted, protected, unreachable, not
+actually theirs, or an unparseable reference: the whole lead is SKIPPED (no
+comment, no follow, no DM) and left due, carrying
+`data.x_comment_block_reason`, `data.x_comment_needs_fresh: true` and
+`data.x_comment_blocked_post_id`. There is no retarget — a silent one ships the
+non sequitur where nobody can see it, which is worse than a skip.
+
+**A pin goes stale in 7 days** (`X_DRIP_COMMENT_MAX_AGE_DAYS`), checked against
+the staged `x_comment_post_at` first (free) and then against X's own
+`created_at`. Past the window the lead is skipped as needing fresh copy: the
+author has moved on and a reply under that post reads as scraping. Stage
+same-day and let the drip send same-day.
+
+**Unblocking is restaging, and it clears itself.** A blocked lead stays out of
+the drip's page while it is still pinned to the post it failed on, and becomes
+actionable again as soon as it is pinned to a DIFFERENT post. Sweep for
+`data.x_comment_needs_fresh`, read a current post, write new copy plus the new
+`x_comment_post_url` / `x_comment_post_at`. No flag to reset.
+
+**Legacy leads** staged with `x_comment` and no pinned post keep the old
+latest-post behaviour, so nothing already queued broke. The tick summary counts
+them (`N on legacy latest-post targeting`) — a backlog to drain by restaging
+them with a post, not a mode to keep using.
 
 ## DM copy
 
@@ -243,9 +350,12 @@ Alfonso's explicit one-target commands only.
 ## The daily split: who does what
 
 **The morning pipeline run (Fill 4)** stages the queue: source and skip-check
-handles, probe `messageAvailable`, author `data.x_comment` (and `data.x_dm` from
-an approved draft), then upsert with `channel "x"`, `externalId` = the handle
-lowercased, `data.x_username`, `x_state: "to_touch"`, `nextActionAt` today. Drip
+handles, probe `messageAvailable`, read a real recent post and author
+`data.x_comment` about it (and `data.x_dm` from an approved draft), then upsert
+with `channel "x"`, `externalId` = the handle lowercased, `data.x_username`,
+`data.x_comment_post_url`, `data.x_comment_post_at`, `x_state: "to_touch"`,
+`nextActionAt` today. Restage anything carrying `data.x_comment_needs_fresh` in
+the same pass. Drip
 pace is ~5 leads a tick and 40 a run, so a couple dozen due leads keeps it fed
 without flooding it. Report cap vs staged vs sent, and report a zero with its
 denominator.
