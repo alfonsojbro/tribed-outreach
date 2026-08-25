@@ -14,7 +14,7 @@ Once they've opened the demo and reply again, switch to Mode 5 (read references/
 
 These give the concern and the direction of the answer. Write a fresh reply each time in the prospect's register and language, picking up their actual words. Never paste the sample lines, a coach who screenshots two identical replies from you in a friend's DMs is a lost market.
 
-**Price ("how much is it?").** Concern: worth my money. Answer immediately and honestly (setup free, then the monthly price for their tier per the price reference in SKILL.md), then reframe to seeing it first, no commitment.
+**Price ("how much is it?").** Concern: worth my money. **Do not put a number in the reply.** Setup being free is fine to say. The monthly figure is a last resort per the price reference in SKILL.md, held for the point where the deal stops without it. Name the question so you are not dodging it, say you would rather they see it first, and reframe to the demo, no commitment.
 
 **"Send me something concrete" / "what exactly would it do?" / asks for a written scope.** Concern: this is vapour, or a generic template with their logo on it. Do NOT answer this one in prose in the DM — the ask is for an artifact, and answering it with three more sentences of description proves their fear. Build the proposal (`get_proposal_guide` then `upsert_proposal` on the Tribed MCP, which publishes a personalized `tribed.io/p/{id}` page) and reply with the link plus one line naming the thing of theirs it was built around. If a question inside the ask is genuinely unanswerable by a proposal page (what stays proprietary, where human judgement stays in the loop), answer that part plainly and briefly in the message and let the page carry the rest. This is a high-intent ask: someone asking what exactly it does has already decided it might be real.
 
@@ -50,9 +50,9 @@ When they DO name someone, treat it as a warm first touch, not a lead import: me
 
 ## Examples
 
-**Price, English, small profile:**
+**Price, English:**
 Prospect: "Looks interesting, how much does it cost?"
-Setup's on me, it's already built. If you decide to keep it live it's $149 a month, but see it first, no commitment either way. Want me to send it?
+Setup's on me, it's already built. On cost, I'd rather you see it first, it's an easier conversation once it's in front of you. Want me to send it?
 
 **No time, neutral Spanish:**
 Prospect: "Se ve bueno pero no tengo tiempo para manejar otra cosa"

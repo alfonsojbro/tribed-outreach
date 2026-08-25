@@ -135,7 +135,9 @@ Tribed's ICP is a coach/creator/expert who already has an **audience** — someo
 
 ## Price reference
 
-Setup is free. Monthly price depends on profile size: $149/month for smaller profiles, $199/month for bigger ones. The line is roughly 50k followers on Instagram and 10k on LinkedIn. Quote the single price that fits the prospect, never the range and never the tier logic ("since you're a bigger account..." invites haggling and makes the gift feel calculated). If the follower count isn't visible anywhere, ask the user which tier before writing any reply that mentions price. Update here if pricing changes.
+**Hold the number back. It is a last resort, not an answer.** Alfonso's rule (2026-08-26): the price goes in a message only when the deal genuinely stops without it, the "tell me the price or we don't book" moment. Everywhere else, including when a prospect asks outright in a cold reply, do NOT put a figure in the message. Acknowledge the question, say you would rather they see it first, and move to the demo or the walkthrough. Ignoring the question entirely reads as evasion, so name it and defer it in the same breath ("on the investment, I'd rather you see it first, it's an easier conversation once it's in front of you"). A number quoted early prices a thing they have not looked at yet, and it invites a no before the demo has done any work.
+
+The numbers, for when that last-resort moment actually arrives: setup is free; $149/month for smaller profiles, $199/month for bigger ones. The line is roughly 50k followers on Instagram and 10k on LinkedIn. Quote the single price that fits the prospect, never the range and never the tier logic ("since you're a bigger account..." invites haggling and makes the gift feel calculated). If the follower count isn't visible anywhere, ask Alfonso which tier before writing any reply that mentions price. Update here if pricing changes.
 
 ## Output
 

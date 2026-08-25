@@ -20,7 +20,7 @@ Booking mechanics: the user sends a scheduling link. Never write the link, leave
 
 ## Post-demo objection directions
 
-**"That's a lot" / price resistance.** Don't defend the number with math walls. One honest comparison in their world (one client covers it, or what they charge for a single session), then the walkthrough: easier to judge if it's worth it after seeing everything it does, 15 minutes. Quote their tier's price only (see price reference in SKILL.md), never reveal the other tier exists.
+**"That's a lot" / price resistance.** This only comes up once a number is out, and per SKILL.md the number is a last resort, so check it was genuinely earned before quoting one here. Don't defend the number with math walls. One honest comparison in their world (one client covers it, or what they charge for a single session), then the walkthrough: easier to judge if it's worth it after seeing everything it does, 15 minutes. Quote their tier's price only (see price reference in SKILL.md), never reveal the other tier exists.
 
 **"My audience won't pay for an app."** Genuinely curious, not corrective: what do they sell now? Then reframe, the app isn't a new thing to sell, it's where what they already sell lives. Walkthrough shows it faster than a paragraph.
 

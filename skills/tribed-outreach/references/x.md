@@ -143,13 +143,23 @@ neither value satisfies both (counted 2026-08-25):
 | `digital_university` | 6 | **missing** | preflight fails, ticks null |
 | `tribed` | **0** (retired pool) | present, `@alfonsojbro` | empty queue, ticks null |
 
-So repointing the key does not fix the drip, it just moves which half is broken —
-and if the `tribed` pool is ever given X leads, that same one-word edit arms an
-unmetered rail at ~37 leads/day against a one-day-old session. The real fix is
-to stop overloading one identifier: give the drip a separate connection key from
-its lead-pool key. Before the drip writes again, all three:
+So repointing the key does not fix the drip, it just moves which half is broken.
+Staging X leads on `tribed` is not the answer either: the outreach tools throw on
+it (`RETIRED_OUTREACH_ACCOUNTS`, merged into `digital_university`), and a split
+pool would stop an X lead deduping against the same person's LI or IG lead.
 
-1. `X_DRIP_ENABLED=false` on mcp-ops, so "off" is a decision and not a typo.
+**The identifier is now split (branch, not deployed).** `X_DRIP_ACCOUNT` keys the
+lead pool only; the new `X_DRIP_CONNECTION` keys the OAuth token and defaults to
+`X_DRIP_ACCOUNT`. Set `X_DRIP_ACCOUNT=digital_university` and
+`X_DRIP_CONNECTION=tribed`. A missing token now THROWS instead of ticking null,
+so the job runner logs and alerts rather than looking idle. That fixes the
+plumbing and nothing else — it does not make the drip safe to run, and shipping
+it alone would arm an unmetered rail at ~37 leads/day against a one-day-old
+session. Before the drip writes again, all three:
+
+1. `X_DRIP_ENABLED=false` on mcp-ops, so "off" is a decision and not a typo —
+   do this BEFORE deploying the `X_DRIP_CONNECTION` split, or the deploy itself
+   is what turns the rail on.
 2. `runXDrip` calls `readAccountCaps` first; stands down on `capsError` or on
    `gates.enabled` / `armed` / `browserAdapterReady` false; and stops each action
    class at its `remainingToday`.
