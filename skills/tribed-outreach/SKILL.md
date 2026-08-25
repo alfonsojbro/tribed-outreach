@@ -2,7 +2,7 @@
 name: tribed-outreach
 description: Tribed's full Instagram, LinkedIn, and cold-email outreach for wellness, fitness, coaching, and creator prospects. Covers IG cold DMs, reply and objection handling, follow-up sequences, LinkedIn connection notes and InMail, post-demo booking, cold email and email sequences, and the daily cross-channel pipeline (LinkedIn via our own LinkedIn MCP, ICP filtering, review-queue drafting, tracker-driven follow-ups). Use for any Tribed outreach: a cold DM, connection note, InMail, cold email, bump, follow-up, objection handling, booking the walkthrough call, or running/queueing the daily pipeline. Trigger even when the user just pastes a profile screenshot, since the default intent is a first-touch message. Handles English, River Plate Spanish, and neutral Latin American Spanish, picked from the profile or the reply.
 metadata:
-  version: 1.8.0
+  version: 1.9.0
 ---
 
 # Tribed Outreach — Full Workflow
@@ -20,6 +20,7 @@ This file holds the shared core. The mode-specific playbooks and examples live i
 | Prospect opened the demo (replied or went quiet after) | 5. Objections → book the walkthrough call | references/postdemo.md |
 | Cold email or email follow-up sequence (sent via Instantly) | 6. Cold email | references/email.md |
 | Run the daily lead pipeline, personalize a batch, ship/queue review drafts, or build a demo from a conversation | 7. Pipeline ops | references/pipeline.md |
+| X (Twitter) lead, cold DM, comment copy, or the X discovery batch (drip-owned outbound; see Fill 4 in pipeline.md) | 8. X | references/x.md |
 
 Ambiguous input: ask one quick question.
 
@@ -126,7 +127,7 @@ English bio or reply: English. Argentine cues (vos, Argentine slang, .ar, Buenos
 
 ## Hard rules (every mode)
 
-No em dashes. No bullet points or lists inside a message. No call ask before the prospect has seen the demo (Modes 1-4, 6); after they've seen it, the walkthrough call is the goal and Mode 5 owns it. No false urgency, no guilt. Assume the follow or connection exists except in LinkedIn connection notes, and even there never say "I'd love to connect". One CTA, phrased as a question, at the end (connection notes: no explicit CTA). Never write the demo link (app.tribed.io/[handle]) or the scheduling link; leave [demo link] or [booking link] placeholders and the user drops them in.
+No em dashes. No bullet points or lists inside a message. No call ask before the prospect has seen the demo (Modes 1-4, 6); after they've seen it, the walkthrough call is the goal and Mode 5 owns it. No false urgency, no guilt. Assume the follow or connection exists except in LinkedIn connection notes, and even there never say "I'd love to connect". One CTA, phrased as a question, at the end (connection notes: no explicit CTA). Never write the demo link (app.tribed.io/[handle]) or the scheduling link; leave [demo link] or [booking link] placeholders and the user drops them in. A decline is never just closed out: it gets one referral ask in the same message as the graceful exit, never as a separate message afterwards, and never when the no is a boundary (opt-out, complaint, legal or trademark matter, or a request to stop). See references/replies.md.
 
 ## ICP (who we keep)
 
