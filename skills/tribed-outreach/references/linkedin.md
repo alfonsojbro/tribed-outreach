@@ -56,7 +56,7 @@ A perfect-ICP lead blocked only on the missing source tag is called out in the d
 
 One InMail, ever, authored the day it ships, day 3 to day 21. Copy it like 4B. **Read the thread and the note we sent first** (`data.li_note` is on the record): if the note already promised a demo, the InMail delivers the link (`data.demo_url`) instead of teasing a second time. Where no demo exists, use the 4B tease.
 
-**Sending the InMail closes the lead.** `li_state` goes to `"done"`, `nextActionAt` clears, the stage stays. The drip does not poll it afterwards: a reply bubbles the thread to the top of the inbox and the daily run's Pass A reads it there. Known gap, accepted by Alfonso: a silent ACCEPTANCE after the InMail (no message) is not noticed and follow-up 1 never fires.
+**Sending the InMail closes the lead.** `li_state` goes to `"done"`, `nextActionAt` clears, the stage stays. The drip does not poll it afterwards. A reply lands in the SALES NAVIGATOR inbox, not `/messaging/` — the daily run reads it with `get_sales_inbox({ filter: "ACCEPTED" })` and `get_sales_conversation({ thread_id })`, and answers INTO THE SAME SN THREAD with `send_sales_message` (dry run with `confirm_send: false` first, Alfonso approves the copy, then `confirm_send: true`; a reply spends no InMail credit). Never answer an InMail reply with a new InMail, and never conclude "no reply" from `/messaging/` reads. Full contract in pipeline.md, "The InMail escalation". Known gap, accepted by Alfonso: a silent ACCEPTANCE after the InMail (no message) is not noticed and follow-up 1 never fires.
 
 ### Do not build a demo for an unaccepted invite
 
