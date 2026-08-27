@@ -25,6 +25,7 @@ deliberately-empty one.
 | DM | `x.sendDm` (needs `X_DRIP_DM_ENABLED`) | `ship_x_outreach_draft` / `send_x_dm_session` |
 | Reads the DM inbox | **cannot** | `read_x_session_inbox` |
 | `messageAvailable` probe | cannot | `view_x_profile` |
+| Liveness (newest OWN post) | cannot | `view_x_profile` |
 | Cap ledger | **none** (must borrow the worker's — see below) | `get_x_session_account_health` → `caps` |
 | Gate | `X_DRIP_ENABLED` only | `caps.gates.browserAdapterReady`, `sessionStatus` |
 
@@ -178,13 +179,18 @@ logged as a skip, not a failure), but a skipped DM is still a wasted slot.
 So the order is always **check, then spend**:
 
 1. `view_x_profile({ accountId, username })` — read-only, costs no cap, never
-   clicks. Returns `messageAvailable`.
-2. `messageAvailable: false` → **do not stage `data.x_dm` and do not queue an
+   clicks. One call returns BOTH `messageAvailable` and the liveness fields
+   (`lastPostAt`, `lastPostAgeDays`, `lastPostId`, `lastPostUrl`, `timelineRead`).
+2. **Liveness first.** `lastPostAgeDays` past the 7-day comment window, or
+   `timelineRead: false`, and the candidate does not enter the pool at all — see
+   "Discovery" below. A DM probe on a dormant profile is a question about a lead
+   that should not exist.
+3. `messageAvailable: false` → **do not stage `data.x_dm` and do not queue an
    `x_dm` draft.** The DM cannot land. Stage the lead for the drip's public
    touch only (like + comment + follow), which is where the warming happens
    anyway. Stamp `data.x_dm_available: false` with the date so the next run does
    not re-probe the same profile all week.
-3. `messageAvailable: true` → DM-workable. Queue the draft.
+4. `messageAvailable: true` → DM-workable. Queue the draft.
 
 It also returns `exists`, `suspended`, `protected`, `alreadyFollowing`. A
 suspended or protected account is dead for outreach; mark the lead lost.
@@ -233,11 +239,48 @@ people who merely talk about fitness:
 Always carry the exclusions: X is thick with crypto/forex/dropshipping
 "coaches" who are not our ICP.
 
-**Then qualify, because search has no sense of liveness.** Google will happily
-present a coach whose last post was two years ago, and handles inferred from
-result titles are wrong maybe a fifth of the time. `view_x_profile` is free,
-read-only and charges no cap — run it on every candidate before spending
-anything.
+**Then qualify on LIVENESS, not just existence.** Search has no sense of
+whether anyone is home, and neither do `exists` and `messageAvailable`. Google
+will happily present a coach whose last post was two years ago, and handles
+inferred from result titles are wrong maybe a fifth of the time.
+`view_x_profile` is free, read-only and charges no cap — run it on every
+candidate before spending anything, and read THREE things off it, not one:
+
+| Field | Fails the candidate when |
+|---|---|
+| `exists` / `suspended` / `protected` | false / true / true — dead for outreach |
+| `lastPostAgeDays` | above 7 (`X_DRIP_COMMENT_MAX_AGE_DAYS`) — DORMANT, do not stage at all |
+| `messageAvailable` | false — not DM-workable; the public touch still is |
+
+**Dormant is a hard skip, and it is the failure this gate exists for.** On
+2026-08-27 all six `channel "x"` leads on `digital_university` passed `exists`
+AND `messageAvailable`, and every one of them was dormant: @TilleyGeorgie last
+posted 2021-11-06 (1754 days), @its_jenny_fit 2022-12-29, @fitwjenn 2023-01-06,
+@MissCGough 2025-12-27, @susanceklosky 2026-02-16, @youbfit 2026-08-18 — and
+that last one is its only post since 2018. Not one falls inside the 7-day
+comment window, so the comment leg could not fire for a single lead in the pool.
+An account that has not posted this week has no post to pin a comment to, and
+the pinned comment is the drip's whole public touch.
+
+**Unknown is not a pass.** `timelineRead: false` — protected, suspended, or the
+timeline did not render — means the post fields are UNKNOWN, never "they do not
+post". Hold that candidate out of the pool exactly like a dormant one and report
+it under its own count (`liveness unknown`), rather than staging on a guess. A
+guess here is what parks a dead lead in the queue for a week.
+
+**Re-probing is cheap; re-staging a corpse is not.** A candidate skipped for
+dormancy is not permanently dead — people come back. Stamp what you learned
+(`data.x_account_dormant`, `data.x_last_post_at`, `data.x_last_post_checked_at`,
+below) so a later run can re-check it without re-deriving anything.
+
+**The gate rides the browser rail, so a disarmed adapter means ZERO staged, not
+poor ICP fit.** `/profile-view` is behind `_require_adapter`: with
+`caps.gates.browserAdapterReady: false` every `view_x_profile` call answers 503,
+liveness is unknown for every candidate, and the gate correctly stages nothing.
+Report that as the qualify rail being down and name the gate — never as "the X
+queries do not find our ICP", and never by staging unqualified handles to make
+the number look better. This is the one thing a disarmed adapter DOES stop on
+the X leg; the drip itself still runs (see Fill 4).
 
 The cross-channel bridge is usually cheaper than cold discovery: bio links on IG
 and LinkedIn leads already in ICP often carry the X handle.
@@ -360,15 +403,32 @@ Alfonso's explicit one-target commands only.
 ## The daily split: who does what
 
 **The morning pipeline run (Fill 4)** stages the queue: source and skip-check
-handles, probe `messageAvailable`, read a real recent post and author
-`data.x_comment` about it (and `data.x_dm` from an approved draft), then upsert
-with `channel "x"`, `externalId` = the handle lowercased, `data.x_username`,
-`data.x_comment_post_url`, `data.x_comment_post_at`, `x_state: "to_touch"`,
-`nextActionAt` today. Restage anything carrying `data.x_comment_needs_fresh` in
-the same pass. Drip
+handles, run `view_x_profile` for liveness AND `messageAvailable` in one call,
+**drop every candidate the liveness gate fails** (see below), then read a real
+recent post and author `data.x_comment` about it (and `data.x_dm` from an
+approved draft), then upsert with `channel "x"`, `externalId` = the handle
+lowercased, `data.x_username`, `data.x_comment_post_url`,
+`data.x_comment_post_at`, `x_state: "to_touch"`, `nextActionAt` today. Restage
+anything carrying `data.x_comment_needs_fresh` in the same pass. Drip
 pace is ~5 leads a tick and 40 a run, so a couple dozen due leads keeps it fed
-without flooding it. Report cap vs staged vs sent, and report a zero with its
-denominator.
+without flooding it. Report cap vs staged vs sent, report dormant-skipped and
+liveness-unknown as their own counts, and report a zero with its denominator.
+
+**The liveness keys, on the lead and on a skipped candidate alike.** These are
+the keys the 2026-08-27 audit stamped on the six dormant leads already in the
+pool, so a run reads and writes the same three:
+
+| Key | What goes in it |
+|---|---|
+| `data.x_last_post_at` | the newest OWN post's timestamp, ISO, off `lastPostAt` — null when `timelineRead` was false |
+| `data.x_last_post_checked_at` | when this probe ran, ISO. A stamp older than a week is not evidence about today |
+| `data.x_account_dormant` | `true` when `lastPostAgeDays` is past the comment window; `false` once a re-probe finds a fresh post |
+
+A lead carrying `data.x_account_dormant: true` is NOT due: leave it out of the
+staged queue and off `nextActionAt` until a re-probe clears it. Clearing it is a
+fresh `view_x_profile` read, not a manual edit — that is the same
+restage-to-unblock shape `data.x_comment_needs_fresh` uses, and for the same
+reason: the flag describes what was seen, so only a new look changes it.
 
 **The `tribed-daily-x` scheduled task** does NOT stage and does NOT send
 outbound. It runs reply triage: read the inbox including the requests tray, take

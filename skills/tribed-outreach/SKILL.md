@@ -2,7 +2,7 @@
 name: tribed-outreach
 description: Tribed's full Instagram, LinkedIn, and cold-email outreach for wellness, fitness, coaching, and creator prospects. Covers IG cold DMs, reply and objection handling, follow-up sequences, LinkedIn connection notes and InMail, post-demo booking, cold email and email sequences, and the daily cross-channel pipeline (LinkedIn via our own LinkedIn MCP, ICP filtering, review-queue drafting, tracker-driven follow-ups). Use for any Tribed outreach: a cold DM, connection note, InMail, cold email, bump, follow-up, objection handling, booking the walkthrough call, or running/queueing the daily pipeline. Trigger even when the user just pastes a profile screenshot, since the default intent is a first-touch message. Handles English, River Plate Spanish, and neutral Latin American Spanish, picked from the profile or the reply.
 metadata:
-  version: 1.9.0
+  version: 1.10.0
 ---
 
 # Tribed Outreach — Full Workflow
