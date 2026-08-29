@@ -80,6 +80,8 @@ Five tools, all on `accountId "digital_university"` (the dashboard of record):
 
 The run's self-approval is deliberately narrow, and the server enforces it rather than trusting the prompt. `approve_outreach_draft` covers LinkedIn connection notes and nothing else, only from `pending`, only with a real anchor and a real note inside LinkedIn's length limit, and only within the daily cap. Rejection stays broader on purpose: a run rejecting its own draft can only ever mean less outreach goes out. What a run can never do is override a person — it cannot resurrect a rejected draft, and it cannot un-approve or re-write one a human signed off on. If you find yourself wanting to widen the approve path (another kind, a held draft, a bigger cap), that is a decision for Alfonso, not a workaround to code around.
 
+**Queue hygiene — a pending draft has a shelf life.** The queue is a ship gate, not cold storage: copy is written to be sent within days of the profile read that produced it. Every daily run, list `pending` and `held` drafts and age them by `createdAt`. Anything older than 7 days is stale — the anchor may no longer be true, the signal window has closed, and a superseding draft may exist on another channel. For each stale draft: re-verify the anchor against the live profile and re-queue fresh copy if the lead is still worth working, or `reject_outreach_draft` with the reason ("stale, anchor from 2026-08-11 sourcing pass, superseded by ig_dm draft"). A draft superseded by the same lead's draft on another channel (the channel-switch flow writes a new one) is rejected immediately, whatever its age. This rule exists because on 2026-08-29 the queue held 39 pending drafts, 26 of them 2+ weeks old, including 3 x_dm drafts for leads that had already been moved to Instagram — dead weight that read as "39 need approval" in every status report.
+
 ## Job A — personalize a lead
 
 For each in-ICP lead:
@@ -97,6 +99,8 @@ For each in-ICP lead:
 
 ## Job B — the ICP filter (run before personalizing new leads)
 
+**Source wide, keep narrow.** When sourcing a fresh batch, collect 2-3x more candidates than the day needs and let the gates below cull; a thin source list tempts the run into keeping borderline leads to fill quota, and a borderline lead costs the same send slot as a great one. Before any candidate is upserted, dedupe against the tracker by publicId AND by name (the dedupe tool misses duplicates, so this check is manual: `list_outreach_leads` search on both) — a duplicate lead double-messages a real person.
+
 Filter on real audience signal, not role or industry fit:
 
 1. Collect the batch's `li_username`s (publicIdentifiers).
@@ -110,6 +114,9 @@ Filter on real audience signal, not role or industry fit:
    - a post within the last 30 days to comment on — day 0 of the stacked sequence needs one;
    - a usable rule-zero anchor already in hand.
    Write the tier in the same `update_outreach_lead`/upsert that records the ICP verdict, with the evidence beside it (e.g. `data.icp_tier_evidence: "14k followers, sells 'Strong After 40', posted 3d ago"`). When in doubt, standard: a wrongly-perfect lead spends a paid InMail credit, a wrongly-standard one just gets the normal sequence.
+6. **The activity gate (every channel, before any first touch).** A qualifying audience attached to a dead account is not a lead. Check the last post date on the channel the touch will use: no post in the last 60 days means no first touch on that channel — park the lead with `data.activity: "dormant <channel> since <date>"` and either switch channels (if another one is alive) or drop it. This gate exists because the whole X pool (6 leads) was staged and drafted while every account had been silent for months to years; `view_x_profile` and the sourcing pass never checked recency, and the drafts aged in the queue instead of shipping. Recency is read from the same profile scrape that feeds the anchor, so it costs nothing extra.
+7. **Capture the timing signal, not just the fit.** While reading the profile for the anchor, look for a "why now": an open cohort or enrollment window, a program or book just launched, a podcast tour, a stated platform frustration. Record it as `data.signal` with `data.signal_date` (when the signal was observed). A signal is not required to keep a lead — audience fit alone still qualifies — but when the day's ramp has fewer slots than there are ready leads, signal-carrying leads go first, and the message's anchor should BE the signal ("sign-ups for 2.0 are open right now..."), because a touch that lands inside their launch window converts the same effort better.
+8. **Stamp the verdict so it can age.** Every keep/out verdict gets `data.icp_checked_at` (ISO date) written in the same upsert, next to the evidence that produced it (`data.icp_evidence`, same shape as `icp_tier_evidence`). Follower counts, offers and activity all drift; a verdict older than ~90 days is a candidate for a re-check before the lead is worked, not a fact.
 
 ## The InMail escalation (perfect tier only)
 

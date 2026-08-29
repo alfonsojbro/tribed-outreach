@@ -2,7 +2,7 @@
 name: tribed-outreach
 description: Tribed's full Instagram, LinkedIn, and cold-email outreach for wellness, fitness, coaching, and creator prospects. Covers IG cold DMs, reply and objection handling, follow-up sequences, LinkedIn connection notes and InMail, post-demo booking, cold email and email sequences, and the daily cross-channel pipeline (LinkedIn via our own LinkedIn MCP, ICP filtering, review-queue drafting, tracker-driven follow-ups). Use for any Tribed outreach: a cold DM, connection note, InMail, cold email, bump, follow-up, objection handling, booking the walkthrough call, or running/queueing the daily pipeline. Trigger even when the user just pastes a profile screenshot, since the default intent is a first-touch message. Handles English, River Plate Spanish, and neutral Latin American Spanish, picked from the profile or the reply.
 metadata:
-  version: 1.10.0
+  version: 1.11.0
 ---
 
 # Tribed Outreach — Full Workflow
@@ -132,6 +132,8 @@ No em dashes. No bullet points or lists inside a message. No call ask before the
 ## ICP (who we keep)
 
 Tribed's ICP is a coach/creator/expert who already has an **audience** — someone whose body of work could become a branded app people actually use. Not just anyone interested in coaching or teaching. On LinkedIn the practical bar is: **2,000+ followers OR a creator/influencer flag on their profile.** Everyone below that with no creator flag is out of ICP and should not be worked. See references/pipeline.md for how to enforce this on a batch of prospects.
+
+Two more gates ride along with the audience bar (details in references/pipeline.md, Job B): **activity** — no first touch on a channel where the prospect hasn't posted in 60 days, a big dormant account is not a lead on that channel — and **timing signal** — while reading the profile, capture any "why now" (open enrollment, fresh launch, stated platform pain) as `data.signal`; when send slots are scarce, signal-carrying leads go first and the signal becomes the anchor.
 
 ## Price reference
 
