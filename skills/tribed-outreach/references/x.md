@@ -71,22 +71,38 @@ invisible to the drip until the fields are backfilled — do that on the next ru
 
 Two consequences follow from the table, and neither is obvious:
 
-**1. The drip has no health gate.** `runXDrip` never calls
-`get_x_session_account_health`, never reads `caps`, and never checks
-`browserAdapterReady`. **A disarmed session worker does not stop the drip.** Its
-only pacing is its own constants: 5 leads per tick, 40 per run, a 25% tick skip,
-shuffled lead order, a 20–90s pause between leads, inside the send window. So
-"the X rail is disarmed" is only ever a statement about the browser rail — never
-report it as the X leg being down.
+**1. The drip had no health gate. FIXED 2026-08-25.** `runXDrip` now reads
+`xWorker.readAccountCaps(X_DRIP_SESSION_ACCOUNT)` — the same `/health` behind
+`get_x_session_account_health` — before it spends anything, and:
+
+- an unreadable ledger **throws** (the job runner logs and alerts); it never
+  guesses a cap;
+- `enabled`, `armed`, `browserAdapterReady` and `sessionStatus` all have to be
+  open, and a gate `/health` did not report counts as closed. **A disarmed
+  session worker now stops the drip too**, so "the X rail is disarmed" is a
+  statement about BOTH rails;
+- comments charge `caps.reply`, follows `caps.follow`, DMs `caps.dm`, each
+  capped at its own `remainingToday`, and the run **stops** on the class that
+  runs out rather than skipping past the lead — leads behind the cut keep their
+  `nextActionAt` and are retried whole.
+
+Its human-cadence constants (5 leads per tick, 40 per run, a 25% tick skip,
+shuffled order, a 20–90s pause between leads, inside the send window) still
+apply on top; the ledger is the ceiling, not a replacement.
 
 **2. Both rails drive the same real account. Settled 2026-08-25 — do not
 re-derive.** The session worker's `x-accounts.json` gives account
 `digital_university` an `expectedHandle` of `alfonsojbro`. Firestore holds
 exactly ONE `XConnection` document: its id is `tribed` and its `username` is
-`alfonsojbro`. Same handle, both rails. So the drip's writes and the session
-`caps` are two ledgers over one real-world budget, and **neither can see the
-other** — the drip charges nothing against `caps.reply`, `caps.follow` or
-`caps.dm`.
+`alfonsojbro`. Same handle, both rails. The drip now spends inside the session
+`caps` (above), but the metering is **one-way**: `remainingToday` is ADVISORY.
+The worker charges its counters at reservation inside its own action endpoints,
+and there is no reservation endpoint the drip can call — its writes go out on
+the OAuth API and never pass through the worker, so nothing the drip spends is
+ever visible in `usage.*`. Each rail reads the same snapshot and neither sees
+the other's spend. **Until a reserve endpoint exists, the two rails must not
+write on the same UTC day** (the day is the worker's `usage.date`, surfaced as
+`caps.day`, not the drip process's).
 
 ### The arithmetic
 
@@ -110,6 +126,10 @@ Those ramp figures are the real `/health` reading on 2026-08-25 for a session
 and the drip's WRITE steps stay off until the drip reads it and charges against
 it.** Plan every X number off `get_x_session_account_health`, and only that.
 
+Implemented 2026-08-25 (`mcp/src/repos/xDrip.ts`). The remaining condition is
+operational, not code: the rails share a snapshot they cannot reserve against,
+so they must not both write on the same UTC day.
+
 Not "lower `MAX_LEADS_PER_RUN`": a smaller unmetered number is still unmetered,
 and it still runs on a rail with no warmup ramp, no action gap and no proxy. Not
 "session rail to reads only" either — the session rail is the one carrying the
@@ -121,6 +141,13 @@ its reads AND its metered writes; the drip is the one that has to earn its.
 Treat a like as riding with its comment: one reply charge, one action.
 
 ### The drip has never actually shipped, and it is inert BY ACCIDENT
+
+There are now THREE ids, and they are three namespaces: `X_DRIP_ACCOUNT` is the
+lead pool (`Outreach/{id}/leads`), `X_DRIP_CONNECTION` the OAuth token
+(`XConnection/{id}`), `X_DRIP_SESSION_ACCOUNT` the session worker whose ledger
+meters the rail (`X_WORKERS[{id}]`). The last two default to `X_DRIP_ACCOUNT`.
+Today the session account and the pool happen to hold the same string; that is a
+coincidence of naming, not one identifier.
 
 `X_DRIP_ENABLED=true` and `X_DRIP_DM_ENABLED=true` on mcp-ops, with
 `X_DRIP_ACCOUNT=digital_university`. But the OAuth token lives at
@@ -376,7 +403,8 @@ section described a pin the code did not read: `xDrip.ts` called
 `x.latestPostFor` and replied under whatever was newest, and no file in
 `NobleAdmin/mcp/src` mentioned `x_comment_needs_fresh`. The pin, the block, the
 authorship check (free — the X post read returns `author_id`) and the 7-day
-window are real now, covered by `mcp/src/repos/xDrip.test.ts`.
+window are real now, covered by `mcp/src/repos/xDrip.test.ts`
+(`npm run test:x-drip`). Change this section and that file together.
 
 ## DM copy
 
@@ -384,6 +412,22 @@ Same rules as the IG cold DM (references/instagram.md): the named app, the
 gift-first hook, rule zero in line one, no self-introduction paragraph, max two
 short paragraphs. Use the same format library (`aida` / `pas` / `bab` /
 `reveal`) and tag the format on the lead.
+
+**Anchor the DM on their METHOD, not on a post** (Alfonso, 2026-08-27). The
+comment is pinned to one post; the DM is not, and must never be. Write it about
+what they teach and who they teach it to — the named program, the population,
+the promise — because that is what an app would be built around and it is what
+they recognise as theirs.
+
+This is a durability property, not a style note. Post-anchored copy rots: the
+post ages, the pin goes stale, and a dormant profile has nothing to anchor to at
+all. Method-anchored copy does not age, so the DM leg stays workable on a lead
+whose comment leg is already gated out. That is exactly the case in the current
+pool — every staged lead is dormant on X, yet @susanceklosky, @fitwjenn and
+@MissCGough all still show `messageAvailable: true`.
+
+The rest of the DM rules are unchanged, and the two that get broken most are:
+still no link in a cold opener, ever, and still no self-introduction paragraph.
 
 X-specific: keep it shorter than the IG equivalent. The DM lands in a narrow
 column and a wall of text reads as automation. Two or three sentences is plenty.
