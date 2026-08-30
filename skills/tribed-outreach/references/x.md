@@ -149,14 +149,32 @@ Staging X leads on `tribed` is not the answer either: the outreach tools throw o
 it (`RETIRED_OUTREACH_ACCOUNTS`, merged into `digital_university`), and a split
 pool would stop an X lead deduping against the same person's LI or IG lead.
 
-**The identifier is now split (branch, not deployed).** `X_DRIP_ACCOUNT` keys the
-lead pool only; the new `X_DRIP_CONNECTION` keys the OAuth token and defaults to
-`X_DRIP_ACCOUNT`. Set `X_DRIP_ACCOUNT=digital_university` and
-`X_DRIP_CONNECTION=tribed`. A missing token now THROWS instead of ticking null,
-so the job runner logs and alerts rather than looking idle. That fixes the
-plumbing and nothing else — it does not make the drip safe to run, and shipping
-it alone would arm an unmetered rail at ~37 leads/day against a one-day-old
-session. Before the drip writes again, all three:
+**The identifier split is MERGED AND DEPLOYED (verified 2026-08-30).** `X_DRIP_ACCOUNT`
+keys the lead pool only; `X_DRIP_CONNECTION` keys the OAuth token and
+`X_DRIP_SESSION_ACCOUNT` keys the worker ledger, both defaulting to
+`X_DRIP_ACCOUNT`. The code landed in `e11fd6e` (2026-08-27) and the running Fly
+image (deploy 2026-08-29 10:57Z) contains it, so the split is live in prod and
+only the env values are missing. A missing token now THROWS instead of ticking
+null, so the job runner logs and alerts rather than looking idle.
+
+**What is still unset, and why setting it alone is the wrong move.** `flyctl
+config env` on tribed-mcp shows `X_DRIP_ACCOUNT`, `X_DRIP_ENABLED` and
+`X_DRIP_DM_ENABLED` set, and **no `X_DRIP_CONNECTION`** — so it still defaults to
+the lead-pool id and the preflight still fails. The one-line plumbing fix is
+`X_DRIP_CONNECTION=tribed`. But `X_DRIP_ENABLED` is ALREADY true, so setting the
+connection on its own is precisely the deploy that turns the rail on, which is
+what precondition 1 below exists to prevent. Disable first, then split, then
+decide day-ownership; never in the other order.
+
+**Verified live state 2026-08-30** (so the next session does not re-derive it):
+`XConnection/tribed` is connected as `@alfonsojbro`, scopes include `dm.write`,
+`tweet.write`, `like.write`, `stale: false`. `XConnection/digital_university`
+returns `connected: false`. The session worker's gates are ALL open (`enabled`,
+`armed`, `sessionStatus: "active"`, `browserAdapterReady: true`) with caps
+dm 3 / follow 5 / reply 4 on a 6-day-old warmup. So precondition 2 is MET in
+code and in live state; precondition 3 is the only one still genuinely open.
+
+Before the drip writes again, all three:
 
 1. `X_DRIP_ENABLED=false` on mcp-ops, so "off" is a decision and not a typo —
    do this BEFORE deploying the `X_DRIP_CONNECTION` split, or the deploy itself
@@ -330,8 +348,11 @@ comment, no follow, no DM) and left due, carrying
 non sequitur where nobody can see it, which is worse than a skip.
 
 **A pin goes stale in 7 days** (`X_DRIP_COMMENT_MAX_AGE_DAYS`), checked against
-the staged `x_comment_post_at` first (free) and then against X's own
-`created_at`. Past the window the lead is skipped as needing fresh copy: the
+the staged `x_comment_post_at` first (free, no API call) and then against X's own
+`created_at`, which wins. An absent `created_at` fails the window the same as an
+old one. This is the ONLY post-age number: the separate 30-day ceiling on
+"whatever is newest" (`X_DRIP_COMMENT_MAX_POST_AGE_DAYS`) is retired, because
+with a pin there is only one post whose age matters. Past the window the lead is skipped as needing fresh copy: the
 author has moved on and a reply under that post reads as scraping. Stage
 same-day and let the drip send same-day.
 
@@ -341,10 +362,21 @@ actionable again as soon as it is pinned to a DIFFERENT post. Sweep for
 `data.x_comment_needs_fresh`, read a current post, write new copy plus the new
 `x_comment_post_url` / `x_comment_post_at`. No flag to reset.
 
-**Legacy leads** staged with `x_comment` and no pinned post keep the old
-latest-post behaviour, so nothing already queued broke. The tick summary counts
-them (`N on legacy latest-post targeting`) — a backlog to drain by restaging
-them with a post, not a mode to keep using.
+**Legacy leads** staged with `x_comment` and no pinned post are BLOCKED, not
+sent against the latest post (Alfonso, 2026-08-30). Missing pin fields are a
+block reason like a deleted post is: the lead is skipped whole, stamped
+`x_comment_needs_fresh`, and counted in the tick summary under `N blocked on a
+stale or unusable pinned post (restage)`. Copy staged before the pin existed was
+written with no post in mind — that IS the consultant-voice essay the pin was
+invented to kill — so putting it under an arbitrary post is the non sequitur the
+fail-closed rule exists to prevent. Restage them like any other block.
+
+**Implemented 2026-08-30, documented since 2026-08-25.** For five days this
+section described a pin the code did not read: `xDrip.ts` called
+`x.latestPostFor` and replied under whatever was newest, and no file in
+`NobleAdmin/mcp/src` mentioned `x_comment_needs_fresh`. The pin, the block, the
+authorship check (free — the X post read returns `author_id`) and the 7-day
+window are real now, covered by `mcp/src/repos/xDrip.test.ts`.
 
 ## DM copy
 
