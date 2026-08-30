@@ -506,6 +506,35 @@ fresh `view_x_profile` read, not a manual edit — that is the same
 restage-to-unblock shape `data.x_comment_needs_fresh` uses, and for the same
 reason: the flag describes what was seen, so only a new look changes it.
 
+**Stamping the flag does not park the lead. Fill 4 has to write the park
+(Alfonso, 2026-08-30).** The three keys above are a record of what a probe saw;
+the drip reads none of them. So a lead already in the tracker that re-probes
+dormant is parked explicitly, in the same pass, with four writes together:
+`data.x_state: "done"`, `nextActionAt` cleared (`log_outreach_touch` with
+`clearNextAction: true`), a touch note with `automated: true` naming the probe
+date and the `lastPostAt` it read, and a refreshed
+`data.x_last_post_checked_at` beside `data.x_last_post_at` and
+`data.x_account_dormant: true`. Keep it `automated: true`: the rail is retiring
+its own lead, and a dormant profile is nothing for a human to action either.
+Unparking is the whole set or nothing — `data.x_account_dormant: false`, fresh
+`data.x_comment` with its pinned `data.x_comment_post_url` +
+`data.x_comment_post_at`, `data.x_state` back to `"to_touch"`, and a new
+`nextActionAt` — and only a probe that actually found a fresh post may write
+it. Full step and the worked example: pipeline.md, Fill 4.
+
+**`"done"` is the ONLY value that parks an X lead.** `isXDripActionable`
+(`mcp/src/repos/xDrip.ts:180`) reads exactly
+`if ((data.x_state || "to_touch") === "done") return false;`. An invented state
+— `"dormant"`, `"parked"`, `"human"`, `"skip"` — is not a park: the lead stays
+actionable, keeps its `nextActionAt`, and squats at the head of the due set
+spending a slot every tick. Do not carry the LinkedIn habit across, because it
+is the opposite shape: `li_state` whitelists the drip's own states so anything
+else parks, while `x_state` blacklists one value so everything else works. On
+2026-08-30 lead `Jb3EG9GEdMZrAY1u7gcg` (@youbfit) held
+`data.x_account_dormant: true` AND `data.x_comment_needs_fresh: true` AND
+`data.x_state: "to_touch"` with that day's `nextActionAt`: it was the entire due
+X queue, and the drip failed on it two runs running until it was parked by hand.
+
 **The `tribed-daily-x` scheduled task** does NOT stage and does NOT send
 outbound. It runs reply triage: read the inbox including the requests tray, take
 repliers off automation, draft Mode 2 replies for Alfonso, and refresh
