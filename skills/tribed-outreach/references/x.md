@@ -6,6 +6,41 @@ allergic to polish than IG — a message that reads like marketing dies on sight
 Read the rail split below before anything else. It decides which tools you are
 allowed to call and which safety rule applies to which action.
 
+## THE PUBLIC COMMENT LEG IS DEAD — platform ban, not our bug (2026-08-30)
+
+X restricted programmatic replies at the platform level: `POST /2/tweets` with
+a reply reference returns **403 not-authorized-for-resource** ("You can only
+reply to or quote posts where you are mentioned or are the author") unless the
+post's author has @mentioned or quoted the replying account first. It applies
+to **Free, Basic, Pro AND Pay-Per-Use** — every tier we can buy; only
+Enterprise is exempt. Announced by @XDevelopers
+(x.com/XDevelopers/status/2026084506822730185, "X API v2 Update: Addressing
+LLM-Generated Spam" on devcommunity.x.com). No scope, no reconnect, no
+purchasable upgrade changes it. The receipt: the drip's live attempts on
+@youbfit (lead Jb3EG9GEdMZrAY1u7gcg, digital_university) 403'd identically on
+2026-08-28 and 2026-08-29 with `tweet.write` present and the pin resolved.
+
+The browser rail's `reply_x_post_session` stays banned separately (unverified
+path; its canary failed). So between the two rails there is NO working public
+comment, and **the X outbound leg is follow + DM, full stop.**
+
+What this retired, all removed from `xDrip.ts` on 2026-08-30:
+
+- the comment step, the warm like that rode with it, and the `caps.reply`
+  charge;
+- the whole pinned-post machinery: `data.x_comment`, `x_comment_post_url` /
+  `x_comment_post_id` / `x_comment_post_at`, `x_comment_needs_fresh` /
+  `_block_reason` / `_blocked_post_id`. These fields are now INERT on a lead —
+  the drip never reads them, an old pin block no longer keeps a lead out of
+  the queue, and Fill 4 must stop staging them;
+- the 7-day comment window as a hard liveness gate on staging. Liveness is
+  still an ICP-quality signal (a dormant account reads nothing), but it no
+  longer blocks the touch, because there is no comment to pin.
+
+Comment-shaped warmth, if wanted at all, is a HUMAN action in the X app on
+Alfonso's phone — never a tool call. Do not re-derive this monthly: check the
+dated announcement above before assuming X has relaxed it.
+
 ## Two rails, two engines, one account
 
 X outreach runs on TWO independent rails. They act as the SAME X account —
@@ -19,8 +54,8 @@ deliberately-empty one.
 | Code | `mcp/src/repos/xDrip.ts` → `repos/x.ts` | `mcp/src/repos/xWorker.ts` (`x-worker/`) |
 | Engine | X **API v2 over OAuth** (`XConnection`) | logged-in **Playwright browser** |
 | Runs | hourly job, unattended, 13–23 UTC | only when a run or operator calls a tool |
-| Public comment | `x.createComment` → `POST /2/tweets`, under the PINNED post | `reply_x_post_session` |
-| Like | `x.reactToPost` | — |
+| Public comment | **DEAD** — X 403s API replies on every buyable tier (see top) | **banned** (`reply_x_post_session` unverified) |
+| Like | retired with the comment leg | — |
 | Follow | `x.followUser` | `follow_x_profile_session` |
 | DM | `x.sendDm` (needs `X_DRIP_DM_ENABLED`) | `ship_x_outreach_draft` / `send_x_dm_session` |
 | Reads the DM inbox | **cannot** | `read_x_session_inbox` |
@@ -29,11 +64,9 @@ deliberately-empty one.
 | Cap ledger | **none** (must borrow the worker's — see below) | `get_x_session_account_health` → `caps` |
 | Gate | `X_DRIP_ENABLED` only | `caps.gates.browserAdapterReady`, `sessionStatus` |
 
-**The drip owns the daily outbound leg** by design, as of 2026-08-24 — though
-as of 2026-08-25 it has never actually shipped a touch; see "What the split
-actually costs you". Like, public comment, follow, and — when
-`X_DRIP_DM_ENABLED` is on — the DM all ship from the drip, off copy the morning
-run staged onto the lead. Staging it is **Fill 4 in
+**The drip owns the daily outbound leg** by design, as of 2026-08-24. The leg
+is the follow and — when `X_DRIP_DM_ENABLED` is on — the DM, off copy the
+morning run staged onto the lead. Staging it is **Fill 4 in
 references/pipeline.md**, and that is the only place the outbound X leg is
 driven from now.
 
@@ -43,29 +76,21 @@ cannot tell you whether a stranger accepts DMs at all. `read_x_session_inbox`
 and `view_x_profile` are the whole reason the browser rail still exists. That is
 why the rail is **reduced to reply triage and probing**, not retired.
 
-## The reply ban covers `reply_x_post_session` ONLY
+## Both reply paths are now closed (history of the two bans)
 
 `reply_x_post_session` drives the browser: it opens the post, types into the
-reply box, and clicks. **That path has never been verified against live X** (as
-of 2026-08-25, only the follow path and the DM pre-click guard are). Do not call
-it. Do not post a public reply through the session worker. A human lifts this
-once the path is verified on the canary.
+reply box, and clicks. That path was never verified against live X and its
+canary failed. Do not call it.
 
-**The drip's public comment is a different engine and is NOT under the ban.**
-`data.x_comment` is posted by `x.createComment`, an authenticated
-`POST https://api.x.com/2/tweets` carrying a reply reference, on the OAuth
-connection. No browser, no selectors, no `x-worker`, no `browserAdapterReady`.
-The codebase says so in its own tool description: `reply_x_post_session` is
-documented as "distinct from `comment_on_x_post`, which replies AS a coach's
-connected account via the API". Nothing about the unverified browser reply
-applies to the drip.
+The drip's API comment (`x.createComment` → `POST /2/tweets` with a reply
+reference) was a different engine and was briefly believed workable — until X
+closed it platform-wide (top section). Between 2026-08-25 and 2026-08-30 this
+file said the API leg was open; the two days of live 403s proved otherwise.
 
-**So Fill 4 staging is NOT on hold.** Stage X leads with `x_state: "to_touch"`,
-`nextActionAt` today, `data.x_comment` and its pinned post
-(`data.x_comment_post_url` + `data.x_comment_post_at`), normally. The 2026-08-25 run withheld
-`x_state` and `nextActionAt` from its 6 new channel-`"x"` leads because it read
-the reply ban as covering the drip. That reading was wrong, and those leads are
-invisible to the drip until the fields are backfilled — do that on the next run.
+**Fill 4 staging is NOT on hold — it just stages less.** Stage X leads with
+`x_state: "to_touch"`, `nextActionAt` today, and (for DM-workable leads) an
+approved `data.x_dm`. Do NOT stage `data.x_comment` or its pin fields any
+more; the drip ignores them.
 
 ## What the split actually costs you
 
@@ -81,10 +106,10 @@ Two consequences follow from the table, and neither is obvious:
   open, and a gate `/health` did not report counts as closed. **A disarmed
   session worker now stops the drip too**, so "the X rail is disarmed" is a
   statement about BOTH rails;
-- comments charge `caps.reply`, follows `caps.follow`, DMs `caps.dm`, each
-  capped at its own `remainingToday`, and the run **stops** on the class that
-  runs out rather than skipping past the lead — leads behind the cut keep their
-  `nextActionAt` and are retried whole.
+- follows charge `caps.follow` and DMs `caps.dm`, each capped at its own
+  `remainingToday` (`caps.reply` is no longer charged — no comment leg), and
+  the run **stops** on the class that runs out rather than skipping past the
+  lead — leads behind the cut keep their `nextActionAt` and are retried whole.
 
 Its human-cadence constants (5 leads per tick, 40 per run, a 25% tick skip,
 shuffled order, a 20–90s pause between leads, inside the send window) still
@@ -108,17 +133,17 @@ write on the same UTC day** (the day is the worker's `usage.date`, surfaced as
 
 `MAX_LEADS_PER_RUN` (40) is the page size, not the spend. The spend is
 `MAX_LEADS_PER_TICK` (5) times the ticks that fire: a 13–23 UTC window is 10
-hourly ticks and ~25% sit out, so **up to ~37 leads a day** — each one a like, a
-public comment, a follow, and (DM step on) a DM.
+hourly ticks and ~25% sit out, so **up to ~37 leads a day** — each one a
+follow and (DM step on, copy staged) a DM.
 
-| per day | drip, if it ran | session ramp, week one | ratio |
+| per day | drip, unmetered | session ramp, week one | ratio |
 |---|---|---|---|
-| replies | ~37 | 5 | ~7x |
 | follows | ~37 | 6 | ~6x |
 | DMs | ~37 | 3 | ~12x |
 
 Those ramp figures are the real `/health` reading on 2026-08-25 for a session
-**one day old**. The drip does not know they exist.
+**one day old**. The drip now reads them per tick and stops on the class that
+runs out; the page-size ceiling is just the queue's shape.
 
 ### The decision
 
@@ -138,80 +163,38 @@ safety machinery (warmup ramp, `minActionGapSeconds` 900, `minSendGapSeconds`
 careful rail to protect the careless one is backwards. The session rail keeps
 its reads AND its metered writes; the drip is the one that has to earn its.
 
-Treat a like as riding with its comment: one reply charge, one action.
+### Live status: ACTIVE as follow + DM since 2026-08-30
 
-### The drip has never actually shipped, and it is inert BY ACCIDENT
-
-There are now THREE ids, and they are three namespaces: `X_DRIP_ACCOUNT` is the
+There are THREE ids, and they are three namespaces: `X_DRIP_ACCOUNT` is the
 lead pool (`Outreach/{id}/leads`), `X_DRIP_CONNECTION` the OAuth token
 (`XConnection/{id}`), `X_DRIP_SESSION_ACCOUNT` the session worker whose ledger
 meters the rail (`X_WORKERS[{id}]`). The last two default to `X_DRIP_ACCOUNT`.
-Today the session account and the pool happen to hold the same string; that is a
+The session account and the pool happen to hold the same string; that is a
 coincidence of naming, not one identifier.
 
-`X_DRIP_ENABLED=true` and `X_DRIP_DM_ENABLED=true` on mcp-ops, with
-`X_DRIP_ACCOUNT=digital_university`. But the OAuth token lives at
-`XConnection/`**`tribed`** — there is no `XConnection/digital_university`. So the
-preflight `x.connectionStatus()` returns `connected: false` and **every tick
-returns null.** `JobRuns/x-drip` has never been written; the only line in the ops
-log is `[jobs] x-drip enabled (every 3600s)`. The 6 channel-`"x"` leads staged on
-2026-08-25 now carry `x_state: "to_touch"`, today's `nextActionAt` and
-`data.x_comment` — the backfill is done — and nothing has touched them.
+**mcp-ops env, verified on the running container 2026-08-30:**
+`X_DRIP_ENABLED=true`, `X_DRIP_DM_ENABLED=true`,
+`X_DRIP_ACCOUNT=digital_university`, `X_DRIP_CONNECTION=tribed` (set on the
+box, not on Fly — Fly runs no jobs, so its unset value is irrelevant).
+`X_DRIP_SESSION_ACCOUNT` is unset and correctly defaults to the pool id,
+which matches the worker key. The drip HAS run live: the 2026-08-28 and
+2026-08-29 touches (the @youbfit 403s, the "comment skipped" siblings) are
+its work, through the pre-pin build the box was still running.
 
-So "the drip owns the daily outbound leg" is the design, not yet the behaviour.
-Do not report drip touches you have not seen in `JobRuns/x-drip`.
+**Connection and worker, verified 2026-08-30:** `XConnection/tribed` is
+connected as `@alfonsojbro` with `tweet.write`, `dm.write`, `like.write`,
+`stale: false` — and **NO `follows.write`**: the token predates the scope
+bump. The follow is the drip's whole public touch now, so `runXDrip`
+preflights the scope and THROWS rather than marking leads done with nothing
+sent. **The one activation step left is a reconnect via `connect_x`** (Alfonso
+clicks the link; the current scope list includes `follows.write`). The worker
+gates are all open (`enabled`, `armed`, `sessionStatus: "active"`,
+`browserAdapterReady: true`), caps dm 3 / follow 5 on the warmup ramp.
 
-**And there is no value of `X_DRIP_ACCOUNT` that works today.** The one string
-is used as a key in TWO namespaces that disagree — `outreach.listLeadsPage(account)`
-for the lead pool and `x.connectionStatus(account)` for the OAuth token — and
-neither value satisfies both (counted 2026-08-25):
-
-| `X_DRIP_ACCOUNT` | x-channel leads | `XConnection` doc | result |
-|---|---|---|---|
-| `digital_university` | 6 | **missing** | preflight fails, ticks null |
-| `tribed` | **0** (retired pool) | present, `@alfonsojbro` | empty queue, ticks null |
-
-So repointing the key does not fix the drip, it just moves which half is broken.
-Staging X leads on `tribed` is not the answer either: the outreach tools throw on
-it (`RETIRED_OUTREACH_ACCOUNTS`, merged into `digital_university`), and a split
-pool would stop an X lead deduping against the same person's LI or IG lead.
-
-**The identifier split is MERGED AND DEPLOYED (verified 2026-08-30).** `X_DRIP_ACCOUNT`
-keys the lead pool only; `X_DRIP_CONNECTION` keys the OAuth token and
-`X_DRIP_SESSION_ACCOUNT` keys the worker ledger, both defaulting to
-`X_DRIP_ACCOUNT`. The code landed in `e11fd6e` (2026-08-27) and the running Fly
-image (deploy 2026-08-29 10:57Z) contains it, so the split is live in prod and
-only the env values are missing. A missing token now THROWS instead of ticking
-null, so the job runner logs and alerts rather than looking idle.
-
-**What is still unset, and why setting it alone is the wrong move.** `flyctl
-config env` on tribed-mcp shows `X_DRIP_ACCOUNT`, `X_DRIP_ENABLED` and
-`X_DRIP_DM_ENABLED` set, and **no `X_DRIP_CONNECTION`** — so it still defaults to
-the lead-pool id and the preflight still fails. The one-line plumbing fix is
-`X_DRIP_CONNECTION=tribed`. But `X_DRIP_ENABLED` is ALREADY true, so setting the
-connection on its own is precisely the deploy that turns the rail on, which is
-what precondition 1 below exists to prevent. Disable first, then split, then
-decide day-ownership; never in the other order.
-
-**Verified live state 2026-08-30** (so the next session does not re-derive it):
-`XConnection/tribed` is connected as `@alfonsojbro`, scopes include `dm.write`,
-`tweet.write`, `like.write`, `stale: false`. `XConnection/digital_university`
-returns `connected: false`. The session worker's gates are ALL open (`enabled`,
-`armed`, `sessionStatus: "active"`, `browserAdapterReady: true`) with caps
-dm 3 / follow 5 / reply 4 on a 6-day-old warmup. So precondition 2 is MET in
-code and in live state; precondition 3 is the only one still genuinely open.
-
-Before the drip writes again, all three:
-
-1. `X_DRIP_ENABLED=false` on mcp-ops, so "off" is a decision and not a typo —
-   do this BEFORE deploying the `X_DRIP_CONNECTION` split, or the deploy itself
-   is what turns the rail on.
-2. `runXDrip` calls `readAccountCaps` first; stands down on `capsError` or on
-   `gates.enabled` / `armed` / `browserAdapterReady` false; and stops each action
-   class at its `remainingToday`.
-3. Atomic reservation is a worker-side endpoint that does not exist yet, so
-   `remainingToday` is advisory only. Until it exists the two rails must not
-   write on the same UTC day — the daily leg owns the day.
+The one still-open operational rule: `remainingToday` is ADVISORY (no
+reservation endpoint on the worker), so **the two rails must not write on the
+same UTC day** — the drip owns the day; session-worker writes are for
+Alfonso's explicit one-target commands only.
 
 ## The constraint that shapes DM work: most people cannot be cold-DMed
 
@@ -226,14 +209,13 @@ So the order is always **check, then spend**:
 1. `view_x_profile({ accountId, username })` — read-only, costs no cap, never
    clicks. One call returns BOTH `messageAvailable` and the liveness fields
    (`lastPostAt`, `lastPostAgeDays`, `lastPostId`, `lastPostUrl`, `timelineRead`).
-2. **Liveness first.** `lastPostAgeDays` past the 7-day comment window, or
-   `timelineRead: false`, and the candidate does not enter the pool at all — see
-   "Discovery" below. A DM probe on a dormant profile is a question about a lead
-   that should not exist.
+2. **Liveness first.** Months-stale `lastPostAgeDays`, or `timelineRead:
+   false`, and the candidate is a poor lead — see "Discovery" below. A DM
+   probe on a dormant profile is a question about a lead that should not
+   exist.
 3. `messageAvailable: false` → **do not stage `data.x_dm` and do not queue an
-   `x_dm` draft.** The DM cannot land. Stage the lead for the drip's public
-   touch only (like + comment + follow), which is where the warming happens
-   anyway. Stamp `data.x_dm_available: false` with the date so the next run does
+   `x_dm` draft.** The DM cannot land. Stage the lead for the follow touch
+   only. Stamp `data.x_dm_available: false` with the date so the next run does
    not re-probe the same profile all week.
 4. `messageAvailable: true` → DM-workable. Queue the draft.
 
@@ -294,18 +276,18 @@ candidate before spending anything, and read THREE things off it, not one:
 | Field | Fails the candidate when |
 |---|---|
 | `exists` / `suspended` / `protected` | false / true / true — dead for outreach |
-| `lastPostAgeDays` | above 7 (`X_DRIP_COMMENT_MAX_AGE_DAYS`) — DORMANT, do not stage at all |
-| `messageAvailable` | false — not DM-workable; the public touch still is |
+| `lastPostAgeDays` | months-to-years stale — DORMANT, nobody is home to notice a follow or read a DM |
+| `messageAvailable` | false — not DM-workable; the follow still is |
 
-**Dormant is a hard skip, and it is the failure this gate exists for.** On
-2026-08-27 all six `channel "x"` leads on `digital_university` passed `exists`
-AND `messageAvailable`, and every one of them was dormant: @TilleyGeorgie last
-posted 2021-11-06 (1754 days), @its_jenny_fit 2022-12-29, @fitwjenn 2023-01-06,
-@MissCGough 2025-12-27, @susanceklosky 2026-02-16, @youbfit 2026-08-18 — and
-that last one is its only post since 2018. Not one falls inside the 7-day
-comment window, so the comment leg could not fire for a single lead in the pool.
-An account that has not posted this week has no post to pin a comment to, and
-the pinned comment is the drip's whole public touch.
+**Dormancy is an ICP-quality gate now, not a comment-window one.** With the
+comment leg platform-dead there is no post to pin, so the old 7-day hard rule
+lost its mechanical reason. What survives is the judgment call: a coach who
+has not posted in months is not selling on X, and a follow + DM lands on an
+account nobody checks. The 2026-08-27 audit is the cautionary tale — all six
+staged leads passed `exists` and `messageAvailable`, and their last posts ran
+2021 to 2026 (@TilleyGeorgie 1754 days; @youbfit's 2026-08-18 post is its only
+one since 2018). Prefer recently-active accounts; take a dormant one only when
+the method evidence is strong and say so on the lead.
 
 **Unknown is not a pass.** `timelineRead: false` — protected, suspended, or the
 timeline did not render — means the post fields are UNKNOWN, never "they do not
@@ -344,67 +326,20 @@ schema, so object inputs may not bind from some clients — use an actor-specifi
 Apify tool or the REST API with `APIFY_TOKEN`. And never let a paid scrape stand
 in for the free `view_x_profile` check.
 
-## Comment copy — react to ONE real post, and stage that post with the copy
+## Comment copy — RETIRED (2026-08-30)
 
-Changed 2026-08-25 (Alfonso: "we should reference the comment to the post, not
-the latest"). `data.x_comment` is PINNED to the post it was written about. The
-drip resolves that post and replies under it, and it never falls back to
-whatever is newest at send time. Stage three fields in the same write:
+There is no comment copy any more. X 403s programmatic replies on every
+buyable tier (top section), so `data.x_comment` and its pin fields
+(`x_comment_post_url` / `x_comment_post_id` / `x_comment_post_at`,
+`x_comment_needs_fresh` / `_block_reason` / `_blocked_post_id`) are retired:
+do not stage them, do not sweep for them, do not restage blocks. Old values
+left on leads are inert — the drip ignores them and an old pin block no
+longer keeps a lead out of the queue.
 
-| Field | What goes in it |
-|---|---|
-| `data.x_comment` | the copy, written about that one post |
-| `data.x_comment_post_url` (or `data.x_comment_post_id`) | `https://x.com/<handle>/status/<id>`, or the bare numeric id |
-| `data.x_comment_post_at` | that post's OWN timestamp, ISO, off the scrape |
-
-**This is the copy-quality fix, not just a plumbing one.** The old rule forbade
-referencing a post, so the writer had nothing to react to and reacted to the
-coach's POSITIONING instead — "naming it for menopause instead of just 'over
-40' is a real difference" — which is the consultant-voice critic essay wearing
-a disguise. Six were staged that way on 2026-08-25 and all six were rewritten by
-hand. With a post pinned, react to the post's SUBJECT: the topic, the people it
-serves, the problem. One or two phone-reply sentences on ONE thing they actually
-say, lowercase register. Never the three-beat critic essay, never "most people
-miss this", never a closing aphorism, never a verdict on their choices.
-
-**The drip fails closed on the pin.** Deleted, protected, unreachable, not
-actually theirs, or an unparseable reference: the whole lead is SKIPPED (no
-comment, no follow, no DM) and left due, carrying
-`data.x_comment_block_reason`, `data.x_comment_needs_fresh: true` and
-`data.x_comment_blocked_post_id`. There is no retarget — a silent one ships the
-non sequitur where nobody can see it, which is worse than a skip.
-
-**A pin goes stale in 7 days** (`X_DRIP_COMMENT_MAX_AGE_DAYS`), checked against
-the staged `x_comment_post_at` first (free, no API call) and then against X's own
-`created_at`, which wins. An absent `created_at` fails the window the same as an
-old one. This is the ONLY post-age number: the separate 30-day ceiling on
-"whatever is newest" (`X_DRIP_COMMENT_MAX_POST_AGE_DAYS`) is retired, because
-with a pin there is only one post whose age matters. Past the window the lead is skipped as needing fresh copy: the
-author has moved on and a reply under that post reads as scraping. Stage
-same-day and let the drip send same-day.
-
-**Unblocking is restaging, and it clears itself.** A blocked lead stays out of
-the drip's page while it is still pinned to the post it failed on, and becomes
-actionable again as soon as it is pinned to a DIFFERENT post. Sweep for
-`data.x_comment_needs_fresh`, read a current post, write new copy plus the new
-`x_comment_post_url` / `x_comment_post_at`. No flag to reset.
-
-**Legacy leads** staged with `x_comment` and no pinned post are BLOCKED, not
-sent against the latest post (Alfonso, 2026-08-30). Missing pin fields are a
-block reason like a deleted post is: the lead is skipped whole, stamped
-`x_comment_needs_fresh`, and counted in the tick summary under `N blocked on a
-stale or unusable pinned post (restage)`. Copy staged before the pin existed was
-written with no post in mind — that IS the consultant-voice essay the pin was
-invented to kill — so putting it under an arbitrary post is the non sequitur the
-fail-closed rule exists to prevent. Restage them like any other block.
-
-**Implemented 2026-08-30, documented since 2026-08-25.** For five days this
-section described a pin the code did not read: `xDrip.ts` called
-`x.latestPostFor` and replied under whatever was newest, and no file in
-`NobleAdmin/mcp/src` mentioned `x_comment_needs_fresh`. The pin, the block, the
-authorship check (free — the X post read returns `author_id`) and the 7-day
-window are real now, covered by `mcp/src/repos/xDrip.test.ts`
-(`npm run test:x-drip`). Change this section and that file together.
+The pinned-post design (2026-08-25 to 2026-08-30) lives in git history at
+`mcp/src/repos/xDrip.ts` if a working reply path ever returns. The copy-voice
+rules it carried (react to ONE thing they actually say, phone register, never
+the three-beat critic essay) still apply — to the DM below.
 
 ## DM copy
 
@@ -413,18 +348,18 @@ gift-first hook, rule zero in line one, no self-introduction paragraph, max two
 short paragraphs. Use the same format library (`aida` / `pas` / `bab` /
 `reveal`) and tag the format on the lead.
 
-**Anchor the DM on their METHOD, not on a post** (Alfonso, 2026-08-27). The
-comment is pinned to one post; the DM is not, and must never be. Write it about
-what they teach and who they teach it to — the named program, the population,
-the promise — because that is what an app would be built around and it is what
-they recognise as theirs.
+**Anchor the DM on their METHOD, not on a post** (Alfonso, 2026-08-27). Write
+it about what they teach and who they teach it to — the named program, the
+population, the promise — because that is what an app would be built around
+and it is what they recognise as theirs.
 
 This is a durability property, not a style note. Post-anchored copy rots: the
-post ages, the pin goes stale, and a dormant profile has nothing to anchor to at
-all. Method-anchored copy does not age, so the DM leg stays workable on a lead
-whose comment leg is already gated out. That is exactly the case in the current
-pool — every staged lead is dormant on X, yet @susanceklosky, @fitwjenn and
-@MissCGough all still show `messageAvailable: true`.
+post ages and a dormant profile has nothing to anchor to at all.
+Method-anchored copy does not age, so the DM leg stays workable even on a
+dormant lead — in the current pool @susanceklosky, @fitwjenn and @MissCGough
+are all long quiet yet still show `messageAvailable: true`. With the comment
+leg platform-dead, the DM is the only place copy ships at all, so these rules
+carry the whole weight of the touch.
 
 The rest of the DM rules are unchanged, and the two that get broken most are:
 still no link in a cold opener, ever, and still no self-introduction paragraph.
@@ -480,15 +415,14 @@ Alfonso's explicit one-target commands only.
 
 **The morning pipeline run (Fill 4)** stages the queue: source and skip-check
 handles, run `view_x_profile` for liveness AND `messageAvailable` in one call,
-**drop every candidate the liveness gate fails** (see below), then read a real
-recent post and author `data.x_comment` about it (and `data.x_dm` from an
-approved draft), then upsert with `channel "x"`, `externalId` = the handle
-lowercased, `data.x_username`, `data.x_comment_post_url`,
-`data.x_comment_post_at`, `x_state: "to_touch"`, `nextActionAt` today. Restage
-anything carrying `data.x_comment_needs_fresh` in the same pass. Drip
-pace is ~5 leads a tick and 40 a run, so a couple dozen due leads keeps it fed
-without flooding it. Report cap vs staged vs sent, report dormant-skipped and
-liveness-unknown as their own counts, and report a zero with its denominator.
+prefer candidates the liveness read favors (see below), stage `data.x_dm`
+from an approved draft for DM-workable leads, then upsert with `channel "x"`,
+`externalId` = the handle lowercased, `data.x_username`, `x_state:
+"to_touch"`, `nextActionAt` today. No `data.x_comment` and no pin fields —
+the comment leg is dead (top section). Drip pace is ~5 leads a tick and 40 a
+run, so a couple dozen due leads keeps it fed without flooding it. Report cap
+vs staged vs sent, report dormant-skipped and liveness-unknown as their own
+counts, and report a zero with its denominator.
 
 **The liveness keys, on the lead and on a skipped candidate alike.** These are
 the keys the 2026-08-27 audit stamped on the six dormant leads already in the
@@ -498,42 +432,38 @@ pool, so a run reads and writes the same three:
 |---|---|
 | `data.x_last_post_at` | the newest OWN post's timestamp, ISO, off `lastPostAt` — null when `timelineRead` was false |
 | `data.x_last_post_checked_at` | when this probe ran, ISO. A stamp older than a week is not evidence about today |
-| `data.x_account_dormant` | `true` when `lastPostAgeDays` is past the comment window; `false` once a re-probe finds a fresh post |
+| `data.x_account_dormant` | `true` when the profile reads long-quiet (months stale); `false` once a re-probe finds a fresh post |
 
-A lead carrying `data.x_account_dormant: true` is NOT due: leave it out of the
-staged queue and off `nextActionAt` until a re-probe clears it. Clearing it is a
-fresh `view_x_profile` read, not a manual edit — that is the same
-restage-to-unblock shape `data.x_comment_needs_fresh` uses, and for the same
-reason: the flag describes what was seen, so only a new look changes it.
+**These keys are a gate again, and the DRIP is what enforces it (2026-08-31).**
+The 7-day comment window died with the comment leg, but the keys did not: the
+drip reads `data.x_account_dormant` and `data.x_last_post_at` at send time and
+PARKS the lead rather than following and DMing it — `data.x_state: "done"`,
+`nextActionAt` cleared, an `automated: true` note naming the age it read, and
+`data.x_dormant_parked_at` stamped. The tick summary counts it as
+`N parked as dormant`. The threshold is the drip's own,
+`X_DRIP_DORMANT_MAX_AGE_DAYS`, default **30 days** — not 7. A follow and a DM do
+not care how recently the person posted; the only question is whether anybody is
+home to read the DM, so a fortnight of quiet is still worth the touch and three
+months is not. This exists because a lead that went quiet after it was staged
+used to keep its `nextActionAt` forever: @youbfit was the entire due X queue on
+2026-08-30 in that shape.
 
-**Stamping the flag does not park the lead. Fill 4 has to write the park
-(Alfonso, 2026-08-30).** The three keys above are a record of what a probe saw;
-the drip reads none of them. So a lead already in the tracker that re-probes
-dormant is parked explicitly, in the same pass, with four writes together:
-`data.x_state: "done"`, `nextActionAt` cleared (`log_outreach_touch` with
-`clearNextAction: true`), a touch note with `automated: true` naming the probe
-date and the `lastPostAt` it read, and a refreshed
-`data.x_last_post_checked_at` beside `data.x_last_post_at` and
-`data.x_account_dormant: true`. Keep it `automated: true`: the rail is retiring
-its own lead, and a dormant profile is nothing for a human to action either.
-Unparking is the whole set or nothing — `data.x_account_dormant: false`, fresh
-`data.x_comment` with its pinned `data.x_comment_post_url` +
-`data.x_comment_post_at`, `data.x_state` back to `"to_touch"`, and a new
-`nextActionAt` — and only a probe that actually found a fresh post may write
-it. Full step and the worked example: pipeline.md, Fill 4.
+Three limits worth knowing:
 
-**`"done"` is the ONLY value that parks an X lead.** `isXDripActionable`
-(`mcp/src/repos/xDrip.ts:180`) reads exactly
-`if ((data.x_state || "to_touch") === "done") return false;`. An invented state
-— `"dormant"`, `"parked"`, `"human"`, `"skip"` — is not a park: the lead stays
-actionable, keeps its `nextActionAt`, and squats at the head of the due set
-spending a slot every tick. Do not carry the LinkedIn habit across, because it
-is the opposite shape: `li_state` whitelists the drip's own states so anything
-else parks, while `x_state` blacklists one value so everything else works. On
-2026-08-30 lead `Jb3EG9GEdMZrAY1u7gcg` (@youbfit) held
-`data.x_account_dormant: true` AND `data.x_comment_needs_fresh: true` AND
-`data.x_state: "to_touch"` with that day's `nextActionAt`: it was the entire due
-X queue, and the drip failed on it two runs running until it was parked by hand.
+- **An absent `data.x_last_post_at` is UNKNOWN, not dormant.** A lead nobody
+  probed is still touched. The gate is only as good as the probing, so keep
+  probing in Fill 4.
+- **The drip can only retire, never revive.** It reads stamps; it does not read
+  X. Only `view_x_profile` sees a profile come back, and unparking is the whole
+  set or nothing.
+- **`data.x_last_post_checked_at` is never written by the drip.** That key means
+  "when `view_x_profile` last ran". Faking it would tell the next liveness pass
+  the account was looked at today and hide a revived profile.
+
+Prefer active accounts when staging. If a dormant one is staged on strong method
+evidence, clear `data.x_account_dormant` in the same write or the drip parks it
+on its next tick. Clearing the flag is a fresh `view_x_profile` read, not a
+manual edit: it describes what was seen, so only a new look changes it.
 
 **The `tribed-daily-x` scheduled task** does NOT stage and does NOT send
 outbound. It runs reply triage: read the inbox including the requests tray, take
