@@ -18,7 +18,7 @@ This file holds the shared core. The mode-specific playbooks and examples live i
 | No reply to the opener, user wants a bump/nudge/sequence | 3. Follow-ups | references/followups.md |
 | LinkedIn profile, connection note or InMail | 4. LinkedIn | references/linkedin.md |
 | Prospect opened the demo (replied or went quiet after) | 5. Objections → book the walkthrough call | references/postdemo.md |
-| Cold email or email follow-up sequence (sent via Instantly) | 6. Cold email | references/email.md |
+| Cold email or email follow-up (direct-send from Alfonso's Gmail, 5/day; Instantly is retired) | 6. Cold email | references/email.md |
 | Run the daily lead pipeline, personalize a batch, ship/queue review drafts, or build a demo from a conversation | 7. Pipeline ops | references/pipeline.md |
 | X (Twitter) lead, cold DM, comment copy, or the X discovery batch (drip-owned outbound; see Fill 4 in pipeline.md) | 8. X | references/x.md |
 
@@ -80,7 +80,7 @@ Mined from 1,292 tracked leads, ~91 reply-positive with the sent copy on record.
 - **The winning shape is detail-first** (~80% of winners): their OWN named method, book, or program quoted back, one line on why it's rare, the demo already exists, question CTA. Rotate skeletons as the core says, but detail-first is the proven default when in doubt.
 - **Quote their exact phrase.** The fastest replies (a voice note in 2h, a thumbs-up in 1 minute) came when the note repeated the lead's own title or trademarked phrase verbatim.
 - **Winning notes average 33 words.** Two sentences. Zero links.
-- **The proven follow-up 1** is the social-proof case study ("built one for another framework-driven coach, her method as practice modules... members actually did the reps"). The proven follow-up 2 closer is the proposal offer: "want me to put together a customized proposal of everything that would go inside your app?" — it pulled serious replies from leads the case study didn't move.
+- **The proven follow-up 1** is the social-proof case study ("built one for another framework-driven coach, her method as practice modules... members actually did the reps"). The proven follow-up 2 closer is the proposal offer: "want me to put together a customized proposal of everything that would go inside your app?" — it pulled serious replies from leads the case study didn't move. The full ladder, with the timings the drip actually enforces, is in references/followups.md and that file is the single source; a different ladder anywhere else is stale.
 - **The old corporate template register** ("Open to a quick 10-minute chat?", benefits pitches) exists only among never-replied records. Zero winners.
 
 ### Cross-channel principles (borrowed from cold-email craft, adapted)
