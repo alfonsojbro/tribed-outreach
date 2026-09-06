@@ -41,28 +41,31 @@ Comment-shaped warmth, if wanted at all, is a HUMAN action in the X app on
 Alfonso's phone — never a tool call. Do not re-derive this monthly: check the
 dated announcement above before assuming X has relaxed it.
 
-## Two rails, two engines, one account
+## Two rails, ONE engine, one account (rewired 2026-08-31)
 
-X outreach runs on TWO independent rails. They act as the SAME X account —
-`@alfonsojbro`, confirmed on both sides 2026-08-25 — but they share no code, no
-gate and no cap ledger. Confusing them is the main way this leg goes wrong — it
-is what produced both the 2026-08-24 idle queue and the 2026-08-25
-deliberately-empty one.
+X outreach still has TWO rails — the unattended hourly **drip** and the
+operator-driven **session tools** — but since 2026-08-31 they share ONE
+engine: the session worker's logged-in Playwright browser. The drip's OAuth/API
+transport was retired by explicit decision: it needed a scope reconnect just to
+follow, its comment leg was platform-dead anyway, and the browser rail was the
+proven one (every live X follow and DM this pool has shipped went through it).
+`repos/x.ts` and `XConnection/tribed` now exist for content publishing only
+(`publish_post_to_x`, likes, quotes) — the drip never reads them.
 
-| | Hosted **x-drip** | **Session worker** |
+| | Hosted **x-drip** | **Session tools** |
 |---|---|---|
-| Code | `mcp/src/repos/xDrip.ts` → `repos/x.ts` | `mcp/src/repos/xWorker.ts` (`x-worker/`) |
-| Engine | X **API v2 over OAuth** (`XConnection`) | logged-in **Playwright browser** |
+| Code | `mcp/src/repos/xDrip.ts` → `repos/xWorker.ts` | `mcp/src/repos/xWorker.ts` (`x-worker/`) |
+| Engine | the session worker's browser endpoints | the same logged-in **Playwright browser** |
 | Runs | hourly job, unattended, 13–23 UTC | only when a run or operator calls a tool |
 | Public comment | **DEAD** — X 403s API replies on every buyable tier (see top) | **banned** (`reply_x_post_session` unverified) |
 | Like | retired with the comment leg | — |
-| Follow | `x.followUser` | `follow_x_profile_session` |
-| DM | `x.sendDm` (needs `X_DRIP_DM_ENABLED`) | `ship_x_outreach_draft` / `send_x_dm_session` |
-| Reads the DM inbox | **cannot** | `read_x_session_inbox` |
-| `messageAvailable` probe | cannot | `view_x_profile` |
-| Liveness (newest OWN post) | cannot | `view_x_profile` |
-| Cap ledger | **none** (must borrow the worker's — see below) | `get_x_session_account_health` → `caps` |
-| Gate | `X_DRIP_ENABLED` only | `caps.gates.browserAdapterReady`, `sessionStatus` |
+| Follow | `xWorker.followDirect` | `follow_x_profile_session` |
+| DM | `xWorker.sendDirectMessage` (needs `X_DRIP_DM_ENABLED`) | `ship_x_outreach_draft` / `send_x_dm_session` |
+| Reads the DM inbox | does not | `read_x_session_inbox` |
+| `messageAvailable` probe | does not | `view_x_profile` |
+| Liveness (newest OWN post) | does not | `view_x_profile` |
+| Cap ledger | the worker's, **enforced at source** (pre-check + 429 stop) | `get_x_session_account_health` → `caps` |
+| Gate | `X_DRIP_ENABLED` + every worker gate | `caps.gates.browserAdapterReady`, `sessionStatus` |
 
 **The drip owns the daily outbound leg** by design, as of 2026-08-24. The leg
 is the follow and — when `X_DRIP_DM_ENABLED` is on — the DM, off copy the
@@ -119,15 +122,15 @@ apply on top; the ledger is the ceiling, not a replacement.
 re-derive.** The session worker's `x-accounts.json` gives account
 `digital_university` an `expectedHandle` of `alfonsojbro`. Firestore holds
 exactly ONE `XConnection` document: its id is `tribed` and its `username` is
-`alfonsojbro`. Same handle, both rails. The drip now spends inside the session
-`caps` (above), but the metering is **one-way**: `remainingToday` is ADVISORY.
-The worker charges its counters at reservation inside its own action endpoints,
-and there is no reservation endpoint the drip can call — its writes go out on
-the OAuth API and never pass through the worker, so nothing the drip spends is
-ever visible in `usage.*`. Each rail reads the same snapshot and neither sees
-the other's spend. **Until a reserve endpoint exists, the two rails must not
-write on the same UTC day** (the day is the worker's `usage.date`, surfaced as
-`caps.day`, not the drip process's).
+`alfonsojbro`. Same handle, both rails. Since the 2026-08-31 rewire the
+metering problem is SOLVED at the source: every drip action passes through the
+worker's own action endpoints, which charge the counters at reservation, so
+both rails spend one authoritative ledger and a worker 429 stops the drip's
+run cleanly. `remainingToday` read at tick start is only a courtesy pre-check
+so the tick stops short of the cap. **The old "two rails must not write on the
+same UTC day" rule is retired** — the worker serializes and meters everything
+now. Drip calls are idempotent per ledger day (`requestId
+"xdrip.{leadId}.{step}.{caps.day}"`), so a transport retry cannot double-act.
 
 ### The arithmetic
 
@@ -151,9 +154,9 @@ runs out; the page-size ceiling is just the queue's shape.
 and the drip's WRITE steps stay off until the drip reads it and charges against
 it.** Plan every X number off `get_x_session_account_health`, and only that.
 
-Implemented 2026-08-25 (`mcp/src/repos/xDrip.ts`). The remaining condition is
-operational, not code: the rails share a snapshot they cannot reserve against,
-so they must not both write on the same UTC day.
+Implemented 2026-08-25 (`mcp/src/repos/xDrip.ts`); the reservation gap closed
+2026-08-31 when the drip's actions moved onto the worker's own endpoints, so
+the ledger is now charged by the same code path both rails use.
 
 Not "lower `MAX_LEADS_PER_RUN`": a smaller unmetered number is still unmetered,
 and it still runs on a rail with no warmup ramp, no action gap and no proxy. Not
@@ -163,46 +166,46 @@ safety machinery (warmup ramp, `minActionGapSeconds` 900, `minSendGapSeconds`
 careful rail to protect the careless one is backwards. The session rail keeps
 its reads AND its metered writes; the drip is the one that has to earn its.
 
-### Live status: ACTIVE as follow + DM since 2026-08-30
+### Live status: ACTIVE as follow + DM on the worker engine since 2026-08-31
 
-There are THREE ids, and they are three namespaces: `X_DRIP_ACCOUNT` is the
-lead pool (`Outreach/{id}/leads`), `X_DRIP_CONNECTION` the OAuth token
-(`XConnection/{id}`), `X_DRIP_SESSION_ACCOUNT` the session worker whose ledger
-meters the rail (`X_WORKERS[{id}]`). The last two default to `X_DRIP_ACCOUNT`.
-The session account and the pool happen to hold the same string; that is a
-coincidence of naming, not one identifier.
+TWO ids matter to the drip now: `X_DRIP_ACCOUNT` is the lead pool
+(`Outreach/{id}/leads`) and `X_DRIP_SESSION_ACCOUNT` the session worker that
+executes and meters (`X_WORKERS[{id}]`, defaults to the pool id). They hold
+the same string, `digital_university` — a naming coincidence, not one
+identifier. `X_DRIP_CONNECTION` still sits in config for the OAuth publishing
+tools, but `runXDrip` no longer reads it: **no XConnection doc, no scope and
+no reconnect can gate the drip any more.**
 
 **mcp-ops env, verified on the running container 2026-08-30:**
 `X_DRIP_ENABLED=true`, `X_DRIP_DM_ENABLED=true`,
-`X_DRIP_ACCOUNT=digital_university`, `X_DRIP_CONNECTION=tribed` (set on the
-box, not on Fly — Fly runs no jobs, so its unset value is irrelevant).
-`X_DRIP_SESSION_ACCOUNT` is unset and correctly defaults to the pool id,
-which matches the worker key. The drip HAS run live: the 2026-08-28 and
-2026-08-29 touches (the @youbfit 403s, the "comment skipped" siblings) are
-its work, through the pre-pin build the box was still running.
+`X_DRIP_ACCOUNT=digital_university` (set on the box, not on Fly — Fly runs no
+jobs). `X_DRIP_SESSION_ACCOUNT` is unset and correctly defaults to the pool
+id, which matches the worker key. The drip HAS run live: the 2026-08-28 and
+2026-08-29 touches (the @youbfit 403s, the "comment skipped" siblings) were
+its OAuth-era work, through the pre-pin build the box was then running.
 
-**Connection and worker, verified 2026-08-30:** `XConnection/tribed` is
-connected as `@alfonsojbro` with `tweet.write`, `dm.write`, `like.write`,
-`stale: false` — and **NO `follows.write`**: the token predates the scope
-bump. The follow is the drip's whole public touch now, so `runXDrip`
-preflights the scope and THROWS rather than marking leads done with nothing
-sent. **The one activation step left is a reconnect via `connect_x`** (Alfonso
-clicks the link; the current scope list includes `follows.write`). The worker
-gates are all open (`enabled`, `armed`, `sessionStatus: "active"`,
-`browserAdapterReady: true`), caps dm 3 / follow 5 on the warmup ramp.
+**Worker, verified 2026-08-30:** gates all open (`enabled`, `armed`,
+`sessionStatus: "active"`, `browserAdapterReady: true`), caps dm 3 / follow 5
+on the warmup ramp. The OAuth token (`XConnection/tribed`, `@alfonsojbro`)
+still lacks `follows.write`; that only matters to the publishing/likes tools
+now, and a `connect_x` reconnect remains optional for them, irrelevant to the
+drip.
 
-The one still-open operational rule: `remainingToday` is ADVISORY (no
-reservation endpoint on the worker), so **the two rails must not write on the
-same UTC day** — the drip owns the day; session-worker writes are for
-Alfonso's explicit one-target commands only.
+Failure routing in the drip since the rewire: a follow the worker reports
+failed is a per-lead ERROR (logged, retried next day) — never a "skipped" note
+that marks the lead done with nothing sent; a closed-DM recipient stays a
+logged skip; a worker 429 stops the run on that class; a disarmed or
+unreachable worker throws one run-level alert instead of a page of error
+touches.
 
 ## The constraint that shapes DM work: most people cannot be cold-DMed
 
 X only delivers a DM to a stranger when that account has "allow message requests
 from everyone" ON. Most do not. A handle alone never tells you, and a DM to a
 closed account is not a rejection you can retry — the control simply is not on
-the page. The drip degrades gracefully here (a closed-DM recipient 403s and is
-logged as a skip, not a failure), but a skipped DM is still a wasted slot.
+the page. The drip degrades gracefully here (the worker reports the closed DM
+and it is logged as a skip, not a failure), but a skipped DM is still a wasted
+slot.
 
 So the order is always **check, then spend**:
 
@@ -385,26 +388,33 @@ This applies to bare domains and shorteners too, not just full URLs. A draft
 carrying a link in the first touch is rejected in review, not edited into shape
 after approval.
 
-## Draft-first survives the rail change
+## Draft-first became record-first (Alfonso, 2026-08-31)
 
-The drip does not invent DM copy. It sends `data.x_dm`, and the only sanctioned
-way that field gets populated is through the review queue:
+The drip does not invent DM copy. It sends `data.x_dm`, and the pipeline run
+itself populates that field — **X DMs ship without prior approval, by Alfonso's
+standing decision 2026-08-31** (the same no-approval-gate shape the LinkedIn
+queue already runs):
 
 ```
-queue_outreach_drafts  (kind "x_dm", slot "dm", anchor required)
+queue_outreach_drafts  (kind "x_dm", slot "dm", anchor required — the RECORD)
         ↓
-a HUMAN approves in the dashboard Review tab
-        ↓
-the approved copy is stamped onto the lead as data.x_dm
+the run stamps the same copy onto the lead as data.x_dm, in the same run
         ↓
 the drip sends it, when X_DRIP_DM_ENABLED is on
+        ↓
+the daily X task reports THE SENT MANIFEST: every sent message, verbatim
 ```
 
-`approve_outreach_draft` is LinkedIn-only and refuses an `x_dm`, by design — do
-not work around it. Never write `data.x_dm` from unapproved copy: that bypasses
-the human gate the queue exists to enforce. A lead with no usable anchor gets
-its draft queued with `anchor` omitted so it lands as `held`, rather than
-shipping something generic.
+The queue entry is the record of what shipped, not a gate; oversight moved
+after the fact — the daily triage task prints every sent DM in full, and
+Alfonso reads what went out under his name there. Two rules survive unchanged:
+a lead with no usable anchor still gets its draft queued `held` and NO
+`data.x_dm` (a generic DM stays banned; held means a human or a later profile
+read supplies the anchor first), and copy still obeys every DM rule above
+(method anchor, no link, no self-intro, the small named ask).
+`approve_outreach_draft` accepts `x_dm` (it has covered every kind since 2026-08-30), so either route works: the drip path needs no approval, and a single draft can still be approved and shipped by hand.
+REPLIES ARE UNTOUCHED by this decision: inbound replies are still drafted for
+Alfonso and never auto-sent.
 
 `ship_x_outreach_draft` remains the session-worker shipping path and still
 works; it is the manual escape hatch for a single approved draft, not the daily
@@ -420,7 +430,16 @@ from an approved draft for DM-workable leads, then upsert with `channel "x"`,
 `externalId` = the handle lowercased, `data.x_username`, `x_state:
 "to_touch"`, `nextActionAt` today. No `data.x_comment` and no pin fields —
 the comment leg is dead (top section). Drip pace is ~5 leads a tick and 40 a
-run, so a couple dozen due leads keeps it fed without flooding it. Report cap
+run, send window 13–23 UTC.
+
+**THE RUNWAY RULE (standing, Alfonso 2026-08-31): the queue never holds less
+than today + 2 days of follow budget.** Each daily run tops the actionable
+queue (`x_state "to_touch"`, not dormant, due today or earlier) up to
+`3 × caps.follow.cap` off the account's own health read — fallback target 15
+when caps are unreadable, said out loud in the report. Source until the
+target is met or discovery genuinely runs dry, and report
+`actionable / target` either way. A drip that idles for want of leads two
+mornings running is a failed pipeline, not a quiet day. Report cap
 vs staged vs sent, report dormant-skipped and liveness-unknown as their own
 counts, and report a zero with its denominator.
 
@@ -483,6 +502,15 @@ Session-worker gate readings, for the triage task's reads:
 Reading the inbox honestly: conclude "no replies" ONLY when `partial` is false.
 An empty list with `partial: true`, or `ok: false`, means the inbox is UNKNOWN,
 not empty. Report it that way.
+
+Doubting an `in`/`out` label: check it in the result, do not SSH the worker. The
+envelope's `selfHandle`/`selfId` name the account the read read AS, and every
+message carries `sender`, the handle (or the raw sender id, where X sent no user
+record) that decided its `direction`. A message is `out` when its sender IS us
+and `in` otherwise, so a message reading like the lead wrote it but labelled
+`out` is answered by comparing its `sender` against `selfHandle` — case
+INSENSITIVELY, since X returns its own casing. If the two really disagree, that
+is a worker bug worth a board card; if they agree, the label is right.
 
 On any inbound last message: take the lead off automation immediately —
 `log_outreach_touch` with `advanceTo: "replied"`, `automated: false`, which also
