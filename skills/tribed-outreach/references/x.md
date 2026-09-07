@@ -338,6 +338,29 @@ schema, so object inputs may not bind from some clients — use an actor-specifi
 Apify tool or the REST API with `APIFY_TOKEN`. And never let a paid scrape stand
 in for the free `view_x_profile` check.
 
+**Measured 2026-09-07: its post SEARCH does not find coaches.** Two runs over 347
+posts on `"my clients" coach`, `"coaching roster"`, `"check-ins" clients` and
+similar returned high-school sports scouting bots, fandom accounts and news
+outlets almost exclusively, for ONE staged lead out of five. Searching posts does
+guarantee an ACTIVE author, which is the appeal, but these phrases are ordinary
+English and match anything. If you run it, filter on the author BIO — their own
+coaching site, an "apply" or "1-1 coaching" line — never on the post text, and
+abandon the run once the bios are plainly not coaches.
+
+**The spider-web is the best surface, and it should run FIRST.** Coaches talk to
+coaches, so the people replying to and quoted by a coach already in the pool are
+pre-filtered in a way no keyword manages. @BenjaminYeezus came from a single read
+off @CoachFHM's podcast thread on 2026-09-07, against one lead for a whole paid
+scrape.
+
+**Two hard filters, on every surface.** Skip an account whose audience belongs to
+an EMPLOYER — school, college and club staff coaches, whose followers are that
+program rather than a client base (@dyzib79 and @_mo_tivate were dropped on this:
+both real coaches, neither with anything to put in an app). And never contact
+eating-disorder or recovery accounts. They surface constantly on weight and
+body-composition search terms, they are vulnerable people rather than prospects,
+and they go into the dropped count silently and are never staged.
+
 ## Comment copy — RETIRED (2026-08-30)
 
 There is no comment copy any more. X 403s programmatic replies on every
