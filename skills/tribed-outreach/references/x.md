@@ -558,14 +558,39 @@ Reading the inbox honestly: conclude "no replies" ONLY when `partial` is false.
 An empty list with `partial: true`, or `ok: false`, means the inbox is UNKNOWN,
 not empty. Report it that way.
 
-Doubting an `in`/`out` label: check it in the result, do not SSH the worker. The
-envelope's `selfHandle`/`selfId` name the account the read read AS, and every
-message carries `sender`, the handle (or the raw sender id, where X sent no user
-record) that decided its `direction`. A message is `out` when its sender IS us
-and `in` otherwise, so a message reading like the lead wrote it but labelled
-`out` is answered by comparing its `sender` against `selfHandle` — case
-INSENSITIVELY, since X returns its own casing. If the two really disagree, that
-is a worker bug worth a board card; if they agree, the label is right.
+Doubting an `in`/`out` label: comparing a message's `sender` against the
+envelope's `selfHandle` CANNOT settle it. Both come out of the same comparison.
+`direction` is `sender_id == selfId`, and `sender` is that same `sender_id`
+resolved through the payload's user map, so the two agree by construction. They
+agree on a right label and on a wrong one alike. Read them for context, never as
+a verdict.
+
+What does settle it, cheapest first:
+
+1. Read the whole thread. A conversation carrying BOTH an `in` and an `out` with
+   different senders proves the reader labelled each message from its own
+   sender. That kills the usual suspicion, which is that a thread we opened
+   stamped every message in it as ours.
+2. Check the rails. `list_outreach_leads` with the handle as `search`. Anything
+   the drip sent leaves a lead and a touch log. Our handle with NO lead record
+   means a manual send from Alfonso's own phone, which is still genuinely ours.
+3. Check the register. Drip copy is templated: "i made an initial version of a
+   <App> app ... can i send it over?". A freeform message under our handle was
+   hand-typed, not mislabelled.
+
+Only one thing can actually make a label wrong: X returning a wrong `sender_id`
+in its own DM store. Nothing in the envelope can show that. A doubt that
+survives all three needs a raw probe of the conversation JSON through the worker
+session, and a board card.
+
+Receipt, @robj3d3, 2026-09-08. A message reading like the lead wrote it came
+back `out` with `sender: alfonsojbro`, equal to `selfHandle`. The old check
+"passed" and proved nothing. What settled it: the `oliverbrocato` thread in the
+same read carried `in` then `out`, so derivation was per-message; the
+container's `inbox_reader.py` was byte-identical to git; no lead existed for the
+handle; and Alfonso confirmed he had typed it himself. The label was right, and
+the doubt cost a full investigation. Spending it on the three checks above
+instead is the point of this paragraph.
 
 On any inbound last message: take the lead off automation immediately —
 `log_outreach_touch` with `advanceTo: "replied"`, `automated: false`, which also
