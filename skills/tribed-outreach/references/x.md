@@ -32,7 +32,7 @@ What this retired, all removed from `xDrip.ts` on 2026-08-30:
   `x_comment_post_id` / `x_comment_post_at`, `x_comment_needs_fresh` /
   `_block_reason` / `_blocked_post_id`. These fields are now INERT on a lead —
   the drip never reads them, an old pin block no longer keeps a lead out of
-  the queue, and Fill 4 must stop staging them;
+  the queue, and staging must never write them;
 - the 7-day comment window as a hard liveness gate on staging. Liveness is
   still an ICP-quality signal (a dormant account reads nothing), but it no
   longer blocks the touch, because there is no comment to pin.
@@ -68,10 +68,19 @@ proven one (every live X follow and DM this pool has shipped went through it).
 | Gate | `X_DRIP_ENABLED` + every worker gate | `caps.gates.browserAdapterReady`, `sessionStatus` |
 
 **The drip owns the daily outbound leg** by design, as of 2026-08-24. The leg
-is the follow and — when `X_DRIP_DM_ENABLED` is on — the DM, off copy the
-morning run staged onto the lead. Staging it is **Fill 4 in
-references/pipeline.md**, and that is the only place the outbound X leg is
-driven from now.
+is the follow and — when `X_DRIP_DM_ENABLED` is on — the DM, off copy staged
+onto the lead. Staging it is **step 4 of the `tribed-daily-x` task** (moved
+there from Fill 4 on 2026-09-06; see "The daily split" below), and that is the
+only place the X queue is filled from.
+
+**The DM leg first delivered on 2026-09-06.** Everything before that failed the
+same way and it was never the queue, the approval path or the pool: X moved DMs
+to XChat and renamed every composer control, so the worker waited 20s for a
+`dmComposerTextInput` that no longer exists. Four attempts, four
+`composer_missing` timeouts, nothing sent. The worker now drives
+`dm-composer-textarea` / `dm-composer-send-button` and settles on the thread
+GROWING by a message, and a passcode wall reports as `xchat_locked` rather than
+as an anonymous timeout. Do not describe the DM rail as unproven.
 
 **The session worker owns what the API physically cannot do.** X API v2 cannot
 read the Message-requests tray where cold replies from strangers land, and
@@ -90,10 +99,10 @@ reference) was a different engine and was briefly believed workable — until X
 closed it platform-wide (top section). Between 2026-08-25 and 2026-08-30 this
 file said the API leg was open; the two days of live 403s proved otherwise.
 
-**Fill 4 staging is NOT on hold — it just stages less.** Stage X leads with
-`x_state: "to_touch"`, `nextActionAt` today, and (for DM-workable leads) an
-approved `data.x_dm`. Do NOT stage `data.x_comment` or its pin fields any
-more; the drip ignores them.
+**Staging is NOT on hold — it just stages less, and it happens in the X task
+now, not Fill 4.** Stage X leads with `x_state: "to_touch"`, `nextActionAt`
+today, and (for DM-workable leads) an approved `data.x_dm`. Do NOT stage
+`data.x_comment` or its pin fields any more; the drip ignores them.
 
 ## What the split actually costs you
 
@@ -310,7 +319,7 @@ liveness is unknown for every candidate, and the gate correctly stages nothing.
 Report that as the qualify rail being down and name the gate — never as "the X
 queries do not find our ICP", and never by staging unqualified handles to make
 the number look better. This is the one thing a disarmed adapter DOES stop on
-the X leg; the drip itself still runs (see Fill 4).
+the X leg; the drip itself still runs.
 
 The cross-channel bridge is usually cheaper than cold discovery: bio links on IG
 and LinkedIn leads already in ICP often carry the X handle.
@@ -423,14 +432,35 @@ Alfonso's explicit one-target commands only.
 
 ## The daily split: who does what
 
-**The morning pipeline run (Fill 4)** stages the queue: source and skip-check
-handles, run `view_x_profile` for liveness AND `messageAvailable` in one call,
-prefer candidates the liveness read favors (see below), stage `data.x_dm`
-from an approved draft for DM-workable leads, then upsert with `channel "x"`,
-`externalId` = the handle lowercased, `data.x_username`, `x_state:
-"to_touch"`, `nextActionAt` today. No `data.x_comment` and no pin fields —
-the comment leg is dead (top section). Drip pace is ~5 leads a tick and 40 a
-run, send window 13–23 UTC.
+**The `tribed-daily-x` task (11:00 local, step 4) stages the queue** — moved
+there from the morning run's Fill 4 on 2026-09-06, because a liveness read is
+only worth what its age allows: this task runs at 03:00 UTC and the drip sends
+from 13:00 UTC, while the morning run's read was nearly a day old by then.
+Fill 4 now only REPORTS pool depth. Exactly one run stages a channel; two runs
+staging one channel spend the day's cap twice.
+
+It sources and skip-checks handles, runs `view_x_profile` for liveness AND
+`messageAvailable` in one call, prefers candidates the liveness read favors
+(see below), stages `data.x_dm` from an approved draft for DM-workable leads,
+then upserts with `channel "x"`, `externalId` = the handle lowercased,
+`data.x_username`, `x_state: "to_touch"`, `nextActionAt` today. No
+`data.x_comment` and no pin fields — the comment leg is dead (top section).
+Drip pace is ~5 leads a tick and 40 a run, send window 13–23 UTC.
+
+**Target the pool at 2 x `caps.dm.cap` eligible leads** — two days of runway at
+today's cap. Eligible means ALL of: `x_state: "to_touch"`, not dormant,
+`x_dm_available` true, and `data.x_dm` holding approved copy. Count that, never
+the raw `stage: "top"` total: on 2026-09-06 the tracker held 24 `channel "x"`
+leads and 21 were dormant parks, so a pool that looked healthy could feed 3 of
+a 7 DM cap.
+
+**Re-arm before sourcing a stranger.** A lead carrying `data.x_dm` with no
+`data.x_dm_sent` was never messaged — a pre-click failure sends nothing, so it
+burned nobody — and it is already qualified and already written. Re-probe, and
+if it reads live, set `x_state` back to `"to_touch"` with a fresh
+`nextActionAt`. Not hypothetical: the XChat composer bug parked @TheJoeySwoll
+as `done` on 2026-09-05 having sent nothing, and re-arming him delivered his
+DM the next morning.
 
 **THE RUNWAY RULE (standing, Alfonso 2026-08-31): the queue never holds less
 than today + 2 days of follow budget.** Each daily run tops the actionable
@@ -471,7 +501,7 @@ Three limits worth knowing:
 
 - **An absent `data.x_last_post_at` is UNKNOWN, not dormant.** A lead nobody
   probed is still touched. The gate is only as good as the probing, so keep
-  probing in Fill 4.
+  probing every run.
 - **The drip can only retire, never revive.** It reads stamps; it does not read
   X. Only `view_x_profile` sees a profile come back, and unparking is the whole
   set or nothing.
