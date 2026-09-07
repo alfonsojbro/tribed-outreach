@@ -20,7 +20,7 @@ This file holds the shared core. The mode-specific playbooks and examples live i
 | Prospect opened the demo (replied or went quiet after) | 5. Objections → book the walkthrough call | references/postdemo.md |
 | Cold email or email follow-up (direct-send from Alfonso's Gmail, 5/day; Instantly is retired) | 6. Cold email | references/email.md |
 | Run the daily lead pipeline, personalize a batch, ship/queue review drafts, or build a demo from a conversation | 7. Pipeline ops | references/pipeline.md |
-| X (Twitter) lead, cold DM, comment copy, or the X discovery batch (drip-owned outbound; see Fill 4 in pipeline.md) | 8. X | references/x.md |
+| X (Twitter) lead, cold DM, comment copy, or the X discovery batch (drip-owned outbound; the `tribed-daily-x` task stages it, Fill 4 in pipeline.md only reports pool depth) | 8. X | references/x.md |
 
 Ambiguous input: ask one quick question.
 

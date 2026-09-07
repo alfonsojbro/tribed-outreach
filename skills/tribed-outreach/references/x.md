@@ -6,6 +6,8 @@ allergic to polish than IG — a message that reads like marketing dies on sight
 Read the rail split below before anything else. It decides which tools you are
 allowed to call and which safety rule applies to which action.
 
+**X STAGING OWNER: the `tribed-daily-x` scheduled task (11:00 local, its step 4). The morning pipeline run's Fill 4 only REPORTS pool depth and writes nothing (moved 2026-09-06).**
+
 ## THE PUBLIC COMMENT LEG IS DEAD — platform ban, not our bug (2026-08-30)
 
 X restricted programmatic replies at the platform level: `POST /2/tweets` with
