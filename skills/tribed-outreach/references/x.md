@@ -143,6 +143,15 @@ same UTC day" rule is retired** — the worker serializes and meters everything
 now. Drip calls are idempotent per ledger day (`requestId
 "xdrip.{leadId}.{step}.{caps.day}"`), so a transport retry cannot double-act.
 
+**Reading that ledger after a 500: `reserved` proves NOTHING shipped.** An
+uncaught exception inside a worker driver returns HTTP 500 and leaves the
+attempt at `status: "reserved"` in `XSend/{accountId}/attempts/{draftId}`. The
+driver flips that status to `clicked` immediately BEFORE the irreversible
+click, so an attempt still reading `reserved` never reached one. Read the
+attempt document before you conclude a 500 may have sent something, and never
+settle the question off the profile timeline instead — that read has a race of
+its own (see "Discovery").
+
 ### The arithmetic
 
 `MAX_LEADS_PER_RUN` (40) is the page size, not the spend. The spend is
@@ -308,6 +317,17 @@ timeline did not render — means the post fields are UNKNOWN, never "they do no
 post". Hold that candidate out of the pool exactly like a dormant one and report
 it under its own count (`liveness unknown`), rather than staging on a guess. A
 guess here is what parks a dead lead in the queue for a week.
+
+**A dormant READING can be wrong, and it errs in one direction.** Two
+`view_x_profile` calls 37 minutes apart on 2026-08-30 disagreed about the same
+profile: the first returned a newest own post of 2026-08-25, the second
+2026-08-29T08:47Z, a post that already existed during the first read. The
+timeline is rendered by an SPA and `_read_timeline_entries` can read it before
+it has filled, so `lastPostAgeDays` comes back OLDER than the truth, never
+fresher. The failure is therefore always the same one: a live coach dropped as
+dormant. Re-probe before marking anyone dormant, and treat a single stale
+reading on an otherwise strong candidate as `liveness unknown` rather than as a
+skip.
 
 **Re-probing is cheap; re-staging a corpse is not.** A candidate skipped for
 dormancy is not permanently dead — people come back. Stamp what you learned
