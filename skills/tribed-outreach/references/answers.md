@@ -15,7 +15,7 @@ Read this from Mode 2 (references/replies.md) and Mode 5 (references/postdemo.md
 5. **Never go past the facts.** Anything a prospect asks that is not on the fact list below falls under the existing rule (references/postdemo.md, "Facts rule"): do not invent, ask Alfonso. Questions seen more than once that are NOT yet here, from `wiki/Coach Buying Questions.md`: where clients book, whether the app replaces their website, content import (articles, reviews), offline use, and whether their material is ever used outside their own app (the exposure fear in the Marnus note). Candidates for the next additions to this file.
 6. **A written-scope ask is still an artifact.** When the prospect asks for a proposal or a written scope (Marnus: "make it concrete..."), the rule in references/replies.md holds: build the proposal page and send the link. The approved answers supply the DM cover line and the proposal's content; they do not replace the page.
 
-Pre-demo replies: SKILL.md's "hold the number back" rule still applies to a cold price question before the prospect has looked at anything. The price answer below is for AFTER they have seen the demo, or for any price question that has already sat unanswered for 48 hours, because at that point the deal is stalling without it, which is exactly the last-resort moment SKILL.md describes.
+The price is the exception to "answer it": SKILL.md's "hold the number back" rule applies before AND after the demo (Alfonso, 2026-09-14). Entry 1 below gives the deferral wording that is the normal answer, and keeps the number only for the one moment the deal genuinely stops without it. The other four entries are answered in full.
 
 ## The facts (the only product facts approved for these replies)
 
@@ -36,12 +36,17 @@ Each entry: what triggers it, the direction of the answer, the label it carries,
 
 **Triggers:** "how much is it", "what does this run me", "pricing", "what are the plans / tiers", "send me the pricing tiers".
 
-**Answer:** one number, $149 a month, setup free, month to month. One clause on what it covers. If they asked for tiers, do not say "there are no tiers" as a correction; state the one price and that it includes everything, and put anything custom into the walkthrough. Never quote $199. Never explain tier logic. Never defend the number with math; if they push back, the post-demo price direction in references/postdemo.md takes over.
+**Answer, the normal case:** no number. Name the question and defer it in one short clause, then let the walkthrough ask carry the message: post-demo that is the two concrete times in references/postdemo.md. Ignoring the question reads as evasion, so it is acknowledged in the same breath it is deferred. If they asked for tiers, say nothing about tiers.
 
-**Label:** `ready`. (`needs Alfonso` only when the prospect sits above SKILL.md's tier line, note "above tier line, confirm $149".)
+**Answer, last resort only** (the "tell me the price or we don't book" moment, or Alfonso says quote it): one number, $149 a month, setup free, month to month, one clause on what it covers. Never quote $199. Never explain tier logic. Never defend the number with math; if they push back, the post-demo price direction in references/postdemo.md takes over.
 
-**Sample (post-demo, asked for tiers):**
-> it's one price, $149 a month, and setup's on me. that's the app under your name and us running it, all in. if there's something specific you'd want beyond that, easier to go through it live. want me to show you around it? 15 minutes: [booking link]
+**Label:** `ready` for the deferral. A last-resort quote is `needs Alfonso` unless he asked for it, and always when the prospect sits above SKILL.md's tier line (note "above tier line, confirm $149").
+
+**Sample (post-demo, asked for tiers, normal case):**
+> on the number, easier once you've seen it whole. I'll show you around it live, 15 minutes. Wed 16 at 8pm ET or Mon 21 at 7:30pm ET?
+
+**Sample (last resort, Alfonso said quote it):**
+> it's one price, $149 a month, and setup's on me. that's the app under your name and us running it, all in. want me to show you around it live? 15 minutes.
 
 ### 2. Ownership, and what happens if they leave
 
