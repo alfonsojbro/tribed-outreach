@@ -6,7 +6,7 @@ Use when the prospect has opened their demo and replied, or the user says they'v
 
 The call is framed as a tour, never a sales call. The pitch already happened, it's sitting in their phone with their name on it. "Want me to walk you through it? 15 minutes, I'll show you what it can do" asks for almost nothing. "Let's hop on a call to discuss next steps" asks for a meeting with a salesperson. Same call, opposite reply rates.
 
-Booking mechanics (rewritten 2026-09-13): the ask is two concrete times, stated in the prospect's own timezone, plus the recorded tour for the call-averse. The scheduling link is the last line of the message and never the ask. On 2026-09-13 the `digital_university` funnel read `interested` 112, `meeting` 5, `won` 3: every win came through a meeting and 95% of warm replies never reached one, and a bare link is where they died (see "The yes" below for the mechanics). Never write any link: leave [booking link] and [tour link] placeholders and the user drops them in. Offer the call once per reply at most, and only once the commitment gate is passed. If they decline the call twice, stop offering it and answer their questions in the DM instead, a forced call loses the deal that patience keeps.
+Booking mechanics (rewritten 2026-09-13, tightened 2026-09-14): the ask is two concrete times, stated in the prospect's own timezone, plus the recorded tour for the call-averse. The scheduling link is not in the yes message at all: it appears once, as the last line of the 48-hour bump, for the prospect who took neither pair. On 2026-09-13 the `digital_university` funnel read `interested` 112, `meeting` 5, `won` 3: every win came through a meeting and 95% of warm replies never reached one, and a bare link is where they died (see "The yes" below for the mechanics). Never write any link: leave [booking link] and [tour link] placeholders and the user drops them in. Offer the call once per reply at most, and only once the commitment gate is passed. If they decline the call twice, stop offering it and answer their questions in the DM instead, a forced call loses the deal that patience keeps.
 
 ## The commitment gate (Alfonso, 2026-09-06)
 
@@ -44,14 +44,16 @@ Each yes makes the next one cheaper, and by the time the call is offered it is a
 
 Once the gate is passed and the prospect says some version of yes, the reply has a fixed shape. The words rotate every time, the shape does not.
 
-**First, if their yes carried a question, answer it.** A yes and a question usually arrive together ("ok yes, what does this run me?"). If it is one of the five in references/answers.md, draft the answer from that file and carry its `ready` / `needs Alfonso` label; a post-demo price question is answered, not deferred, at $149 a month, one price. The answer leads, the two slots close the same message. Then:
+**Length cap for this mode: the yes message is under 45 words and three sentences, the bump under 35.** Coaches read these on a phone between clients; a long booking message reads as admin and gets parked. Every clause below earns its place or goes. The slots are the only question in the message.
 
-1. One beat that frames the walkthrough as a tour (15 minutes, ask it anything live).
-2. **Two concrete times, in the prospect's timezone**, on two different days, phrased as one question ("either work?"). Weekday, date, time, zone label, e.g. "Wed 16 Sep at 8pm ET". Never our time, never "Bali time", never a UTC offset.
-3. **The alternative for the call-averse:** "or I can send a 3-minute recorded tour if a call isn't your thing this week." While the `[NEEDS RECORDING]` block at the top of this file stands, substitute the 60-second video of their own app.
-4. **The booking link, alone on the last line, as the fallback:** "if neither lands, grab whatever suits here: [booking link]". This is the one line allowed after the CTA question. It is never the lead, never the only option, and never sent without the two times above it.
+**No price in the yes.** Alfonso's rule (2026-08-26, reaffirmed 2026-09-14): the number is a last resort and this message is never that moment. If their yes came with a price question, name it and defer it in one short clause ("on the number, easier once you've seen it") and let the slots carry the message. Any other question from references/answers.md gets answered first, briefly, with that file's `ready` / `needs Alfonso` label.
 
-Timezone unknown: ask, do not guess. If the profile location gives no usable zone (empty, "Remote", "Worldwide", a multi-zone country with no city), the same message asks "which timezone are you in? I'll send two times that fit", keeps the tour line and the fallback link, and the two slots go in the next reply. A wrong guess costs a turn and looks careless; the question costs nothing.
+1. **Frame it as a tour, in one short beat** ("I'll show you around it live, 15 minutes"). No "hop on a call", no agenda.
+2. **Two concrete times, in the prospect's timezone**, on two different days, as the one question in the message. Weekday, date, time, zone label, e.g. "Wed 16 at 8pm ET". Never our time, never "Bali time", never a UTC offset.
+3. **The alternative for the call-averse, one clause:** "if a call isn't your thing this week, say so and I'll send a 3-min tour instead." While the `[NEEDS RECORDING]` block at the top of this file stands, substitute the 60-second video of their own app.
+4. **No link.** The [booking link] is the bump's job (below), for the prospect who took neither time. A link in the yes message hands the work back to them, which is exactly what the funnel numbers say kills the meeting.
+
+Timezone unknown: ask, do not guess. If the profile location gives no usable zone (empty, "Remote", "Worldwide", a multi-zone country with no city), the yes message asks "which timezone are you in? I'll send two times that fit", keeps the tour clause, and the two slots go in the next reply. A wrong guess costs a turn and looks careless; the question costs nothing.
 
 ### Deriving the two slots (read, never hardcode)
 
@@ -73,7 +75,7 @@ Timezone unknown: ask, do not guess. If the profile location gives no usable zon
 
 ### The 48-hour bump
 
-If neither slot is taken within 48 hours (no reply in the thread, no confirmed booking in `list_bookings`), send ONE bump that offers **two new slots**, never the same two. New means different days from the pair in `data.slots_offered`; a different time on the same day still reads as the same offer. The bump repeats the tour alternative in one clause and keeps the link as its last line. Then stop: no third pair, no second bump. A prospect who has passed on four times and a video has answered; the demo stays live and the door stays open, exactly like the silence rule above. Stamp the bump's two slots into `data.slots_offered` as well (append, do not replace) and set `nextAction: "Park (Mode 5 bump sent)"`.
+If neither slot is taken within 48 hours (no reply in the thread, no confirmed booking in `list_bookings`), send ONE bump that offers **two new slots**, never the same two. New means different days from the pair in `data.slots_offered`; a different time on the same day still reads as the same offer. The bump repeats the tour alternative in a few words and carries the [booking link] as its last line, the only place the link appears in this mode. Then stop: no third pair, no second bump. A prospect who has passed on four times and a video has answered; the demo stays live and the door stays open, exactly like the silence rule above. Stamp the bump's two slots into `data.slots_offered` as well (append, do not replace) and set `nextAction: "Park (Mode 5 bump sent)"`.
 
 ### The same-day rule applies here, unchanged
 
@@ -82,32 +84,30 @@ Slot copy rots faster than any other copy: a time computed on Monday is inside `
 ### Templates (the shape is fixed, the words rotate; never paste these)
 
 **Yes, timezone known (English, US Eastern prospect, written Mon 14 Sep in Asia/Makassar):**
-Prospect: "ok yes do that. what does this run me once it's real?"
-it's $149 a month, setup's on me, month to month. that covers the app under your name, the AI trained on your material, hosting and the app store side. and let me show you around it, 15 minutes and you can ask it anything live. I've got Wed 16 Sep at 8pm ET or Mon 21 Sep at 7:30pm ET, either work? or if a call isn't your thing this week I can send a 3-minute recorded tour instead. [NEEDS RECORDING]
-if neither lands, grab whatever suits here: [booking link]
+Prospect: "ok yes do that, put my real stuff in"
+on it. I'll show you around it live too, 15 minutes. Wed 16 at 8pm ET or Mon 21 at 7:30pm ET? if a call isn't your thing this week, say so and I'll send a 3-min tour instead. [NEEDS RECORDING]
+
+**Yes with a price question (English):**
+Prospect: "yes, and what does this run me once it's real?"
+on the number, easier once you've seen it whole. I'll show you around it live, 15 minutes. Wed 16 at 8pm ET or Mon 21 at 7:30pm ET? or say the word and I'll send a 3-min tour instead. [NEEDS RECORDING]
 
 **Yes, timezone unknown (English):**
-Prospect: "yeah go for it, put my stuff in"
-doing it now. and let me show you around it once it's in, 15 minutes and you can ask it anything live. which timezone are you in? I'll send you two times that fit. or if a call isn't your thing this week I can send a 3-minute recorded tour instead. [NEEDS RECORDING]
-or grab a time straight from here: [booking link]
+Prospect: "yeah go for it"
+doing it now. I'll show you around it live once it's in, 15 minutes. which timezone are you in? I'll send two times that fit. or if calls aren't your thing, a 3-min tour. [NEEDS RECORDING]
 
 **Yes (neutral Spanish, Mexico City prospect):**
 Prospect: "sí, dale, ¿cómo seguimos?"
-te la muestro en vivo, 15 minutos y le preguntas lo que quieras ahí mismo. tengo el miércoles 16 a las 7pm o el lunes 21 a las 6:30pm, hora de Ciudad de México, ¿te sirve alguno? y si esta semana no estás para llamadas te mando un tour grabado de 3 minutos. [NEEDS RECORDING]
-si ninguno te cuadra, elige el que quieras acá: [booking link]
+te la muestro en vivo, 15 minutos. ¿miércoles 16 a las 7pm o lunes 21 a las 6:30pm, hora de CDMX? y si esta semana no estás para llamadas, te mando un tour grabado de 3 minutos. [NEEDS RECORDING]
 
 **Yes (River Plate, Buenos Aires prospect):**
 Prospect: "dale, me copa, ¿cómo seguimos?"
-te la muestro en vivo, 15 minutos y le preguntás lo que quieras ahí mismo. tengo el miércoles 16 a las 8pm o el lunes 21 a las 8:30pm, hora de Buenos Aires, ¿te va alguno? y si esta semana no estás para llamadas te mando un tour grabado de 3 minutos. [NEEDS RECORDING]
-si ninguno te cierra, elegí el que quieras acá: [booking link]
+te la muestro en vivo, 15 minutos. ¿miércoles 16 a las 8pm o lunes 21 a las 8:30pm, hora de Buenos Aires? si no estás para llamadas esta semana, te mando un tour grabado de 3 minutos. [NEEDS RECORDING]
 
 **48-hour bump (English, US Eastern, two NEW days):**
-Jess, guessing those two didn't fit. what about Tue 22 Sep at 8pm ET or Thu 24 Sep at 7pm ET? the recorded tour still stands if a call is the problem rather than the time. [NEEDS RECORDING]
-anything else works too: [booking link]
+Jess, guessing those two didn't fit. Tue 22 at 8pm ET or Thu 24 at 7pm ET? the 3-min tour still stands too, or pick anything here: [booking link]
 
 **48-hour bump (neutral Spanish, Bogota):**
-Lucía, me imagino que esos dos no te cuadraron. ¿el martes 22 a las 6pm o el jueves 24 a las 7:30pm, hora de Bogotá? y si el tema es la llamada y no la hora, el tour grabado de 3 minutos sigue en pie. [NEEDS RECORDING]
-cualquier otro horario, acá: [booking link]
+Lucía, me imagino que esos dos no te cuadraron. ¿martes 22 a las 6pm o jueves 24 a las 7:30pm, hora de Bogotá? el tour de 3 minutos sigue en pie, o elige cualquier horario acá: [booking link]
 
 ## Post-demo objection directions
 
@@ -147,8 +147,7 @@ fair. open the first day and it'll make sense fast, that's what a client sees wh
 
 **Price (neutral Spanish, Mexico City prospect):**
 Prospect: "Está buena pero 149 al mes es bastante"
-Te entiendo. Para la mayoría de los coaches una sola sesión o un cliente nuevo ya lo cubre, pero es más fácil juzgarlo viendo todo lo que hace. Son 15 minutos en vivo, tengo el miércoles 16 a las 7pm o el lunes 21 a las 6:30pm, hora de Ciudad de México, ¿te sirve alguno? Y si prefieres, te mando el tour grabado de 3 minutos. [NEEDS RECORDING]
-Si ninguno te cuadra: [booking link]
+Te entiendo. Un cliente nuevo ya lo cubre, pero se juzga mejor viéndola completa. ¿Miércoles 16 a las 7pm o lunes 21 a las 6:30pm, hora de CDMX? 15 minutos. O te mando el tour de 3 minutos. [NEEDS RECORDING]
 
 **Doesn't do calls (River Plate):**
 Prospect: "no soy de llamadas, decime por acá"
