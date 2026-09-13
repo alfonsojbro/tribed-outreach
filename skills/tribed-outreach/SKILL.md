@@ -2,7 +2,7 @@
 name: tribed-outreach
 description: Tribed's full Instagram, LinkedIn, and cold-email outreach for wellness, fitness, coaching, and creator prospects. Covers IG cold DMs, reply and objection handling, follow-up sequences, LinkedIn connection notes and InMail, post-demo booking, cold email and email sequences, and the daily cross-channel pipeline (LinkedIn via our own LinkedIn MCP, ICP filtering, review-queue drafting, tracker-driven follow-ups). Use for any Tribed outreach: a cold DM, connection note, InMail, cold email, bump, follow-up, objection handling, booking the walkthrough call, or running/queueing the daily pipeline. Trigger even when the user just pastes a profile screenshot, since the default intent is a first-touch message. Handles English, River Plate Spanish, and neutral Latin American Spanish, picked from the profile or the reply.
 metadata:
-  version: 1.15.0
+  version: 1.16.0
 ---
 
 # Tribed Outreach — Full Workflow
@@ -23,6 +23,8 @@ This file holds the shared core. The mode-specific playbooks and examples live i
 | X (Twitter) lead, cold DM, comment copy, or the X discovery batch (drip-owned outbound; the `tribed-daily-x` task stages it, Fill 4 in pipeline.md only reports pool depth) | 8. X | references/x.md |
 
 Ambiguous input: ask one quick question.
+
+Modes 2 and 5 also read **references/answers.md** whenever the reply asks one of the five recurring buying questions (price or tiers, ownership and export, what Tribed runs vs what the coach does, the AI's role, whether an app flattens their method). Those have approved answers: the run drafts the reply from them and labels it `ready`, or `needs Alfonso` only when a `[ALFONSO TO CONFIRM]` blank is touched, with the rest of the reply already written.
 
 The gift-first move underlies everything: a personalized demo of their own branded app already exists, the message tells them and offers to send it. The funnel has two halves with different goals. Before they've seen the demo, the only goal is getting them to look, and a call ask is forbidden. After they've opened the demo, the goal becomes a 15-minute walkthrough call, and the demo they just saw is what earns the ask.
 
@@ -139,7 +141,9 @@ Two more gates ride along with the audience bar (details in references/pipeline.
 
 **Hold the number back. It is a last resort, not an answer.** Alfonso's rule (2026-08-26): the price goes in a message only when the deal genuinely stops without it, the "tell me the price or we don't book" moment. Everywhere else, including when a prospect asks outright in a cold reply, do NOT put a figure in the message. Acknowledge the question, say you would rather they see it first, and move to the demo or the walkthrough. Ignoring the question entirely reads as evasion, so name it and defer it in the same breath ("on the investment, I'd rather you see it first, it's an easier conversation once it's in front of you"). A number quoted early prices a thing they have not looked at yet, and it invites a no before the demo has done any work.
 
-The numbers, for when that last-resort moment actually arrives: setup is free; $149/month for smaller profiles, $199/month for bigger ones. The line is roughly 50k followers on Instagram and 10k on LinkedIn. Quote the single price that fits the prospect, never the range and never the tier logic ("since you're a bigger account..." invites haggling and makes the gift feel calculated). If the follower count isn't visible anywhere, ask Alfonso which tier before writing any reply that mentions price. Update here if pricing changes.
+**After the demo, a direct price question IS the last-resort moment.** A prospect who has seen their demo and asks the price, or any price question that has sat unanswered for 48 hours, gets the approved price answer in references/answers.md: $149 per month, one price, no tiers, setup free, month to month. That file wins over the tier paragraph below for any reply drafted from it. A prospect above the tier line still gets the $149 draft, labelled `needs Alfonso` with the note "above tier line, confirm $149", so Alfonso changes one number instead of writing a reply.
+
+The numbers, for when that last-resort moment actually arrives: setup is free; $149/month for smaller profiles, $199/month for bigger ones. The line is roughly 50k followers on Instagram and 10k on LinkedIn. Quote the single price that fits the prospect, never the range and never the tier logic ("since you're a bigger account..." invites haggling and makes the gift feel calculated). If the follower count isn't visible anywhere, ask Alfonso which tier before writing any reply that mentions price. Update here if pricing changes. (2026-09-13: the $199 line is not part of any approved answer in references/answers.md, which quotes $149 only per the Decisions Log of 2026-08-14. Alfonso to reconcile the two.)
 
 ## Output
 

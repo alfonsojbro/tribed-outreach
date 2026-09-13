@@ -26,7 +26,7 @@ Each yes makes the next one cheaper, and by the time the call is offered it is a
 
 ## Classify the post-demo reply
 
-**Asked a question about it ("did you build this from my site?", "does it do X or Y?").** The most common post-demo reply and the one most often mishandled. Questions are engagement, not commitment. Answer them straight and in the order asked, briefly, then close on a yes about their material or their people. No call. A question answered well buys the next turn, and the next turn is where the call becomes askable.
+**Asked a question about it ("did you build this from my site?", "does it do X or Y?").** The most common post-demo reply and the one most often mishandled. Questions are engagement, not commitment. Answer them straight and in the order asked, briefly, then close on a yes about their material or their people. No call. A question answered well buys the next turn, and the next turn is where the call becomes askable. **If the question is one of the five in references/answers.md** (price or tiers, ownership and export, what Tribed runs vs what they do, the AI's role, whether an app flattens their method), draft from that file and carry its `ready` / `needs Alfonso` label; a reply asking several of them gets one message answering each in order.
 
 **Loved it ("this is sick", "wow ok").** Don't oversell a won moment. Match their energy in one short beat, then take the next yes: the thing they reacted to is the thing to build on ("want me to put your real content in?"). Enthusiasm is not a booking signal on its own; hold the call until the gate is passed.
 
@@ -40,7 +40,7 @@ Each yes makes the next one cheaper, and by the time the call is offered it is a
 
 ## Post-demo objection directions
 
-**"That's a lot" / price resistance.** This only comes up once a number is out, and per SKILL.md the number is a last resort, so check it was genuinely earned before quoting one here. Don't defend the number with math walls. One honest comparison in their world (one client covers it, or what they charge for a single session), then the walkthrough: easier to judge if it's worth it after seeing everything it does, 15 minutes. Quote their tier's price only (see price reference in SKILL.md), never reveal the other tier exists.
+**"That's a lot" / price resistance.** This only comes up once a number is out, and per SKILL.md the number is a last resort, so check it was genuinely earned before quoting one here. Don't defend the number with math walls. One honest comparison in their world (one client covers it, or what they charge for a single session), then the walkthrough: easier to judge if it's worth it after seeing everything it does, 15 minutes. The number is $149 a month, one price, per references/answers.md; never mention a second tier.
 
 **"My audience won't pay for an app."** Genuinely curious, not corrective: what do they sell now? Then reframe, the app isn't a new thing to sell, it's where what they already sell lives. Walkthrough shows it faster than a paragraph.
 
@@ -52,7 +52,7 @@ Each yes makes the next one cheaper, and by the time the call is offered it is a
 
 **"Is there a contract / can I cancel?"** Plain honesty in one line (monthly, cancel whenever), then back to the call or the question they asked next.
 
-**Facts rule.** The only product facts confirmed in this skill are: setup free, monthly pricing per the SKILL.md price reference, month-to-month with no contract. If a prospect asks anything beyond that (what happens to their content on cancel, data export, refunds, who owns what), do NOT invent an answer, ask the user for the real policy before writing the reply. A made-up promise in a sales DM becomes a commitment.
+**Facts rule.** The only product facts confirmed in this skill are the fact list in references/answers.md: $149 a month, setup free, month to month with no contract, what that covers, the ownership facts (content, member list and member data stay the coach's; the method is theirs, Tribed is the platform), the Tribed-runs vs coach-does split, the AI as a companion trained on their material with the coach as the authority, and the method branching on their rules rather than flattening into a task list. Export format, the app-store listing on exit and ownership of the customised configuration are `[ALFONSO TO CONFIRM]` blanks in that file: write the reply around them, leave the blank, label it `needs Alfonso`. If a prospect asks anything beyond that list (refunds, offline use, booking, replacing their website), do NOT invent an answer, ask the user for the real policy before writing the reply. A made-up promise in a sales DM becomes a commitment.
 
 ## Booking-specific banned phrases
 
