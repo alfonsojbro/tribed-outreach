@@ -107,7 +107,7 @@ te la muestro en vivo, 15 minutos. ¿miércoles 16 a las 8pm o lunes 21 a las 8:
 Jess, guessing those two didn't fit. Tue 22 at 8pm ET or Thu 24 at 7pm ET? the 3-min tour still stands too, or pick anything here: [booking link]
 
 **48-hour bump (neutral Spanish, Bogota):**
-Lucía, me imagino que esos dos no te cuadraron. ¿martes 22 a las 6pm o jueves 24 a las 7:30pm, hora de Bogotá? el tour de 3 minutos sigue en pie, o elige cualquier horario acá: [booking link]
+Lucía, esos dos no te cuadraron, me imagino. ¿martes 22 a las 6pm o jueves 24 a las 7:30pm, hora de Bogotá? el tour de 3 minutos sigue en pie, o cualquiera de acá: [booking link]
 
 ## Post-demo objection directions
 
