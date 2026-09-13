@@ -3,6 +3,29 @@ name: daily-outreach
 description: Run the daily Tribed outreach pipeline — feed every hosted rail its full daily quota (same-day LinkedIn copy for both sessions' drips, invite staging, Instagram sequences, X leads), then the unibox reply backlog across both channels, replies, follow-ups, and approved drafts via our LinkedIn MCP, queue new personalized drafts, self-approve LinkedIn connection notes, and report cap vs authored vs sent per account.
 ---
 
+## CLOCK (the first tool call of the run)
+
+**Read the real clock before you read anything else.** Run:
+
+`date -u "+%Y-%m-%dT%H:%M:%SZ"`
+
+Treat the value it prints as the ONLY authority on "now" for the whole run. Every current time comes
+from it: the UTC day key, every freshness gate, `li_copy_at`, cooldown arithmetic, and every date you
+write into a lead, a touch note or a report. You have no other clock. A guessed "now" is not an
+approximation, it is a wrong answer that gets written to the tracker.
+
+**HARD RULE: never infer clock skew from stored data.** Every timestamp in Firestore is written by
+`new Date().toISOString()`, which is unconditionally UTC. Stored stamps are true UTC. If one looks
+like it is in the future, or looks impossibly recent, the fault is your idea of "now", not the data.
+Re-run `date -u "+%Y-%m-%dT%H:%M:%SZ"`. If the stamp is still ahead of that reading, STOP work on
+that lead and report it. Never "correct" a stored value. Never back-compute a real time by
+subtracting an offset you inferred. Never write a derived or adjusted timestamp into a lead field.
+
+On 2026-09-13 this run believed it was 01:03Z when it was 10:03Z. It read correct stamps as nine
+hours in the future, invented a skew that did not exist, and wrote back-computed wrong dates into
+`li_invited_at` and `li_inmail_by_hand_at` on Dave Bailey and Terry Tateossian. The MCP and
+functions code was correct the whole time. The run's missing clock was the whole bug.
+
 Run the Tribed daily outreach pipeline. Follow references/pipeline.md (Job C: PREFLIGHT → QUOTA FILL → REPLY BACKLOG → leg 1 SHIP → DRAFT → leg 2 → REPORT) exactly. **The run's first deliverable is feeding the rails, and the standing requirement is the full daily quota on every account, every day** ("The rails and the morning quota fill" in pipeline.md): the hosted drips — LinkedIn both sessions, Instagram sequences, X — only ship what this session prepares, and an unfed rail idles silently. **The LinkedIn work runs as TWO sequential legs, one per session.** `data.li_account` is the owner field: absent or `"digital_university"` is leg 1 (Alfonso's founder session, driven by the `linkedin` MCP), `"martin_guerrero"` is leg 2 (Martin's VA session, sent by the hosted drip). The predicates are complements, so no lead is ever worked twice. Filter EVERY list a leg builds by it, run the legs sequentially (never concurrently, they share one Chromium host), and read each session's health and ramp separately with `get_linkedin_session_health({ linkedinAccount })` — never one read for both. This is an unattended run: every first-touch message is written to the review queue on the Tribed MCP (`accountId "digital_university"`) before anything sends, so the exact copy is always on the record. LinkedIn connection notes (`li_dm`) may then be approved by the run itself with `approve_outreach_draft` under Alfonso's direct-send authorization (2026-08-06) and shipped in the same run, up to the server-enforced daily cap. IG DMs and email still ship only after a human approves them in the dashboard (admin.tribed.io, Messaging > Review). LinkedIn sends through our self-hosted `linkedin` MCP; the tracker is the sequencer.
 
 Preflight, LinkedIn: one `get_my_profile` call. On a session/login error, stop and tell the user to re-auth (`uvx mcp-server-linkedin@latest --import-from-browser`).
