@@ -559,3 +559,7 @@ not itself repeat the ladder carve-out. If a later pass moves that heading, the 
  skills/tribed-outreach/references/x.md         | 18 ++++++-
  6 files changed, 133 insertions(+), 19 deletions(-)
 ```
+
+## Deploy-day marker removal (2026-09-14)
+
+`feat/li-drip-demo-ladder` merged into NobleAdmin main (615578e) and the MCP deployed to Fly at 03:27Z (build 615578e). The seven "not deployed / REPORT ONLY / pending branch" markers were rewritten so the LinkedIn half reads as live: pipeline.md (demo-rail bullet, isHumanOwned list, drip-acts-only list, Fill 1, Backfill LinkedIn paragraph), followups.md ("Who sends"), commands/daily-outreach.md (backfill and digest). The `feat/demo-open-tracking` note in Job D now says merged as #22, live on the next MCP redeploy. SKILL.md 1.23.0 -> 1.24.0.
