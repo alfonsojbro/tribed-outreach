@@ -36,7 +36,7 @@ Each yes makes the next one cheaper, and by the time the call is offered it is a
 
 **Buying objections.** Now they're real objections about paying, not brush-offs. Directions below, same rule as Mode 2: write fresh every time, never paste the samples.
 
-**Silence after opening the demo.** One light bump anchored on something specific inside THEIR app ("did you find the AI coach? ask it something about deloading"). Curiosity, not pressure, no booking link yet. If the last message we sent was the two-slot offer, this is not the bump to send: "The 48-hour bump" below owns that silence.
+**Silence after a delivered demo.** The post-demo ladder in references/followups.md owns it: bump 1 three days after the demo went out, bump 2 four days after that, then park. Read that section before writing either one. The only silence rule that outranks it is "The 48-hour bump" below, which owns the lead whose last message from us was the two-slot offer.
 
 **No after seeing it.** Same graceful exit as Mode 2. The demo stays live, door stays open.
 

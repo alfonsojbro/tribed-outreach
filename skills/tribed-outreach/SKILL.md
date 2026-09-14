@@ -2,7 +2,7 @@
 name: tribed-outreach
 description: Tribed's full Instagram, LinkedIn, and cold-email outreach for wellness, fitness, coaching, and creator prospects. Covers IG cold DMs, reply and objection handling, follow-up sequences, LinkedIn connection notes and InMail, post-demo booking, cold email and email sequences, and the daily cross-channel pipeline (LinkedIn via our own LinkedIn MCP, ICP filtering, review-queue drafting, tracker-driven follow-ups). Use for any Tribed outreach: a cold DM, connection note, InMail, cold email, bump, follow-up, objection handling, booking the walkthrough call, or running/queueing the daily pipeline. Trigger even when the user just pastes a profile screenshot, since the default intent is a first-touch message. Handles English, River Plate Spanish, and neutral Latin American Spanish, picked from the profile or the reply.
 metadata:
-  version: 1.21.0
+  version: 1.23.0
 ---
 
 # Tribed Outreach — Full Workflow
@@ -17,7 +17,7 @@ This file holds the shared core. The mode-specific playbooks and examples live i
 | Prospect replied, hasn't seen the demo yet | 2. Reply handling | references/replies.md |
 | No reply to the opener, user wants a bump/nudge/sequence | 3. Follow-ups | references/followups.md |
 | LinkedIn profile, connection note or InMail | 4. LinkedIn | references/linkedin.md |
-| Prospect opened the demo (replied or went quiet after) | 5. Objections → two concrete times or the recorded tour, booking link last | references/postdemo.md |
+| Prospect has the demo (replied, or went quiet after delivery) | 5. Objections → two concrete times or the recorded tour, booking link last; went quiet after: the post-demo ladder in references/followups.md | references/postdemo.md |
 | Cold email or email follow-up (direct-send from Alfonso's Gmail, 5/day; Instantly is retired) | 6. Cold email | references/email.md |
 | Run the daily lead pipeline, personalize a batch, ship/queue review drafts, or build a demo from a conversation | 7. Pipeline ops | references/pipeline.md |
 | X (Twitter) lead, cold DM, comment copy, or the X discovery batch (drip-owned outbound; the `tribed-daily-x` task stages it, Fill 4 in pipeline.md only reports pool depth) | 8. X | references/x.md |
@@ -93,7 +93,7 @@ These sharpen every mode but never override the gift-first spine or the banned l
 - **Lead with their world, not yours.** "You/your" should dominate over "I/we." Never open with who you are or what Tribed does.
 - **One ask, low friction.** Interest-based asks ("wanna see it?") beat commitment asks. One ask per message, phrased as a question, at the end.
 - **Every sentence earns its place.** The best message feels like it could have been shorter. If a sentence doesn't move them toward a reply, cut it.
-- **Follow-ups are a value ladder, they never "check in."** Each touch gives the prospect something new: follow-up 1 is a short case study of a similar coach's app (what it included, how it works), follow-up 2 offers a 60-second explainer video of their own demo. "Just following up" gives no reason to reply. (See Mode 3 and Mode 6.)
+- **Follow-ups are a value ladder, they never "check in."** Each touch gives the prospect something new: follow-up 1 is a short case study of a similar coach's app (what it included, how it works), follow-up 2 offers a customized proposal of everything that would go inside their app (the 60-second explainer video is not a pre-demo touch, it belongs to the post-demo ladder in Mode 5). "Just following up" gives no reason to reply. (See Mode 3 and Mode 6.)
 
 ### Banned phrases
 

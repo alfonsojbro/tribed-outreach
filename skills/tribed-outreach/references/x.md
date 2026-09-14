@@ -475,6 +475,21 @@ works; it is the manual escape hatch for a single approved draft, not the daily
 leg. The direct tools (`send_x_dm_session`, `follow_x_profile_session`) are for
 Alfonso's explicit one-target commands only.
 
+**One carve-out, since 2026-09-14, on Alfonso's instruction.** The daily run
+may call `send_x_dm_session` itself for ONE case: a post-demo ladder bump, the
+rungs in references/pipeline.md "Daily pickup: the Instagram, email and X demo
+ladder". Three conditions hold on every such send. The run reads the thread
+first with `read_x_session_inbox` and sends only when the last message is ours.
+`get_x_session_account_health` reads clear in the same run. The bump is charged
+to `caps.dm` like any other DM, and the lead defers one day at 0. Every other
+daily X send still goes through the drip.
+
+**A ladder lead is never left where the drip can take it.** An X lead on the
+post-demo ladder must not carry `data.x_state: "to_touch"` while its
+`nextActionAt` is due. That pair is the drip's own pickup predicate, so it
+would send a cold DM on top of the bump. Park `x_state: "done"` when the lead
+goes on the ladder, and keep it there for every rung.
+
 ## The daily split: who does what
 
 **The `tribed-daily-x` task (11:00 local, step 4) stages the queue** — moved
@@ -503,7 +518,8 @@ a 7 DM cap.
 `data.x_dm_sent` was never messaged — a pre-click failure sends nothing, so it
 burned nobody — and it is already qualified and already written. Re-probe, and
 if it reads live, set `x_state` back to `"to_touch"` with a fresh
-`nextActionAt`. Not hypothetical: the XChat composer bug parked @TheJoeySwoll
+`nextActionAt`, unless the lead is on the post-demo ladder
+(`data.demo_ladder_state` set). Not hypothetical: the XChat composer bug parked @TheJoeySwoll
 as `done` on 2026-09-05 having sent nothing, and re-arming him delivered his
 DM the next morning.
 
