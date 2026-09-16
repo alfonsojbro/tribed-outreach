@@ -125,8 +125,7 @@ Two consequences follow from the table, and neither is obvious:
   the run **stops** on the class that runs out rather than skipping past the
   lead — leads behind the cut keep their `nextActionAt` and are retried whole.
 
-Its human-cadence constants (5 leads per tick PER SESSION, 40 per run
-rail-wide, a 25% tick skip,
+Its human-cadence constants (5 leads per tick, 40 per run, a 25% tick skip,
 shuffled order, a 20–90s pause between leads, inside the send window) still
 apply on top; the ledger is the ceiling, not a replacement.
 
@@ -155,14 +154,10 @@ its own (see "Discovery").
 
 ### The arithmetic
 
-`MAX_LEADS_PER_RUN` (40) is the page size, not the spend, and it is RAIL-WIDE —
-one due query the per-session legs are split out of. The spend is
-`MAX_LEADS_PER_TICK` (5) PER SESSION times the ticks that fire: a 13–23 UTC
-window is 10 hourly ticks and ~25% sit out, so **up to ~37 leads a day per
-session** — each one a follow and (DM step on, copy staged) a DM. With the
-second session disarmed that is ~37 for the rail; arming it would make the
-ceiling ~37 each, and the real limit is then each account's own warmup ramp, not
-this number.
+`MAX_LEADS_PER_RUN` (40) is the page size, not the spend. The spend is
+`MAX_LEADS_PER_TICK` (5) times the ticks that fire: a 13–23 UTC window is 10
+hourly ticks and ~25% sit out, so **up to ~37 leads a day** — each one a
+follow and (DM step on, copy staged) a DM.
 
 | per day | drip, unmetered | session ramp, week one | ratio |
 |---|---|---|---|
@@ -208,110 +203,6 @@ jobs). `X_DRIP_SESSION_ACCOUNT` is unset and correctly defaults to the pool
 id, which matches the worker key. The drip HAS run live: the 2026-08-28 and
 2026-08-29 touches (the @youbfit 403s, the "comment skipped" siblings) were
 its OAuth-era work, through the pre-pin build the box was then running.
-
-### TWO sending sessions off ONE pool, since 2026-09-16
-
-`x-accounts.json` holds two accounts: `digital_university` (`@alfonsojbro`,
-armed, the outreach rail) and `martinguer98958` (the VA's handle, DISARMED —
-`enabled: false`, every cap 0).
-
-**The drip now routes PER LEAD, not per deployment.** It reads `data.x_account`
-off the lead, exactly the way the LinkedIn drip reads `data.li_account`:
-
-| `data.x_account` | sends through |
-|---|---|
-| absent, or `digital_university` | @alfonsojbro's session (today's behaviour) |
-| `martinguer98958` | Martin's session |
-
-**ABSENT means the founder session.** Every lead staged before this change keeps
-its current behaviour and nothing is backfilled.
-
-**`X_DRIP_SESSION_ACCOUNT` stays unset.** It is the DEFAULT session, not the
-only one. Pointing it at the second account MOVES the rail; it does not add one.
-
-**ONE POOL. Never a second one.** `Outreach/{account}` is the dedupe boundary,
-and splitting it is exactly what the retired `tribed` account got wrong. Only
-the SENDING session is per lead.
-
-**Why a shared pool is safe now.** The old worry was a double touch: there is no
-claim and no lease on a lead, `x_state: "done"` is written only AFTER the send,
-and the worker's idempotency key is per account
-(`XSend/{accountId}/attempts/{draftId}`), so `xdrip.{leadId}.dm.{day}` does not
-dedupe ACROSS accounts. Per-lead ownership removes the race instead of policing
-it: the two predicates (`x_account` absent vs set) are complements over one
-field, so each leg works a DISJOINT set and the same request id can never be
-issued by two handles.
-
-**The legs are STRICTLY SEQUENTIAL.** The X worker shares one Chromium host with
-the LinkedIn and Instagram workers. The drip runs one session's leads to
-completion, then the next. Never drive two browser sessions at once.
-
-**Caps are PER ACCOUNT and are never shared, summed or assumed.** The drip reads
-`/health` per session and carries a separate budget object for each. A session
-whose caps come back `capsError` is dropped for that tick — its leads stay due —
-and it must not stand down the other session. A session with NO due leads costs
-nothing: the session set comes from the due set, never from config.
-
-**A failed `/health` is NOT always droppable, because READABLE is not SENDABLE.**
-A disarmed account's `/health` parses perfectly while the account can send
-nothing, so "some other session read fine" is no evidence the tick is healthy.
-The drip drops a failed read silently ONLY when the founder leg actually sent;
-it THROWS (and so alerts by mail through `JobRuns`) when the failing session is
-the pool's default, or when no leg got past its gates with a ledger in hand, or
-when every session failed. The shape this guards is the `X_WORKERS` half-apply:
-`/health` stops listing the founder account, the disarmed sibling still reads,
-and the tick would otherwise send zero and log "ok".
-
-**THE PACE IS PER SESSION NOW, THE PAGE IS NOT.** `MAX_LEADS_PER_TICK` (5) is
-sliced INSIDE each leg, so a two-session tick can drive up to 5 + 5 = 10 leads,
-sequentially. The pacing sleep allowance is per leg too. `MAX_LEADS_PER_RUN`
-(40) stayed RAIL-WIDE: it is the page size of the one due query the legs are
-split out of. Read every "5 a tick" below as per session and every "40 a run" as
-across the rail.
-
-**Residual: the 40-lead page is shared and sorted by `nextActionAt`.** A session
-holding 40+ older due leads would fill the page and starve the other before the
-per-session slice ever ran. Irrelevant at a pool of 19, and it self-drains; just
-know it is there if the pool ever grows past 40 due leads on one handle.
-
-**A quiet tick can now write nothing to `JobRuns/x-drip`.** The gate preflight
-moved AFTER the due query, so a tick with an empty queue returns `null` before
-it reads any `/health` — where a disarmed worker used to log
-`stood down on the session worker's gates…` every hour. Delivery is still read
-off `JobRuns/x-drip`, so absence of a row now means "no due leads", not "the job
-did not run". Check the queue before you call the job dead.
-
-**Reading the queue per session:** `get_x_session_account_health` reports
-`drip.bySession`, one row per session the queue names with its own
-`dueActionable`, `copyFreshToday` and `ladderDue`. Read a row against that
-session's OWN caps, never the other's.
-
-**The account is still DISARMED, and shipping the routing did not arm it.**
-`martinguer98958` stays `enabled: false` with every cap 0 until the warmup work
-below is done. The routing is ready; the account is not.
-
-**Egress: one IP per handle, never one IP for two.** `digital_university` runs
-on 161.77.95.204, `martinguer98958` on 161.77.26.194. Ports on a single IP are
-session LANES, not separate IPs — two X handles behind one IP is the classic
-linked-account signal.
-
-**Warmup tracks SESSION age, and a re-login resets the ramp to week 1.** The
-VA's handle therefore starts at 3 DMs a day and needs about four weeks to reach
-the current 19. It is also a DORMANT account, so it must post and engage
-organically BEFORE it sends anything cold, with outreach a minority of its
-daily actions. An account that is not otherwise active and starts only DMing
-strangers looks exactly like a bought account being switched on.
-
-**Do not read a second account as extra capacity.** On 2026-09-16 the pool was
-19 eligible against a target of 38 — the EXISTING cap already idles for want of
-leads. Sourcing is the constraint, not sending capacity. Raise it before adding
-senders.
-
-**`X_WORKERS` must carry the key on BOTH deployments** — mcp-ops (drives the
-drip) and Fly `tribed-mcp` (answers `get_x_session_account_health`). An account
-present on one and missing on the other returns a `capsError` that names only
-the configured accounts, which reads like a provisioning failure but is a
-half-applied config.
 
 **Worker, verified 2026-08-30:** gates all open (`enabled`, `armed`,
 `sessionStatus: "active"`, `browserAdapterReady: true`), caps dm 3 / follow 5
@@ -615,8 +506,7 @@ It sources and skip-checks handles, runs `view_x_profile` for liveness AND
 then upserts with `channel "x"`, `externalId` = the handle lowercased,
 `data.x_username`, `x_state: "to_touch"`, `nextActionAt` today. No
 `data.x_comment` and no pin fields — the comment leg is dead (top section).
-Drip pace is ~5 leads a tick PER SESSION and 40 a run rail-wide, send window
-13–23 UTC.
+Drip pace is ~5 leads a tick and 40 a run, send window 13–23 UTC.
 
 **Target the pool at 2 x `caps.dm.cap` eligible leads** — two days of runway at
 today's cap. Eligible means ALL of: `x_state: "to_touch"`, not dormant, NO reply marker
@@ -626,12 +516,6 @@ message all take a lead out of the rail), `x_dm_available` true, and
 the raw `stage: "top"` total: on 2026-09-06 the tracker held 24 `channel "x"`
 leads and 21 were dormant parks, so a pool that looked healthy could feed 3 of
 a 7 DM cap.
-
-**Count that target PER SESSION, not across the pool.** Caps are per account, so
-a depth that is two days of runway for the founder session can be a week for a
-warming one. `drip.bySession` (in `get_x_session_account_health`) gives the
-split; `caps.dm.cap` for the other session comes from calling that tool again
-with THAT accountId. Never sum two accounts' caps into one target.
 
 **Re-arm before sourcing a stranger.** A lead carrying `data.x_dm` with no
 `data.x_dm_sent` was never messaged — a pre-click failure sends nothing, so it
@@ -710,9 +594,30 @@ Session-worker gate readings, for the triage task's reads:
 | `caps.gates.sessionStatus` ≠ `"active"` | Session needs a re-login (`login-plain.sh`, then `check-session.sh`). |
 | `capsError` present | The worker reported no usable number. Spend nothing; never guess a cap. |
 
-Reading the inbox honestly: conclude "no replies" ONLY when `partial` is false.
-An empty list with `partial: true`, or `ok: false`, means the inbox is UNKNOWN,
-not empty. Report it that way.
+Reading the inbox honestly, and PER TRAY. `tabs` says what each tray proved on
+its own. `tabs.<tab>.verdict` is one of:
+
+| verdict | what it proves |
+|---|---|
+| `listed` | X said AT_END. The tray is complete, and complete with zero conversations IS empty. |
+| `short` | X answered with a real page of the tray and said more entries exist past it, and the worker could not reach the end inside the read's budget. |
+| `unknown` | The listing could not be read at all. It carries no conversations and proves nothing. |
+
+Conclude "no replies in this tray" ONLY from verdict `listed` with
+`tabs.<tab>.ok` true. That stays true for a tray X finished even when the OTHER
+tray came back short, so a complete requests tray is still usable proof on a
+read whose primary tray is not.
+
+A `short` tray's threads are REAL replies. Triage them exactly like a complete
+tray's, then re-read for the rest. Never read short as empty, and never read it
+as the XChat coverage limit: short is this reader stopping mid-listing, not X
+hiding a migrated conversation. `partialReason` names the pages it got, e.g.
+"page 1 of the trusted tray; X says more entries exist".
+
+The top-level `partial` and `ok` cover the WHOLE read, so a single short tray
+turns both against it even though every thread it returned is real. An empty
+list with `partial: true` or `ok: false` and no tray at verdict `listed` means
+the inbox is UNKNOWN, not empty. Report it that way.
 
 Doubting an `in`/`out` label: comparing a message's `sender` against the
 envelope's `selfHandle` CANNOT settle it. Both come out of the same comparison.

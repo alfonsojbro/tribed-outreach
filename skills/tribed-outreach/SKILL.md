@@ -2,7 +2,7 @@
 name: tribed-outreach
 description: Tribed's full Instagram, LinkedIn, and cold-email outreach for wellness, fitness, coaching, and creator prospects. Covers IG cold DMs, reply and objection handling, follow-up sequences, LinkedIn connection notes and InMail, post-demo booking, cold email and email sequences, and the daily cross-channel pipeline (LinkedIn via our own LinkedIn MCP, ICP filtering, review-queue drafting, tracker-driven follow-ups). Use for any Tribed outreach: a cold DM, connection note, InMail, cold email, bump, follow-up, objection handling, booking the walkthrough call, or running/queueing the daily pipeline. Trigger even when the user just pastes a profile screenshot, since the default intent is a first-touch message. Handles English, River Plate Spanish, and neutral Latin American Spanish, picked from the profile or the reply.
 metadata:
-  version: 1.24.0
+  version: 1.25.0
 ---
 
 # Tribed Outreach — Full Workflow
@@ -23,6 +23,8 @@ This file holds the shared core. The mode-specific playbooks and examples live i
 | X (Twitter) lead, cold DM, comment copy, or the X discovery batch (drip-owned outbound; the `tribed-daily-x` task stages it, Fill 4 in pipeline.md only reports pool depth) | 8. X | references/x.md |
 
 Ambiguous input: ask one quick question.
+
+Before SENDING any reply (Modes 2 and 5), read **references/send-policy.md**: it owns the send gate, the hold and approval loop, and the bereavement rule. It decides whether the copy leaves; the mode file still decides what the copy says.
 
 Modes 2 and 5 also read **references/answers.md** whenever the reply asks one of the five recurring buying questions (price or tiers, ownership and export, what Tribed runs vs what the coach does, the AI's role, whether an app flattens their method). Those have approved answers: the run drafts the reply from them and labels it `ready`, or `needs Alfonso` only when a `[ALFONSO TO CONFIRM]` blank is touched, with the rest of the reply already written.
 
