@@ -125,7 +125,8 @@ Two consequences follow from the table, and neither is obvious:
   the run **stops** on the class that runs out rather than skipping past the
   lead — leads behind the cut keep their `nextActionAt` and are retried whole.
 
-Its human-cadence constants (5 leads per tick, 40 per run, a 25% tick skip,
+Its human-cadence constants (5 leads per tick PER SESSION, 40 per run
+rail-wide, a 25% tick skip,
 shuffled order, a 20–90s pause between leads, inside the send window) still
 apply on top; the ledger is the ceiling, not a replacement.
 
@@ -154,10 +155,14 @@ its own (see "Discovery").
 
 ### The arithmetic
 
-`MAX_LEADS_PER_RUN` (40) is the page size, not the spend. The spend is
-`MAX_LEADS_PER_TICK` (5) times the ticks that fire: a 13–23 UTC window is 10
-hourly ticks and ~25% sit out, so **up to ~37 leads a day** — each one a
-follow and (DM step on, copy staged) a DM.
+`MAX_LEADS_PER_RUN` (40) is the page size, not the spend, and it is RAIL-WIDE —
+one due query the per-session legs are split out of. The spend is
+`MAX_LEADS_PER_TICK` (5) PER SESSION times the ticks that fire: a 13–23 UTC
+window is 10 hourly ticks and ~25% sit out, so **up to ~37 leads a day per
+session** — each one a follow and (DM step on, copy staged) a DM. With the
+second session disarmed that is ~37 for the rail; arming it would make the
+ceiling ~37 each, and the real limit is then each account's own warmup ramp, not
+this number.
 
 | per day | drip, unmetered | session ramp, week one | ratio |
 |---|---|---|---|
@@ -203,6 +208,110 @@ jobs). `X_DRIP_SESSION_ACCOUNT` is unset and correctly defaults to the pool
 id, which matches the worker key. The drip HAS run live: the 2026-08-28 and
 2026-08-29 touches (the @youbfit 403s, the "comment skipped" siblings) were
 its OAuth-era work, through the pre-pin build the box was then running.
+
+### TWO sending sessions off ONE pool, since 2026-09-16
+
+`x-accounts.json` holds two accounts: `digital_university` (`@alfonsojbro`,
+armed, the outreach rail) and `martinguer98958` (the VA's handle, DISARMED —
+`enabled: false`, every cap 0).
+
+**The drip now routes PER LEAD, not per deployment.** It reads `data.x_account`
+off the lead, exactly the way the LinkedIn drip reads `data.li_account`:
+
+| `data.x_account` | sends through |
+|---|---|
+| absent, or `digital_university` | @alfonsojbro's session (today's behaviour) |
+| `martinguer98958` | Martin's session |
+
+**ABSENT means the founder session.** Every lead staged before this change keeps
+its current behaviour and nothing is backfilled.
+
+**`X_DRIP_SESSION_ACCOUNT` stays unset.** It is the DEFAULT session, not the
+only one. Pointing it at the second account MOVES the rail; it does not add one.
+
+**ONE POOL. Never a second one.** `Outreach/{account}` is the dedupe boundary,
+and splitting it is exactly what the retired `tribed` account got wrong. Only
+the SENDING session is per lead.
+
+**Why a shared pool is safe now.** The old worry was a double touch: there is no
+claim and no lease on a lead, `x_state: "done"` is written only AFTER the send,
+and the worker's idempotency key is per account
+(`XSend/{accountId}/attempts/{draftId}`), so `xdrip.{leadId}.dm.{day}` does not
+dedupe ACROSS accounts. Per-lead ownership removes the race instead of policing
+it: the two predicates (`x_account` absent vs set) are complements over one
+field, so each leg works a DISJOINT set and the same request id can never be
+issued by two handles.
+
+**The legs are STRICTLY SEQUENTIAL.** The X worker shares one Chromium host with
+the LinkedIn and Instagram workers. The drip runs one session's leads to
+completion, then the next. Never drive two browser sessions at once.
+
+**Caps are PER ACCOUNT and are never shared, summed or assumed.** The drip reads
+`/health` per session and carries a separate budget object for each. A session
+whose caps come back `capsError` is dropped for that tick — its leads stay due —
+and it must not stand down the other session. A session with NO due leads costs
+nothing: the session set comes from the due set, never from config.
+
+**A failed `/health` is NOT always droppable, because READABLE is not SENDABLE.**
+A disarmed account's `/health` parses perfectly while the account can send
+nothing, so "some other session read fine" is no evidence the tick is healthy.
+The drip drops a failed read silently ONLY when the founder leg actually sent;
+it THROWS (and so alerts by mail through `JobRuns`) when the failing session is
+the pool's default, or when no leg got past its gates with a ledger in hand, or
+when every session failed. The shape this guards is the `X_WORKERS` half-apply:
+`/health` stops listing the founder account, the disarmed sibling still reads,
+and the tick would otherwise send zero and log "ok".
+
+**THE PACE IS PER SESSION NOW, THE PAGE IS NOT.** `MAX_LEADS_PER_TICK` (5) is
+sliced INSIDE each leg, so a two-session tick can drive up to 5 + 5 = 10 leads,
+sequentially. The pacing sleep allowance is per leg too. `MAX_LEADS_PER_RUN`
+(40) stayed RAIL-WIDE: it is the page size of the one due query the legs are
+split out of. Read every "5 a tick" below as per session and every "40 a run" as
+across the rail.
+
+**Residual: the 40-lead page is shared and sorted by `nextActionAt`.** A session
+holding 40+ older due leads would fill the page and starve the other before the
+per-session slice ever ran. Irrelevant at a pool of 19, and it self-drains; just
+know it is there if the pool ever grows past 40 due leads on one handle.
+
+**A quiet tick can now write nothing to `JobRuns/x-drip`.** The gate preflight
+moved AFTER the due query, so a tick with an empty queue returns `null` before
+it reads any `/health` — where a disarmed worker used to log
+`stood down on the session worker's gates…` every hour. Delivery is still read
+off `JobRuns/x-drip`, so absence of a row now means "no due leads", not "the job
+did not run". Check the queue before you call the job dead.
+
+**Reading the queue per session:** `get_x_session_account_health` reports
+`drip.bySession`, one row per session the queue names with its own
+`dueActionable`, `copyFreshToday` and `ladderDue`. Read a row against that
+session's OWN caps, never the other's.
+
+**The account is still DISARMED, and shipping the routing did not arm it.**
+`martinguer98958` stays `enabled: false` with every cap 0 until the warmup work
+below is done. The routing is ready; the account is not.
+
+**Egress: one IP per handle, never one IP for two.** `digital_university` runs
+on 161.77.95.204, `martinguer98958` on 161.77.26.194. Ports on a single IP are
+session LANES, not separate IPs — two X handles behind one IP is the classic
+linked-account signal.
+
+**Warmup tracks SESSION age, and a re-login resets the ramp to week 1.** The
+VA's handle therefore starts at 3 DMs a day and needs about four weeks to reach
+the current 19. It is also a DORMANT account, so it must post and engage
+organically BEFORE it sends anything cold, with outreach a minority of its
+daily actions. An account that is not otherwise active and starts only DMing
+strangers looks exactly like a bought account being switched on.
+
+**Do not read a second account as extra capacity.** On 2026-09-16 the pool was
+19 eligible against a target of 38 — the EXISTING cap already idles for want of
+leads. Sourcing is the constraint, not sending capacity. Raise it before adding
+senders.
+
+**`X_WORKERS` must carry the key on BOTH deployments** — mcp-ops (drives the
+drip) and Fly `tribed-mcp` (answers `get_x_session_account_health`). An account
+present on one and missing on the other returns a `capsError` that names only
+the configured accounts, which reads like a provisioning failure but is a
+half-applied config.
 
 **Worker, verified 2026-08-30:** gates all open (`enabled`, `armed`,
 `sessionStatus: "active"`, `browserAdapterReady: true`), caps dm 3 / follow 5
@@ -475,20 +584,21 @@ works; it is the manual escape hatch for a single approved draft, not the daily
 leg. The direct tools (`send_x_dm_session`, `follow_x_profile_session`) are for
 Alfonso's explicit one-target commands only.
 
-**One carve-out, since 2026-09-14, on Alfonso's instruction.** The daily run
-may call `send_x_dm_session` itself for ONE case: a post-demo ladder bump, the
-rungs in references/pipeline.md "Daily pickup: the Instagram, email and X demo
-ladder". Three conditions hold on every such send. The run reads the thread
-first with `read_x_session_inbox` and sends only when the last message is ours.
-`get_x_session_account_health` reads clear in the same run. The bump is charged
-to `caps.dm` like any other DM, and the lead defers one day at 0. Every other
-daily X send still goes through the drip.
+**The post-demo ladder is drip work, not run work. The 2026-09-14 carve-out
+is retired.** `send_x_dm_session` is NOT used for a ladder bump any more. The
+drip has its own ladder lane: it picks up a lead at `x_state` `demo_await_1` or
+`demo_await_2`, sends `x_demo_fu1` or `x_demo_fu2`, and charges the rung to
+`caps.dm` like any other DM. The copy must carry a same-day `x_demo_copy_at`,
+so the run authors it the morning it sends, with
+`refresh_demo_ladder_copy`. The rung has no follow leg and no cold-opener
+block: it is a reply inside a thread we already own. The rungs are described in
+references/pipeline.md "Daily pickup: the Instagram, email and X demo ladder".
 
-**A ladder lead is never left where the drip can take it.** An X lead on the
-post-demo ladder must not carry `data.x_state: "to_touch"` while its
-`nextActionAt` is due. That pair is the drip's own pickup predicate, so it
-would send a cold DM on top of the bump. Park `x_state: "done"` when the lead
-goes on the ladder, and keep it there for every rung.
+**The ladder states are drip-owned.** A lead goes on the ladder through
+`enrol_demo_ladder`, which writes `x_state: "demo_await_1"`, and the drip moves
+it from there. Never set a ladder lead to `"to_touch"` or `"done"` by hand: the
+first would put a cold DM on top of a bump, and the second would take the lead
+off the ladder the drip is working.
 
 ## The daily split: who does what
 
@@ -505,27 +615,37 @@ It sources and skip-checks handles, runs `view_x_profile` for liveness AND
 then upserts with `channel "x"`, `externalId` = the handle lowercased,
 `data.x_username`, `x_state: "to_touch"`, `nextActionAt` today. No
 `data.x_comment` and no pin fields — the comment leg is dead (top section).
-Drip pace is ~5 leads a tick and 40 a run, send window 13–23 UTC.
+Drip pace is ~5 leads a tick PER SESSION and 40 a run rail-wide, send window
+13–23 UTC.
 
 **Target the pool at 2 x `caps.dm.cap` eligible leads** — two days of runway at
-today's cap. Eligible means ALL of: `x_state: "to_touch"`, not dormant,
-`x_dm_available` true, and `data.x_dm` holding approved copy. Count that, never
+today's cap. Eligible means ALL of: `x_state: "to_touch"`, not dormant, NO reply marker
+(see the reply section below: a reply stage, `x_replied_at`, or an inbound
+message all take a lead out of the rail), `x_dm_available` true, and
+`data.x_dm` holding approved copy. Count that, never
 the raw `stage: "top"` total: on 2026-09-06 the tracker held 24 `channel "x"`
 leads and 21 were dormant parks, so a pool that looked healthy could feed 3 of
 a 7 DM cap.
+
+**Count that target PER SESSION, not across the pool.** Caps are per account, so
+a depth that is two days of runway for the founder session can be a week for a
+warming one. `drip.bySession` (in `get_x_session_account_health`) gives the
+split; `caps.dm.cap` for the other session comes from calling that tool again
+with THAT accountId. Never sum two accounts' caps into one target.
 
 **Re-arm before sourcing a stranger.** A lead carrying `data.x_dm` with no
 `data.x_dm_sent` was never messaged — a pre-click failure sends nothing, so it
 burned nobody — and it is already qualified and already written. Re-probe, and
 if it reads live, set `x_state` back to `"to_touch"` with a fresh
 `nextActionAt`, unless the lead is on the post-demo ladder
-(`data.demo_ladder_state` set). Not hypothetical: the XChat composer bug parked @TheJoeySwoll
+(`data.x_state` is `demo_await_1` or `demo_await_2`). Not hypothetical: the XChat composer bug parked @TheJoeySwoll
 as `done` on 2026-09-05 having sent nothing, and re-arming him delivered his
 DM the next morning.
 
 **THE RUNWAY RULE (standing, Alfonso 2026-08-31): the queue never holds less
 than today + 2 days of follow budget.** Each daily run tops the actionable
-queue (`x_state "to_touch"`, not dormant, due today or earlier) up to
+queue (`x_state "to_touch"`, not dormant, no reply marker, due today or
+earlier) up to
 `3 × caps.follow.cap` off the account's own health read — fallback target 15
 when caps are unreadable, said out loud in the report. Source until the
 target is met or discovery genuinely runs dry, and report
@@ -629,9 +749,64 @@ the doubt cost a full investigation. Spending it on the three checks above
 instead is the point of this paragraph.
 
 On any inbound last message: take the lead off automation immediately —
-`log_outreach_touch` with `advanceTo: "replied"`, `automated: false`, which also
-clears `nextActionAt` so the drip stops touching them — and draft a Mode 2
-reply. Replies are never auto-sent.
+`log_outreach_touch` with `advanceTo: "replied"`, `automated: false` — and draft
+a Mode 2 reply. Replies are never auto-sent.
+
+**That one call is now the whole handoff (2026-09-12).** On a `channel "x"`
+lead, `log_outreach_touch` with a reply stage stamps `data.x_state: "replied"`
+and `data.x_replied_at` itself, in the same write as the stage. A reply stage
+means any of `replied`, `interested`, `demo_request`, `meeting`, `won`. Do NOT
+write `data.x_state` by hand afterwards; there is no second call to forget.
+
+**And the drip now SKIPS a lead that has already answered.** Its due-queue
+filter reads four markers and ANY ONE of them takes the lead out: `data.x_state:
+"replied"`, a reply stage, a non-empty `data.x_replied_at`, or an inbound
+message in the lead's `conversation`. The lead is never followed and never DMed.
+
+The drip writes it NOTHING: no touch, no data patch, no stage move. Its
+`nextActionAt` and its `data.automated` are left exactly as you set them, so the
+thread stays on the human's follow-up queue where the handoff put it. That is
+deliberate. Parking it would clear the date and mark it automated, and the admin
+Today queue hides an automated lead, so the rail would take the conversation off
+your list instead of just leaving it alone.
+
+**The trap: a stage move alone retires an X lead from the drip.** Advancing a
+lead to `replied`, `interested`, `demo_request`, `meeting` or `won` is enough on
+its own, marker or no marker. So an OPTIMISTIC pipeline move, one made because
+you think the lead is warm rather than because they wrote, silently ends the
+drip on that lead. Worse, the same `log_outreach_touch` call stamps
+`data.x_replied_at` as it goes, so moving the stage back is not enough on its
+own. To put the lead back: move the stage back, set `data.x_state` to
+`to_touch`, CLEAR `data.x_replied_at`, and give it a fresh `nextActionAt`. Miss
+the stamp and the lead stays out of the rail with nothing on it to explain
+why.
+
+`repliedReason` also fires on a public @-mention that `xUnibox` matched to the
+lead: a mention is written into `conversation` as `{from: "lead"}` exactly like a
+DM is. So a prospect who replied to one of our tweets before we ever pitched
+them is conservatively skipped, and shows up in the health block rather than in
+the send queue.
+
+`drip.dueReplied` in the health block counts due leads carrying a reply marker.
+It is a REPLY BACKLOG, threads waiting on a person, not pending sends, and
+`drip.dueActionable` excludes them. A number that climbs there means replies are
+going unanswered, not that the rail is behind.
+
+Separately, a staged `data.x_dm` is never sent to a lead carrying
+`data.demo_url`: a cold opener to somebody already holding your demo is never
+the right message, so the follow stands, the DM does not, and the draft is
+stamped `error`.
+
+This block used to say `advanceTo: "replied"` also cleared `nextActionAt` "so
+the drip stops touching them". **It never did.** `logTouch` wrote no
+per-channel state key at all, "replied" is an ACTIVE stage, and the due query
+reads no `data.*` key — so a lead taken off automation stayed due and stayed
+actionable. On 2026-09-12 three cold openers went out on digital_university
+behind that false claim: @XtremeMotivated (stage `interested`, a demo in his
+hands, asking how to make money from the app he was already holding),
+@coachthisath (answered warmly on 09-10, stage `replied` plus `x_replied_at`)
+and @dylan_hester1, who carried the hand-written `x_state: "replied"` and was
+saved by nothing but the worker's 3600s DM pacing gap.
 
 Session caps ramp with the SESSION's age, not the account's, and carry a
 deterministic ±20% daily jitter, so a ceiling of 20 legitimately reads as 18 or
