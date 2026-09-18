@@ -45,8 +45,8 @@ dated announcement above before assuming X has relaxed it.
 
 ## Two rails, ONE engine, one account (rewired 2026-08-31)
 
-X outreach still has TWO rails — the unattended hourly **drip** and the
-operator-driven **session tools** — but since 2026-08-31 they share ONE
+X outreach still has TWO rails — the unattended **drip** (every 15 min) and
+the operator-driven **session tools** — but since 2026-08-31 they share ONE
 engine: the session worker's logged-in Playwright browser. The drip's OAuth/API
 transport was retired by explicit decision: it needed a scope reconnect just to
 follow, its comment leg was platform-dead anyway, and the browser rail was the
@@ -58,7 +58,7 @@ proven one (every live X follow and DM this pool has shipped went through it).
 |---|---|---|
 | Code | `mcp/src/repos/xDrip.ts` → `repos/xWorker.ts` | `mcp/src/repos/xWorker.ts` (`x-worker/`) |
 | Engine | the session worker's browser endpoints | the same logged-in **Playwright browser** |
-| Runs | hourly job, unattended, 13–23 UTC | only when a run or operator calls a tool |
+| Runs | every 15 min, unattended, 08–23 UTC | only when a run or operator calls a tool |
 | Public comment | **DEAD** — X 403s API replies on every buyable tier (see top) | **banned** (`reply_x_post_session` unverified) |
 | Like | retired with the comment leg | — |
 | Follow | `xWorker.followDirect` | `follow_x_profile_session` |
@@ -154,15 +154,38 @@ its own (see "Discovery").
 
 ### The arithmetic
 
-`MAX_LEADS_PER_RUN` (40) is the page size, not the spend. The spend is
-`MAX_LEADS_PER_TICK` (5) times the ticks that fire: a 13–23 UTC window is 10
-hourly ticks and ~25% sit out, so **up to ~37 leads a day** — each one a
-follow and (DM step on, copy staged) a DM.
+`MAX_LEADS_PER_RUN` (40) is the page size, not the spend. The per-tick figure is
+`MAX_LEADS_PER_TICK` (5), and since 2026-09-17 an 08–23 UTC window is 60
+fifteen-minute ticks with ~25% sitting out, so the per-tick cap alone would
+allow some ~225 leads a day.
 
-| per day | drip, unmetered | session ramp, week one | ratio |
+**The per-tick lead cap was never the binding constraint on DMs.** 5 leads
+times many ticks has never produced anything like the headline figure, and the
+reason is sharper than "the gap": **a tick sends AT MOST ONE DM PER SESSION.**
+The first DM of a leg leaves the next one refused with a retryAfter a full gap
+away, which the drip reads as far, so it marks the DM class paced and every
+later lead in that leg skips its DM. The real ceiling is therefore the TICK
+COUNT (x 0.75 for the random skip), capped in turn by the gap and then by
+`dmDailyCap` (18-20; the warmup ramp jitters it day to day):
+
+| configuration | DMs/day |
+|---|---|
+| 3600 s gap, 13–23, hourly | 10 x 0.75 = ~7.5 — the 7 observed |
+| tick every 15 min alone | 45 ticks, gap ceiling 10 → ~10 |
+| 1800 s gap alone | 15 x 0.75 = ~11 |
+| both (today) | gap ceiling 30, cap binds → ~18 |
+
+The CADENCE change is therefore the single largest contributor to 7 → 18, and
+the gap change buys almost nothing on its own. Reverting the gap alone does not
+restore the old volume; `X_DRIP_TICK_SECONDS=3600` does, and needs no deploy.
+
+| per day | drip lead touches, unmetered | session ramp, week one | ratio |
 |---|---|---|---|
 | follows | ~37 | 6 | ~6x |
 | DMs | ~37 | 3 | ~12x |
+
+(The 2026-08-25 table above is kept as the argument that was made at the time;
+its ~37 came from the old hourly tick in the old 13–23 window.)
 
 Those ramp figures are the real `/health` reading on 2026-08-25 for a session
 **one day old**. The drip now reads them per tick and stops on the class that
@@ -182,9 +205,18 @@ Not "lower `MAX_LEADS_PER_RUN`": a smaller unmetered number is still unmetered,
 and it still runs on a rail with no warmup ramp, no action gap and no proxy. Not
 "session rail to reads only" either — the session rail is the one carrying the
 safety machinery (warmup ramp, `minActionGapSeconds` 900, `minSendGapSeconds`
-3600, attempt-charged counters, per-account sticky egress). Disarming the
-careful rail to protect the careless one is backwards. The session rail keeps
-its reads AND its metered writes; the drip is the one that has to earn its.
+1800, attempt-charged counters, per-account sticky egress). The DM gap was
+lowered from 3600 to 1800 on 2026-09-17 by Alfonso's decision, after the rail
+delivered 7 DMs against a `caps.dm.cap` of 18-20 (ramp jitter) — 3600 s inside
+the send window was itself a ceiling below the cap. **1800 is the floor**: it
+is the largest gap that still lets the cap bind. It is NOT the first thing to
+revert if the session gates move — see the arithmetic above: the gap governs
+the SPACING X can observe, the tick cadence governs the VOLUME, and
+`X_DRIP_TICK_SECONDS=3600` is the larger lever and needs no deploy.
+
+Disarming the careful rail to protect the careless one is backwards. The
+session rail keeps its reads AND its metered writes; the drip is the one that
+has to earn its.
 
 ### Live status: ACTIVE as follow + DM on the worker engine since 2026-08-31
 
@@ -496,7 +528,10 @@ off the ladder the drip is working.
 **The `tribed-daily-x` task (11:00 local, step 4) stages the queue** — moved
 there from the morning run's Fill 4 on 2026-09-06, because a liveness read is
 only worth what its age allows: this task runs at 03:00 UTC and the drip sends
-from 13:00 UTC, while the morning run's read was nearly a day old by then.
+from 08:00 UTC, while the morning run's read was nearly a day old by then. NOTE
+that the margin shrank on 2026-09-17: the window used to open at 13:00 UTC, so
+the liveness read was ten hours old at the open; it is now five. The staging
+task has NOT been moved, but the margin it relies on is half what it was.
 Fill 4 now only REPORTS pool depth. Exactly one run stages a channel; two runs
 staging one channel spend the day's cap twice.
 
@@ -506,7 +541,7 @@ It sources and skip-checks handles, runs `view_x_profile` for liveness AND
 then upserts with `channel "x"`, `externalId` = the handle lowercased,
 `data.x_username`, `x_state: "to_touch"`, `nextActionAt` today. No
 `data.x_comment` and no pin fields — the comment leg is dead (top section).
-Drip pace is ~5 leads a tick and 40 a run, send window 13–23 UTC.
+Drip pace is ~5 leads a tick and 40 a run, send window 08–23 UTC.
 
 **Target the pool at 2 x `caps.dm.cap` eligible leads** — two days of runway at
 today's cap. Eligible means ALL of: `x_state: "to_touch"`, not dormant, NO reply marker
@@ -711,7 +746,8 @@ behind that false claim: @XtremeMotivated (stage `interested`, a demo in his
 hands, asking how to make money from the app he was already holding),
 @coachthisath (answered warmly on 09-10, stage `replied` plus `x_replied_at`)
 and @dylan_hester1, who carried the hand-written `x_state: "replied"` and was
-saved by nothing but the worker's 3600s DM pacing gap.
+saved by nothing but the worker's DM pacing gap (3600s at the time; 1800s
+since 2026-09-17).
 
 Session caps ramp with the SESSION's age, not the account's, and carry a
 deterministic ±20% daily jitter, so a ceiling of 20 legitimately reads as 18 or
