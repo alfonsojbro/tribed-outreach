@@ -306,16 +306,20 @@ X's own API has no search on our tier (handle lookup, follow, DM, post only).
 
 **Find with WebSearch, not with a scraper's search.** Same shape the Instagram
 routine settled on, for the same reason: scraper search surfaces are unreliable
-while a web search finds selling evidence directly and costs nothing. Verified
-working for X on 2026-08-23.
+while a web search finds evidence of a real method directly and costs nothing.
+Verified working for X on 2026-08-23.
 
-Query the indexed profile pages, targeting people who SELL coaching rather than
-people who merely talk about fitness:
+Query the indexed profile pages, targeting people who TEACH something (a named
+method, program, book, course or protocol) rather than people who merely talk
+about fitness. Coach queries still find the densest pocket; the expert queries
+cover the authors, educators and scientists the 2026-09-18 gate lets in:
 
 ```
 "x.com" online fitness coach "1:1 coaching" spots open clients
 "x.com" nutrition coach "coaching clients" transformation
 "x.com" wellness coach "dm me" coaching -crypto -forex -trading
+"x.com" author "my book" training OR nutrition OR sleep protocol -crypto
+"x.com" "free course" OR "podcast" strength OR mobility OR longevity method
 ```
 
 Always carry the exclusions: X is thick with crypto/forex/dropshipping
@@ -337,7 +341,7 @@ candidate before spending anything, and read THREE things off it, not one:
 **Dormancy is an ICP-quality gate now, not a comment-window one.** With the
 comment leg platform-dead there is no post to pin, so the old 7-day hard rule
 lost its mechanical reason. What survives is the judgment call: a coach who
-has not posted in months is not selling on X, and a follow + DM lands on an
+has not posted in months is not publishing on X, and a follow + DM lands on an
 account nobody checks. The 2026-08-27 audit is the cautionary tale — all six
 staged leads passed `exists` and `messageAvailable`, and their last posts ran
 2021 to 2026 (@TilleyGeorgie 1754 days; @youbfit's 2026-08-18 post is its only
@@ -379,11 +383,13 @@ The cross-channel bridge is usually cheaper than cold discovery: bio links on IG
 and LinkedIn leads already in ICP often carry the X handle.
 
 **Extraction rule.** One lead per distinct person, never one per post. Keep the
-post or bio line that proved they sell coaching as the anchor candidate.
+post or bio line that names their method or body of material as the anchor
+candidate.
 
 **This ICP fit is still unproven.** X's coach population skews more info-product
-and B2B, with fewer hands-on 1:1 coaches. Run the ICP filter (Job B in
-pipeline.md) hard and report the hit rate rather than assuming the queries work.
+and B2B, with fewer hands-on 1:1 coaches. Run the ICP gate below and the filter
+(Job B in pipeline.md) hard, and report the hit rate rather than assuming the
+queries work.
 
 **Apify is the optional deepener, not the finder.** `apidojo/tweet-scraper`
 ($0.0004/tweet) can pull recent tweets for a sharper anchor or a recency check.
@@ -414,6 +420,56 @@ both real coaches, neither with anything to put in an app). And never contact
 eating-disorder or recovery accounts. They surface constantly on weight and
 body-composition search terms, they are vulnerable people rather than prospects,
 and they go into the dropped count silently and are never staged.
+
+## The ICP gate: teachable material + a real audience (Alfonso, 2026-09-18)
+
+**The gate is "a real body of teachable material + a real audience". Both limbs
+must hold.** It replaced "real evidence they sell coaching" on 2026-09-18
+("they dont neccesarily need to be coaches, just experts"). Selling something is
+NOT required any more, and not selling is NOT a drop reason. Real evidence they
+CREATE (the liveness read above) still applies on top.
+
+**Material** is a distinct, named, teachable body of work: books, a course, a
+podcast with actual instruction in it, a protocol, a documented method. The test:
+is there something an app could be BUILT AROUND, that someone could RUN DAILY?
+Affirmation, encouragement, hot takes and engagement-farming are not material,
+however large the account.
+
+**Audience** is unchanged: the 2000 follower floor (Alfonso, 2026-09-10) still
+stands, it still needs a NUMBER, and an unknown count still FAILS. The bio
+override still needs a number too.
+
+**Three edges. Each was hit in the 2026-09-18 re-triage and each will recur.**
+
+1. **Reach is not material.** @tyromper has 258,073 followers and a bio saying
+   Author, Speaker and Coach, and was dropped: the output is one-line
+   affirmation, not instruction. A big audience never substitutes for
+   something to teach.
+2. **Widening the sell requirement is not widening the teach requirement.**
+   @ForgeWithJeremy clears the floor but has no distinct method or named body of
+   work. Dropped. The change lowered the bar on selling, not on having taught
+   something.
+3. **Credentials are not current output.** @LoriShemek has real nutrition
+   credentials and 168,707 followers, but 20 of 20 recent posts were political
+   commentary with no health content. That fails the material limb as a SOFT
+   drop with a recheck date (`data.x_icp_recheck_at`), because an app is built
+   from what someone publishes now, not what they published years ago.
+
+**The clinical line is NOT reopened (drawn 2026-09-17).** People delivering
+clinical CARE (treating disease, therapy, telehealth practices) stay out of ICP:
+a duty of care does not belong in a self-serve branded app. The line is who they
+are, not which conditions they mention:
+
+- A fitness coach with a clinical specialism passes (@bigleemurali: PCOS and
+  diabetes inside a training practice).
+- An educator publishing explainers under their own "education only, not medical
+  advice" frame passes (@DrKristieLeong, on her own standing disclaimer). She is
+  an educator publishing explainers, not a clinician taking patients.
+- A clinic, a treating physician taking patients, or a therapy or telehealth
+  practice fails, however good the content.
+
+Still rejected, as before: brand and agency accounts, crypto/forex, pure
+affiliates, and adult-content funnels wearing fitness branding.
 
 ## Comment copy — RETIRED (2026-08-30)
 
@@ -458,6 +514,47 @@ column and a wall of text reads as automation. Two or three sentences is plenty.
 
 The ask stays the small named one: "i made an initial version of <AppName>, can
 i send it over?" — never "want me to build yours?".
+
+**One line, always.** XChat submits on a raw newline and truncates a multi-line
+DM to line 1, so the whole DM (anchor, the app line and the ask) ships as ONE
+line with no line breaks. No em dashes, and no reflected-compliment construction
+("I love how you...").
+
+### Two copy shapes: coach and expert (2026-09-18)
+
+The second sentence names what goes in the app. Pick the shape by who they are.
+Both keep every rule above.
+
+**Coach** (they run clients): the coaching relationship goes in the app.
+
+> ...i made an initial version of a <AppName> app, your coaching and the
+> check-ins under your own name instead of scattered dms. can i send it over?
+
+**Expert** (author, educator, scientist, physician educator, podcaster): the
+coach shape does not fit, there are no check-ins to move. Swap the coaching
+relationship for THEIR MATERIAL and THEIR AUDIENCE:
+
+> ...i made an initial version of a <AppName> app, <their material> and <the
+> people using it> <under your own name / instead of X>. can i send it over?
+
+Working examples:
+
+- "your course and the daily practice somewhere people run it instead of a pdf"
+- "your books and the people running them day to day under your own name"
+- "your explainers and the people learning from them"
+- "your benchmarks and the sessions people actually run"
+- "your protocol and the people running it daily"
+- "your frameworks and the people working through them under your own name"
+
+Coaches still get coach-shaped copy. The expert shape is added beside it, not
+in place of it.
+
+**Write AROUND what they have publicly rejected (the Goodman case).** Jon
+Goodman is openly done with courses, in his own words. A pitch that reads like
+another info-product would bounce. The copy named the course exit as the rarer
+choice and anchored on the books as a daily practice instead. When an expert has
+publicly rejected the thing you are adjacent to, say so explicitly and write
+around it. Never ignore it.
 
 ### Hard rule: NO LINK in a cold DM. Ever.
 
