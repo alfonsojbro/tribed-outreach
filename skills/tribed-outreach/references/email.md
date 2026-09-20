@@ -15,6 +15,53 @@ What that rail changes about the craft:
 
 Older text in this file and in pipeline.md described an Instantly campaign with a `shipTarget` campaign id. That rail is gone; if you find a paragraph that still assumes it, it is stale.
 
+## The address has to be theirs, and it has to exist (2026-09-18)
+
+Three bad addresses reached the pool in one week, and one of them hard-bounced. `enrich_outreach_lead_emails` now carries two guards, and one sticky flag that no run may clear.
+
+**1. Ownership — is this site even theirs?** Before the crawler fetches a single page it judges the bio link. A url tagged as an affiliate or referral campaign is refused outright, reason `bio link is an affiliate or referral url, not their own site`:
+
+- a `utm_source` / `utm_medium` / `utm_campaign` / `utm_id` / `utm_content` whose value reads *influencer, affiliate, partner, ambassador, creator, referral, promo*;
+- a `?ref=` / `?aff=` / `?affiliate=` / `?via=` / `?partner=` parameter;
+- a `/referral-portal`, `/affiliate`, `/partners` path segment;
+- a utm campaign named after the lead — a site does not tag its own owner as a campaign.
+
+That is Danai Maraire's case exactly: her bio link was `tslhg.com/referral-portal/?utm_source=influencer&utm_campaign=Danai-May`, an affiliate portal for The Student Loan Help Group, and the crawl stamped `info@tslhg.com` as her own role address at confidence `high`. Mailing it mails a student-loan company. The refusal now happens **before the fetch**, so no `emailSiteText` describing a stranger's business is ever captured for a message to anchor on.
+
+A site we simply cannot tie to the lead — no name, handle or notes match — is **not** refused. It is capped: an address found there can never be graded `high`, so it can never outrank a corroborated one in the `high → medium → low` selection order.
+
+Ownership is judged **twice**: once on the bio link, and again on whatever url actually answers, because redirects are followed. A link on the lead's own domain that 302s into an affiliate portal — or a link shortener hiding one, and no shortener is in the aggregator list — is caught by the second verdict, before the landing page's words are captured.
+
+The second judgement is deliberately **weaker** than the first. A refusal there also needs the landing HOST to be somebody else's: a redirect back onto the same host, or onto a host we can corroborate as the lead's, is never an affiliate refusal however the query string reads. Sites append their own tracking (`tinawellsfit.com/` → `tinawellsfit.com/?ref=bio`), and since an affiliate refusal is sticky, the strict rule applied to a landing url would park good leads behind a human over a cosmetic parameter. The pre-fetch judgement keeps the strict rule unchanged.
+
+**2. Resolution — does the domain exist?** The verdict on an address's own domain:
+
+| DNS | Verdict |
+|---|---|
+| MX records present | keep, unchanged |
+| A record but no MX | keep, but **forced to confidence `low`** |
+| nothing resolves | **refused** / flagged unusable |
+| malformed domain (`coach example.com`, `x.com>`, empty) | **refused** — this is bad input, not a resolver failure |
+| resolver error / timeout | keep — **fails open** |
+
+Unusual is not malformed, and the shape check is careful about the difference, because a refusal is sticky and parking a lead over a legal domain costs a human to undo. A trailing dot (`gmail.com.`) is the root-anchored form of a good name; an internationalised domain (`münchen.de`) is normalised to the punycode DNS is actually asked for; an IDN TLD (`example.xn--p1ai`) matches no plain letters-only tail and must not be refused for it. All three resolve normally.
+
+Failing open on a resolver error is deliberate. A SERVFAIL is our problem, not evidence against the lead, and one flaky afternoon must not quietly empty the email pool. It is *not* good enough to un-park a lead, though — see the flag below.
+
+**The check that matters is the one on STORED addresses, not the one inside the crawl.** Be clear about this, because the crawl-side check reads more important than it is: the crawler only ever promotes an address on the host that just served it HTTP, or a freemail address, and both of those resolve by definition. It is a backstop, near-dead by construction.
+
+The guard that does the work runs on `data.email` — addresses that came from an Instagram bio, or were typed into the data bag by hand, and were never crawled at all. **That is where both bounces came from.** Coach Tho's `thomeisha@infinitecurvesrva.com` and Megan Long's `megan@ateamathletes.com` were both hand-written, both on NXDOMAIN domains, and Tho's bounced on 2026-09-16.
+
+So: a lead that already has an address is verified rather than skipped — one DNS query, no crawl. That happens without `force`, and **also under `force`** whenever the re-resolve misses and the stored address survives, which is precisely the case `force` is advertised for. `verifyOnly: true` runs that pass and nothing else; that is the pre-send check the daily run does over the day's candidates before writing any copy.
+
+**3. `data.email_unusable` is sticky, and `force` does not override it.** A flagged lead is skipped entirely, reported with status `skipped-unusable` and the stored reason. Only `overrideUnusable: true` re-checks one, and the flag clears **only** when the re-check comes back clean — an address found, ownership not affiliate, domain resolving — stamping `data.email_unusable_cleared_at`. Anything less leaves the lead parked.
+
+"Clean" is strict. The address's domain must positively resolve: a `no-mx` domain is good enough to stamp an address at `low` and nowhere near good enough to un-park a lead, and a resolver that could not answer is not an answer.
+
+Nothing automatic ever lowers the flag or rewrites a reason already stored. Danai's flag carries a human's paragraph of reasoning; re-deriving it would be strictly worse than keeping it. On a clear the reason is **moved** to `data.email_unusable_prior_reason`, never deleted, so a lead that has to be re-parked has not lost its history. When the extractor raises the flag itself it also writes `data.email_unusable_source: "extractor"`.
+
+The response counts these apart from misses, under `unusable`, and they are **excluded** from `missed` so the digest's miss rate stays comparable to the ~35% baseline. A miss is a lead we could not find an address for. An `unusable` is a lead whose address we have and must actively refuse to use. Per lead, the marker is `results[].status`: `skipped-unusable` for the sticky flag, `unusable-domain` for a dead domain.
+
 What to gather: name, niche, the anchor detail (rule zero — a post, a program name, a book, a launch), follower/creator context for the price tier if it ever comes up, language. If no anchor is visible, ask; don't pad.
 
 ## What makes email different from a DM
