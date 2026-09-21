@@ -42,6 +42,11 @@ Each entry: what triggers it, the direction of the answer, the label it carries,
 
 **Label:** `ready` for the deferral. A last-resort quote is `needs Alfonso` unless he asked for it, and always when the prospect sits above SKILL.md's tier line (note "above tier line, confirm $149").
 
+**"How would we do business?" / "how does this work commercially?"** (Jack Broudy, 2026-09-20: "In a few words how would you and I do business?") This is NOT the price question and it does not get the price deferral. It asks for the STRUCTURE, and the structure is on the fact list, so say it plainly and in the length they asked for: it stays their brand and their members, a flat monthly fee, setup is free, month to month, Tribed builds and runs the infrastructure and the AI, they keep doing the method. No figure, no call ask bolted on, and if they also asked for time, no ask at all. `ready`.
+
+**Sample (asked for a couple of days AND asked how it works):**
+> take your couple of days Jack, no rush. few words: Nonlinear Tennis stays yours, the brand and the members. we build and run the app behind it for a flat monthly fee, setup's free, month to month. you keep doing the method.
+
 **Sample (post-demo, asked for tiers, normal case):**
 > on the number, easier once you've seen it whole. I'll show you around it live, 15 minutes. Wed 16 at 8pm ET or Mon 21 at 7:30pm ET?
 
