@@ -36,7 +36,7 @@ Each yes makes the next one cheaper, and by the time the call is offered it is a
 
 **Buying objections.** Now they're real objections about paying, not brush-offs. Directions below, same rule as Mode 2: write fresh every time, never paste the samples.
 
-**Silence after a delivered demo.** The post-demo ladder in references/followups.md owns it: bump 1 three days after the demo went out, bump 2 (the audit offer) four days after that, bump 3 (the video walkthrough) four days later, then park. The daily routine enrols the lead with `enrol_demo_ladder` and the channel's hosted rail sends the bumps. Read that section before writing any of them. The only silence rule that outranks it is "The 48-hour bump" below, which owns the lead whose last message from us was the two-slot offer.
+**Silence after a delivered demo.** The post-demo ladder in references/followups.md owns it: bump 1 three days after the demo went out, bump 2 (the audit proposal) four days after that, bump 3 (the video walkthrough) four days later, then park. The daily routine enrols the lead with `enrol_demo_ladder` and the channel's hosted rail sends the bumps. Read that section before writing any of them. The only silence rule that outranks it is "The 48-hour bump" below, which owns the lead whose last message from us was the two-slot offer.
 
 **No after seeing it.** Same graceful exit as Mode 2. The demo stays live, door stays open.
 
