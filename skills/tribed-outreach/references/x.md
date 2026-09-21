@@ -604,6 +604,25 @@ works; it is the manual escape hatch for a single approved draft, not the daily
 leg. The direct tools (`send_x_dm_session`, `follow_x_profile_session`) are for
 Alfonso's explicit one-target commands only.
 
+**A reply to a lead who wrote back is WARM and has its own budget (Alfonso,
+2026-09-21).** On that day the demo DM to @BradleyGrey_, who had answered
+"sure", was refused with `Daily X dm cap reached (17)`: the drip had spent the
+cold slots. Now a `send_x_dm_session` DM to a lead the worker can prove replied
+charges `caps.dmWarm` (default 40 a day, not ramped), never `caps.dm`. The
+worker decides, never the caller: it reads the lead and needs channel `x`, a
+matching handle, the SENDING session owning the thread, and `x_state:
+"replied"` or `x_replied_at` set. The owner is `data.x_account` when set, and
+the lead's pool when it is not; a reply to one session is never warm evidence
+for another, because there it is a first contact. Pass `leadId` when you have
+it; otherwise the tool finds the lead by handle. When the session is not the
+pool's own, pass `poolAccountId` too (a `martinguer98958` reply to a
+`digital_university` lead). The result names `dmKind` and `budget`. A `cold`
+result on a lead you believe replied means the lead record does not prove it:
+mark a lead replied only after reading the thread shows they wrote to us, and
+never to gain warm budget. A
+spent `caps.dm` never blocks a reply to someone who wrote back. The gap and the
+lease still apply, so a warm DM can come back paced with a `retryAfter`.
+
 **The post-demo ladder is drip work, not run work. The 2026-09-14 carve-out
 is retired.** `send_x_dm_session` is NOT used for a ladder bump any more. The
 drip has its own ladder lane: it picks up a lead at `x_state` `demo_await_1`,
