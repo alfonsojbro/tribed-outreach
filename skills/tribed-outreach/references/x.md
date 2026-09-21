@@ -606,8 +606,9 @@ Alfonso's explicit one-target commands only.
 
 **The post-demo ladder is drip work, not run work. The 2026-09-14 carve-out
 is retired.** `send_x_dm_session` is NOT used for a ladder bump any more. The
-drip has its own ladder lane: it picks up a lead at `x_state` `demo_await_1` or
-`demo_await_2`, sends `x_demo_fu1` or `x_demo_fu2`, and charges the rung to
+drip has its own ladder lane: it picks up a lead at `x_state` `demo_await_1`,
+`demo_await_2` or `demo_await_3`, sends `x_demo_fu1`, `x_demo_fu2` or
+`x_demo_fu3`, and charges the rung to
 `caps.dm` like any other DM. The copy must carry a same-day `x_demo_copy_at`,
 so the run authors it the morning it sends, with
 `refresh_demo_ladder_copy`. The rung has no follow leg and no cold-opener
@@ -654,7 +655,7 @@ a 7 DM cap.
 burned nobody — and it is already qualified and already written. Re-probe, and
 if it reads live, set `x_state` back to `"to_touch"` with a fresh
 `nextActionAt`, unless the lead is on the post-demo ladder
-(`data.x_state` is `demo_await_1` or `demo_await_2`). Not hypothetical: the XChat composer bug parked @TheJoeySwoll
+(`data.x_state` is `demo_await_1`, `demo_await_2` or `demo_await_3`). Not hypothetical: the XChat composer bug parked @TheJoeySwoll
 as `done` on 2026-09-05 having sent nothing, and re-arming him delivered his
 DM the next morning.
 

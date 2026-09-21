@@ -41,24 +41,29 @@ Lucia, ultima de mi parte. Te armo una propuesta de todo lo que iria adentro de 
 
 ## The post-demo ladder (Mode 5 silence)
 
-The ladder above is for a prospect who never replied to the opener. This one is for a prospect whose demo was delivered and who then went quiet. Same shape: two touches, each one gives something, then stop. The clock starts at the DELIVERY of the demo, not at the reply that asked for it. The same clock runs on LinkedIn, X and Instagram. Email has no ladder.
+The ladder above is for a prospect who never replied to the opener. This one is for a prospect whose demo was delivered and who then went quiet. Same shape: three touches, each one gives something, then stop. The clock starts at the DELIVERY of the demo, not at the reply that asked for it. The same clock runs on LinkedIn, X and Instagram. Email has no ladder.
 
 | Touch | When | Angle | Copy field |
 |---|---|---|---|
 | Demo delivered | day 0 | the link itself, by the drip's demo rail or by hand | `li_demo_message` on LinkedIn |
 | Demo bump 1 | 3 days after delivery, no reply | curiosity, anchored on ONE thing inside THEIR app ("did you find the AI coach, ask it about deloading"). When open tracking is live and `data.demo_opened_at` is absent, ask whether the link opened instead | `li_demo_fu1` on LinkedIn, `x_demo_fu1` on X, `ig_demo_fu1` on Instagram |
-| Demo bump 2 | 4 days after bump 1, no reply | the 60-second video of their own app, or the walkthrough. One soft question, no price, no booking link | `li_demo_fu2` on LinkedIn, `x_demo_fu2` on X, `ig_demo_fu2` on Instagram |
-| Stop | 14 quiet days after bump 2 | `nextAction: "Park (demo ladder done)"`, stage unchanged, door open. The daily report lists them; nobody auto-marks them lost | none |
+| Demo bump 2 | 4 days after bump 1, no reply | THE AUDIT PROPOSAL: their own page at `https://tribed.io/p/{id}`, one line on what the audit found about their funnel, one soft question. No price in the message | `li_demo_fu2` on LinkedIn, `x_demo_fu2` on X, `ig_demo_fu2` on Instagram |
+| Demo bump 3 | 4 days after bump 2, no reply | the video walkthrough: offer to walk them through their app, or to send a short video of it. One soft question, never a `[video link]` placeholder | `li_demo_fu3` on LinkedIn, `x_demo_fu3` on X, `ig_demo_fu3` on Instagram |
+| Stop | 14 quiet days after bump 3 | `nextAction: "Park (demo ladder done)"`, stage unchanged, door open. The daily report lists them; nobody auto-marks them lost | none |
+
+The states run in order on every rail: `demo_await_1` -> `demo_await_2` -> `demo_await_3` -> `done`. Bump 2 copy MUST carry the audit page link. Without a `https://tribed.io/p/` URL the tool and every rail refuse it, `audit_link_missing`.
 
 Any reply at any point stops the ladder. The ladder state field is rail-prefixed, one per channel: `data.li_state` on LinkedIn, `data.x_state` on X, `data.ig_demo_state` on Instagram. A reply parks the lead for a reply with `advanceTo: "replied"` and the stop value of that channel: `reply_due` on LinkedIn, `replied` on X, `reply_due` on Instagram. The run then drafts the answer instead of the next bump. A lead carrying `data.slots_offered_at` is NOT on this ladder: its last message was the two-slot offer, so "The 48-hour bump" in references/postdemo.md owns that silence.
 
-**Who sends.** On all three channels the hosted rail sends, never the run. On LinkedIn the drip sends both bumps, on both sessions, off the `li_*` fields, in `/messaging` or in the Sales Navigator thread: an SN-delivered demo is bumped inside its own InMail thread through the worker's `/sendSalesMessage` route, which only the founder session can use. On X the drip sends them off `x_state` `demo_await_1` / `demo_await_2` and `x_demo_fu1` / `x_demo_fu2`, charged against `caps.dm`. On Instagram the worker sends each rung as a one-DM `demo_bump` sequence off `ig_demo_state` and `ig_demo_fu1` / `ig_demo_fu2`. The daily run sends NOTHING itself; this replaces the direct-send wording of 2026-09-14. The run does two things: it enrols a delivered demo with `enrol_demo_ladder`, and it authors each rung's copy the morning that rung sends with `refresh_demo_ladder_copy`. Both are global-only Tribed MCP tools. Both refuse a placeholder, a reply after the delivery, a slot offer in flight and an unproven delivery. Only the refresh refuses a human-owned lead (`automated: false`): enrolment is the handoff, a hand-parked lead enrols after the run has read the thread, and the write flips `automated` to true. The thread-read-first gate stays: read the thread before you enrol or author, and go ahead only when the tail is ours. Email has no hosted rail and no ladder yet. Mechanics per channel are in references/pipeline.md, in "Backfill: put every delivered demo on the clock" and in "Daily pickup: the Instagram, email and X demo ladder".
+**Who sends.** On all three channels the hosted rail sends, never the run. On LinkedIn the drip sends all three bumps, on both sessions, off the `li_*` fields, in `/messaging` or in the Sales Navigator thread: an SN-delivered demo is bumped inside its own InMail thread through the worker's `/sendSalesMessage` route, which only the founder session can use. On X the drip sends them off `x_state` `demo_await_1` / `demo_await_2` / `demo_await_3` and `x_demo_fu1` / `x_demo_fu2` / `x_demo_fu3`, charged against `caps.dm`. On Instagram the worker sends each rung as a one-DM `demo_bump` sequence off `ig_demo_state` and `ig_demo_fu1` / `ig_demo_fu2` / `ig_demo_fu3`. The daily run sends NOTHING itself; this replaces the direct-send wording of 2026-09-14. The run does two things: it enrols a delivered demo with `enrol_demo_ladder`, and it authors each rung's copy the morning that rung sends with `refresh_demo_ladder_copy`. Both are global-only Tribed MCP tools. Both refuse a placeholder, a reply after the delivery, a slot offer in flight and an unproven delivery. Only the refresh refuses a human-owned lead (`automated: false`): enrolment is the handoff, a hand-parked lead enrols after the run has read the thread, and the write flips `automated` to true. The thread-read-first gate stays: read the thread before you enrol or author, and go ahead only when the tail is ours. Email has no hosted rail and no ladder yet. Mechanics per channel are in references/pipeline.md, in "Backfill: put every delivered demo on the clock" and in "Daily pickup: the Instagram, email and X demo ladder".
 
-**The timing is enforced in code, so do not restate it from memory.** `DEMO_FU1_DELAY_DAYS` (3), `DEMO_FU2_DELAY_DAYS` (4) and `DEMO_LADDER_REST_DAYS` (14) live in `NobleAdmin/mcp/src/repos/demoLadder.ts`, the one module all three rails share. If a constant changes, change this table in the same commit, the same rule `FOLLOWUP_2_DELAY_DAYS` carries above.
+**The timing is enforced in code, so do not restate it from memory.** `DEMO_FU1_DELAY_DAYS` (3), `DEMO_FU2_DELAY_DAYS` (4), `DEMO_FU3_DELAY_DAYS` (4) and `DEMO_LADDER_REST_DAYS` (14) live in `NobleAdmin/mcp/src/repos/demoLadder.ts`, the one module all three rails share. If a constant changes, change this table in the same commit, the same rule `FOLLOWUP_2_DELAY_DAYS` carries above.
 
 **Bump 1, 3 days after delivery, the one thing inside their app.** Name a single feature that is really in their build and give them a reason to poke at it, in their own words. Curiosity, not pressure. No price, no booking link, no count of how long they have been quiet. One question at the end, answerable in a word.
 
-**Bump 2, 4 days later, the video.** Offer the 60-second video of their own app, or offer to walk them through it. This is the asset Mode 5 owns, and this is the only bump on the ladder that offers it. Use a [video link] placeholder when the message carries the video, never a real URL. No price, no booking link, one soft question.
+**Bump 2, 4 days later, the audit proposal.** Build the page first, with the sales toolset: `enable_tools` for `sales`, read `get_proposal_guide`, then `upsert_proposal`. The page is the gift. The message is two lines and the link: one line on what the audit found about their funnel, the link at `https://tribed.io/p/{id}`, one soft question. No price in the message, no booking link. When the account's configured stages include `audit_proposal`, the rail moves the lead to that stage on the send. The audit build is capped at 2 per run per channel, so a due bump 2 whose page is not built yet waits a day. It is never sent without the page.
+
+**Bump 3, 4 days after that, the video.** Offer the 60-second video of their own app, or offer to walk them through it. This is the asset Mode 5 owns, and this is the only bump on the ladder that offers it. Never write a [video link] placeholder here: offer the video, let them say yes, then send it. No price, no booking link, one soft question.
 
 ### Examples
 
@@ -71,11 +76,19 @@ Kat, ok slightly nosy question. the habits tab in your app splits your 12 weeks 
 **Demo bump 1, X (English):**
 Marco, your app has the AI coach trained on your own rest-week guidance. most people test that one first. did you open it yet?
 
-**Demo bump 2, Instagram (English):**
-Kat, i can film 60 seconds walking through your app, the part a member lands on first, so you don't have to dig around. should i record it?
+The bump 2 examples write the link as `https://tribed.io/p/{id}`. A real message carries the real id of the page you just built, never the braces.
 
 **Demo bump 2, LinkedIn (English):**
-Tim, the screen a member lands on day one is hard to picture from a link. I can record 60 seconds of it, or walk you through it live. Which is easier?
+Tim, I went through how you sell the program and wrote it up: https://tribed.io/p/{id}. The short version is that the free crowd never gets a second step. Does that match what you see?
+
+**Demo bump 2, Instagram (English):**
+Kat, i mapped how someone goes from your reels to paying you, it's here: https://tribed.io/p/{id}. the gap is the week after they dm you. does that sound right?
 
 **Demo bump 2, neutral Spanish:**
-Lucia, te grabé un video de 60 segundos de tu app, lo que ve un miembro el primer día: [video link]. ¿Le ves sentido para tu gente?
+Lucia, armé una auditoría de tu embudo, está acá: https://tribed.io/p/{id}. Lo que salta es que después de la primera charla no hay un paso siguiente. ¿Lo ves igual?
+
+**Demo bump 3, LinkedIn (English):**
+Tim, the screen a member lands on day one is hard to picture from a link. I can record 60 seconds of it, or walk you through it live. Which is easier?
+
+**Demo bump 3, Instagram (English):**
+Kat, i can film 60 seconds walking through your app, the part a member lands on first, so you don't have to dig around. should i record it?
