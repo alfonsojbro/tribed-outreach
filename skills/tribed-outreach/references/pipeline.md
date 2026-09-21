@@ -270,7 +270,7 @@ Three shapes are NOT ladder work:
 |---|---|---|
 | LinkedIn | `read_linkedin_session_inbox({ threadIds })` on the owning session; the drip also reads the tail itself | the LinkedIn drip, both sessions, off `li_demo_fu1` / `li_demo_fu2` |
 | Instagram | `unibox_sync_instagram({ accountId, preserveUnread: true })` then `unibox_get_thread`; fall back to `read_instagram_session_inbox` when the thread is not in the unibox | the Instagram worker, one `demo_bump` sequence per rung, off `ig_demo_fu1` / `ig_demo_fu2` |
-| X | `read_x_session_inbox` | the X drip, through the session worker's DM rail, off `x_demo_fu1` / `x_demo_fu2` |
+| X | `read_x_lead_thread({ accountId, leadId })`, the direct read of one thread through its owning session. `read_x_session_inbox` stops at 60 threads and misses older replies | the X drip, through the session worker's DM rail, off `x_demo_fu1` / `x_demo_fu2` |
 | Email | `search_threads` / `get_thread` (Gmail MCP) on the prospect's address | no rail. Email is not on the ladder |
 
 **Read the thread first, every time. It is the only hard gate on this ladder.** Enrol or author only when the last message in the thread is OURS and nothing in it changes the copy. A tail that is theirs is a reply the run owes, not ladder work: park it (`li_state: "reply_due"`, `x_state: "replied"`, `ig_demo_state: "reply_due"`), draft the answer, enrol nothing. A thread you could not read, or a sync that failed, defers the lead one day. Never enrol blind.

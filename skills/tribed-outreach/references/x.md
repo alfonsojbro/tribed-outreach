@@ -789,6 +789,16 @@ On any inbound last message: take the lead off automation immediately —
 `log_outreach_touch` with `advanceTo: "replied"`, `automated: false` — and draft
 a Mode 2 reply. Replies are never auto-sent.
 
+**The pre-send tail check (2026-09-21).** Before ANY follow-up to an X lead who
+replied, call `read_x_lead_thread({ accountId, leadId })`. It reads that one
+thread through the session that owns it, wherever the thread sits in the tray.
+`read_x_session_inbox` opens at most 60 threads newest first, and a reply from
+days ago falls below that cut: Bradley Grey's "sure" of 2026-09-16 did, in a
+primary tray of 97. Send ONLY on `verdict: "found"`, and only after you read
+the tail and `lastFromUs`. `unknown` (any `reason`, `xchat_possible`
+included) goes to a human, never to the send. `not_found` means the legacy
+store holds no thread, not that nobody wrote: quote `coverage`.
+
 **That one call is now the whole handoff (2026-09-12).** On a `channel "x"`
 lead, `log_outreach_touch` with a reply stage stamps `data.x_state: "replied"`
 and `data.x_replied_at` itself, in the same write as the stage. A reply stage
