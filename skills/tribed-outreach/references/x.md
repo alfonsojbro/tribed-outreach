@@ -620,8 +620,10 @@ pool's own, pass `poolAccountId` too (a `martinguer98958` reply to a
 result on a lead you believe replied means the lead record does not prove it:
 mark a lead replied only after reading the thread shows they wrote to us, and
 never to gain warm budget. A
-spent `caps.dm` never blocks a reply to someone who wrote back. The gap and the
-lease still apply, so a warm DM can come back paced with a `retryAfter`.
+spent `caps.dm` never blocks a reply to someone who wrote back. The DM gap does
+not apply to a warm DM, it paces the cold drip only. The lease and the 90 s
+floor after any action still apply, so a warm DM comes back paced only while
+another send is in flight or within 90 s of the last action.
 
 **The post-demo ladder is drip work, not run work. The 2026-09-14 carve-out
 is retired.** `send_x_dm_session` is NOT used for a ladder bump any more. The
