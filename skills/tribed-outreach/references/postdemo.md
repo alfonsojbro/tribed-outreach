@@ -17,7 +17,7 @@ Opening the demo is curiosity, not commitment. Someone who just asked a question
 Earn the yesses in order of size, one per message:
 
 1. A yes about THEIR material. "want me to rebuild it on your updated version?" Costs them a word, and it pulls their real content into the build.
-2. A yes about THEIR people. "do you think this is something your clients could use?" (Same ask as the delivery message in voice.md, still valid here.)
+2. A yes about THEIR people. "do you think this is something your clients could use?" (A follow-up ask, not the delivery. The delivery message itself carries no question and never down-ranks the work; see voice.md, 2026-09-25.)
 3. A yes to seeing more of it. A section they missed, a short video of their own app, the part that answers what they asked.
 
 Each yes makes the next one cheaper, and by the time the call is offered it is a continuation instead of a leap.
@@ -134,7 +134,7 @@ On top of the global list: "hop on a quick call", "jump on a call", "find a time
 
 **Asked a question, gate not passed (English):**
 Prospect: "did you pull this off my site? and does it actually coach or just summarise?"
-yeah, your site and your posts, nothing else public. that's why it's a first version. and it coaches, it's trained on your method so someone types what they're stuck on and it tells them what to do. the material you've written since is what the real one gets built from, want me to rebuild it on that?
+yeah, your site and your posts, nothing else public. and it coaches, it's trained on your method so someone types what they're stuck on and it tells them what to do. the material you've written since goes in next, want me to rebuild it on that?
 
 **Loved it, gate not passed (English):**
 Prospect: "ok this is actually really cool, the AI knew my whole method lol"
