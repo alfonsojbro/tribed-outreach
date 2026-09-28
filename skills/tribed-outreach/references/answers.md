@@ -15,7 +15,7 @@ Read this from Mode 2 (references/replies.md) and Mode 5 (references/postdemo.md
 5. **Never go past the facts.** Anything a prospect asks that is not on the fact list below falls under the existing rule (references/postdemo.md, "Facts rule"): do not invent, ask Alfonso. Questions seen more than once that are NOT yet here, from `wiki/Coach Buying Questions.md`: where clients book, whether the app replaces their website, content import (articles, reviews), offline use, and whether their material is ever used outside their own app (the exposure fear in the Marnus note). Candidates for the next additions to this file.
 6. **A written-scope ask is still an artifact.** When the prospect asks for a proposal or a written scope (Marnus: "make it concrete..."), the rule in references/replies.md holds: build the proposal page and send the link. The approved answers supply the DM cover line and the proposal's content; they do not replace the page.
 
-The price is the exception to "answer it": SKILL.md's "hold the number back" rule applies before AND after the demo (Alfonso, 2026-09-14). Entry 1 below gives the deferral wording that is the normal answer, and keeps the number only for the one moment the deal genuinely stops without it. The other four entries are answered in full.
+The price is the exception to "answer it": SKILL.md's "hold the number back" rule applies before AND after the demo (Alfonso, 2026-09-14). Entry 1 below gives the deferral wording that is the normal answer, and keeps the number only for the one moment the deal genuinely stops without it. The other six entries are answered in full.
 
 ## The facts (the only product facts approved for these replies)
 
