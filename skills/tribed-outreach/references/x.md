@@ -816,10 +816,32 @@ replied, call `read_x_lead_thread({ accountId, leadId })`. It reads that one
 thread through the session that owns it, wherever the thread sits in the tray.
 `read_x_session_inbox` opens at most 60 threads newest first, and a reply from
 days ago falls below that cut: Bradley Grey's "sure" of 2026-09-16 did, in a
-primary tray of 97. Send ONLY on `verdict: "found"`, and only after you read
-the tail and `lastFromUs`. `unknown` (any `reason`, `xchat_possible`
-included) goes to a human, never to the send. `not_found` means the legacy
-store holds no thread, not that nobody wrote: quote `coverage`.
+primary tray of 97 (the tray passed 130 on 2026-09-23; pass `offset` and
+follow `tabs.<tab>.nextOffset` to page it). Send ONLY on `verdict: "found"`,
+and only after you read the tail and `lastFromUs`. `unknown` (any `reason`,
+`xchat_possible` included) goes to a human, never to the send. `not_found`
+means the legacy store holds no thread, not that nobody wrote: quote
+`coverage`.
+
+**A `found` tail can be a frozen copy (2026-09-23).** X migrates a
+conversation into encrypted XChat and can leave a STALE legacy copy behind,
+which the worker reads as a complete thread: `found`, `truncated: false`,
+every message since the migration invisible. Bradley Grey's copy ended
+2026-09-12 with his "sure" while his lead recorded the demo DM delivered
+2026-09-21 (`data.demo_delivered_at`, the `X DM done to @BradleyGrey_` touch).
+A run that trusted that `found` would have concluded the demo never went out
+and sent it again, the @XtremeMotivated x4 defect. So the tool now checks the
+lead itself: with a `leadId`, a `found` whose `lastMessageAt` is older than
+the lead's newest delivered outbound DM (`data.x_dm_sent_at`,
+`data.demo_delivered_at`, `data.x_reply_sent_at`, or a delivered-DM touch) by
+more than ten minutes comes back `verdict: "unknown"`, `reason:
+"stale_legacy_copy"`, `lastFromUs: null`, with `staleLegacyCopy` carrying
+`threadLastMessageAt` and `leadOutboundAt`. The messages are still returned
+for you to read; they are NOT the tail. Treat it as any `unknown`: no send,
+hand the thread to Alfonso to read in the X app. The check needs the lead:
+a bare-handle read has nothing to compare against, and a send that was never
+stamped on the lead cannot be caught, so on `found` still ask whether the tail
+is older than a send you know of before you trust it.
 
 **That one call is now the whole handoff (2026-09-12).** On a `channel "x"`
 lead, `log_outreach_touch` with a reply stage stamps `data.x_state: "replied"`
