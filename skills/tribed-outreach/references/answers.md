@@ -1,12 +1,12 @@
 # Approved answers — the recurring post-demo questions
 
-Read this from Mode 2 (references/replies.md) and Mode 5 (references/postdemo.md) whenever a prospect's reply asks one of the five questions below. Added 2026-09-13.
+Read this from Mode 2 (references/replies.md) and Mode 5 (references/postdemo.md) whenever a prospect's reply asks one of the seven questions below. Added 2026-09-13.
 
 **Why this file exists.** Warm prospects were dying on reply latency, not on copy. Tony Omary waited 51 days for pricing tiers and ownership terms. Marnus Marx waited 39 days after nine specific questions. Angela Soltan asked four of these same questions on 2026-09-12. The LinkedIn funnel read `interested` 112 → `meeting` 5 on 2026-09-13. Every one of those threads stalled because the run had no approved answer and escalated the whole reply to Alfonso. This file holds the approved answers, so the run drafts the reply itself and Alfonso only fills a blank when one is genuinely his to fill.
 
 ## How to use it
 
-1. **Match.** The reply asks one of the five questions below, in any wording or language. A reply that asks several of them (Angela's four, Marnus's nine) gets ONE message answering each in the order asked.
+1. **Match.** The reply asks one of the seven questions below, in any wording or language. A reply that asks several of them (Angela's four, Marnus's nine) gets ONE message answering each in the order asked.
 2. **Draft fresh.** The facts come from here; the wording is written new every time in the prospect's register and language (SKILL.md language rules, references/voice.md). The samples show register. Never paste them.
 3. **Label the draft.** Every reply draft built from this file carries one of two labels, in chat when the draft is shown and in the run note:
    - **`ready`** — every fact in the message is confirmed below and no `[ALFONSO TO CONFIRM]` blank is touched. Queue it like any reply (`queue_outreach_drafts`, `slot: "reply"`, pending for the dashboard). It does NOT go in the report's "Waiting on Alfonso" line. Nothing is auto-sent; a human still approves it in the dashboard, but nobody has to write it.
@@ -27,8 +27,13 @@ The price is the exception to "answer it": SKILL.md's "hold the number back" rul
 - **The split:** Tribed runs hosting, app-store submission, the AI, and the notification and email loops. The coach owns the content, the voice, the method, and the relationship with their members. What Tribed needs from them in practice is their real material and their say on how it should feel.
 - **The AI's role:** a companion between sessions, trained on the coach's material, answering in the coach's words. The coach stays the authority. It is not a standalone coach and it does not replace the session.
 - **The method:** the app branches on the coach's rules, so what a member sees next depends on where that member is. It does not average the method into a linear task list. The member sees the next step; the rules behind it are the coach's. The smallest first experiment is one phase or one cohort, not the whole programme.
+- **Proof: coaches already live, and how their AI is set up (added 2026-09-28, Alfonso: "we set it up for them").** Tribed configures each coach's AI itself: written guidelines in the coach's voice plus their own material as knowledge sources. The coach does not have to. Live, published examples you may name:
+  - **Sara Freed, The Emotional Marriage Method** (live in the stores since 2026-08-17). Person-focused coaching. Her AI works from her full curriculum, workbook and frameworks. It is set up to help members see the cycle instead of blaming their spouse, to translate a behaviour into the fear, pain or longing underneath it, and to offer one or two reflection prompts from her workbook rather than advice. Not presented as a therapist; safety and crisis questions go to licensed support.
+  - **Petra Boddington, Menopause & Midlife With Petra** (live since 2026-08-13). Her AI works from her Exhausted to Empowered guide, speaks in her voice, frames progress as energy, strength and confidence rather than weight, and keeps members inside the app. Medical questions go to the member's GP.
+  - Name the coach and the method, and describe the SETUP. Never share another coach's pricing, testimonials, member numbers or member data. Re-read `get_author` for the community before quoting it, because configs change.
+- **Wearables (added 2026-09-28, Alfonso).** Apple Health is integrated and live. Fitbit and WHOOP can be integrated. Say "apple health is already connected, fitbit and whoop we can integrate". Never promise a date for Fitbit or WHOOP.
 
-## The five answers
+## The seven answers
 
 Each entry: what triggers it, the direction of the answer, the label it carries, and one English sample for register. Samples were re-checked 2026-09-14 against the core's structural-tells list: no feature-list runs, no "not X but Y", no announcing the point, no tailing negation, and the prospect's own name for their method wherever the sample allows it. Spanish replies use the same facts and labels in the prospect's Spanish per SKILL.md.
 
@@ -97,9 +102,31 @@ Each entry: what triggers it, the direction of the answer, the label it carries,
 **Sample:**
 > fair worry. it doesn't average the Reset into a day-1-to-day-30 checklist, it branches on your rules, so what someone sees next depends on where they are, same as when you're the one deciding. they see the next step, the reasoning stays yours. if you want to test that without betting the whole programme, we start with one phase or one cohort. want me to build that first phase on your rules?
 
+### 6. "How have other coaches done this?" / "show me real examples"
+
+**Triggers:** "how have other coaches gotten over this", "real examples would help", "who else uses it", "case study", "has anyone like me done this". Lesley Worthington asked it twice (2026-09-20) and waited 8 days for want of this entry.
+
+**Answer:** name one live coach from the facts list whose work is closest to theirs, name their method, and say in one or two sentences how WE set up that coach's AI to handle the prospect's exact worry. For "AI can't coach the person, only the problem", Sara Freed is the answer: pattern and cycle work, the need under the behaviour, and reflection prompts rather than advice. Concede honestly what the AI cannot do (it cannot hear hesitation in the room), then show what it does between sessions. Close by saying that's how you'd set theirs up, or offer to set one up in their demo.
+
+**Label:** `ready`.
+
+**Sample:**
+> and a real example, since you asked twice. Sara Freed runs The Emotional Marriage Method on it, and her work is about the person, not the problem. we set her AI up to help members see the cycle instead of blaming their spouse, to translate a behaviour into the fear or longing underneath it, and to offer one or two reflection prompts from her own workbook rather than advice. it can't hear hesitation the way you can, but it can ask the pattern question in her words at 11pm, and they bring what they noticed to her next session. that's how i'd set yours up.
+
+### 7. Wearable and health data (Apple Health, Fitbit, WHOOP)
+
+**Triggers:** "can it pull data from Apple Health / Fitbit / WHOOP / Oura / Garmin", "track biometrics", "sync my clients' wearables".
+
+**Answer:** Apple Health is already connected in the app. Fitbit and WHOOP can be integrated. Any other device (Oura, Garmin and so on) is NOT on the fact list: leave `[ALFONSO TO CONFIRM: <device>]`. No dates. If they asked for a call, say yes to the call in the same message.
+
+**Label:** `ready` for Apple Health, Fitbit and WHOOP. `needs Alfonso` for any other device.
+
+**Sample:**
+> on the data side, apple health is already connected in the app, and fitbit and whoop we can integrate, so the tracking you're describing is very doable. happy to call, which morning works best?
+
 ## Keeping this file honest
 
 - When Alfonso fills a blank, replace the placeholder text in the facts list AND in the answer that uses it, in the skill source repo (`~/Documents/Projects/tribed-outreach/skills/tribed-outreach/references/answers.md`). No other copy ships.
 - When Alfonso corrects a fact here (price, terms), that is a content correction: fix it here, not in references/voice.md.
 - When Alfonso edits the wording of a draft built from here, that is voice data: log it in references/voice.md per its loop.
-- A sixth question that has been asked twice belongs here, drafted with its facts marked `[ALFONSO TO CONFIRM]` until he fills them, so the next run can at least write the rest of the reply.
+- A new question that has been asked twice belongs here, drafted with its facts marked `[ALFONSO TO CONFIRM]` until he fills them, so the next run can at least write the rest of the reply.
