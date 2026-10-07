@@ -2,7 +2,7 @@
 name: tribed-outreach
 description: Tribed's full Instagram, LinkedIn, and cold-email outreach for wellness, fitness, coaching, and creator prospects. Covers IG cold DMs, reply and objection handling, follow-up sequences, LinkedIn connection notes and InMail, post-demo booking, cold email and email sequences, and the daily cross-channel pipeline (LinkedIn via our own LinkedIn MCP, ICP filtering, review-queue drafting, tracker-driven follow-ups). Use for any Tribed outreach: a cold DM, connection note, InMail, cold email, bump, follow-up, objection handling, booking the walkthrough call, or running/queueing the daily pipeline. Trigger even when the user just pastes a profile screenshot, since the default intent is a first-touch message. Handles English, River Plate Spanish, and neutral Latin American Spanish, picked from the profile or the reply.
 metadata:
-  version: 1.30.1
+  version: 1.30.2
 ---
 
 # Tribed Outreach — Full Workflow
@@ -143,9 +143,9 @@ Two more gates ride along with the audience bar (details in references/pipeline.
 
 **Hold the number back. It is a last resort, not an answer.** Alfonso's rule (2026-08-26): the price goes in a message only when the deal genuinely stops without it, the "tell me the price or we don't book" moment. Everywhere else, including when a prospect asks outright in a cold reply, do NOT put a figure in the message. Acknowledge the question, say you would rather they see it first, and move to the demo or the walkthrough. Ignoring the question entirely reads as evasion, so name it and defer it in the same breath ("on the investment, I'd rather you see it first, it's an easier conversation once it's in front of you"). A number quoted early prices a thing they have not looked at yet, and it invites a no before the demo has done any work.
 
-**Seeing the demo does not change this.** Alfonso, 2026-09-14: a post-demo price question is still named and deferred in one clause ("on the number, easier once you've seen it whole"), and the walkthrough ask carries the message (Mode 5, two concrete times). A price question that has sat unanswered is a latency failure fixed by replying, not a licence to quote. When the genuine last-resort moment does arrive, the number is the one in references/answers.md: $149 a month, one price, setup free, month to month. Never $199, never tier logic.
+**Seeing the demo does not change this.** Alfonso, 2026-09-14: a post-demo price question is still named and deferred in one clause ("on the number, easier once you've seen it whole"), and the walkthrough ask carries the message (Mode 5, two concrete times). A price question that has sat unanswered is a latency failure fixed by replying, not a licence to quote. When the genuine last-resort moment does arrive, the number is the one in references/answers.md: $149 a month while this month's three spots last, $199 after, setup free, month to month. Never tier logic beyond the spots line.
 
-The number, for when that last-resort moment actually arrives: **$149 a month, for every prospect, setup free, month to month.** There is one price and no tiers (Alfonso, 2026-10-07: "the price is 149"). The $199 line for bigger profiles is retired, and so is the $150-for-90-days-then-$200 schedule that went out in the 2026-10-01 agreement PDFs to Jack Broudy and Bostjan Novak: both were wrong. Quote the one number, never a range. Update here and in references/answers.md together if pricing ever changes.
+The number, for when that last-resort moment actually arrives: **$149 a month for the first three coaches who sign in a calendar month; every coach after that in the same month pays $199 a month (Alfonso, 2026-10-07: "149 for the 3 first customers of the month, then upgrade to 199"). Setup free, month to month.** The spot count and the exact wording live in references/answers.md, entry 1 and the fact list. The old follower-based $199 tier is retired, and the $150-then-$200 schedule in the 2026-10-01 agreement PDFs was a mistake. Update here and in references/answers.md together if pricing ever changes.
 
 ## Output
 
