@@ -44,7 +44,8 @@ Flags:
 ### Bostjan A. Novak (LinkedIn SN InMail, ozq4TNQh7sq8RK5BqG6j)
 Where it stands: call happened 2026-09-29, he liked it and is talking it over with his team. Last logged event 09-30. A follow-up ("how did the conversation with them go?") was staged for 10-01 by hand; the tracker does not show it sent.
 Draft:
-Bostjan, for your team in writing: $149 a month, setup free, month to month, and Ascend Natiion's content and members stay yours. the written agreement follows by email. want me to walk your team through it live? 15 minutes.
+SUPERSEDED 2026-10-07. The agreement went by email on 10-01. The follow-up is a Gmail draft in that thread (r-5397612672646225902), for Alfonso to send:
+Hi Boštjan, Hope the conversation with your team and mentors is going well. If any of the 13 answers raised new questions, or anyone has marked up the agreement, send it over and I'll answer in writing. I'm also happy to walk them through the app live, 15 minutes. What would help them most at this point? Talk soon, Alfonso
 Flags:
 - needs Alfonso: written agreement doc. Check it says setup free. Jack read the same PDF as "149 plus 149/mo", so fix the setup line before it goes to Bostjan.
 - needs Alfonso: which email. On file is info@ascendnatiion.com (role address from his site).
@@ -55,7 +56,8 @@ Flags:
 ### Jack Broudy (LinkedIn /messaging, GJnm5wF5K5XZmYo0IOAD)
 Where it stands: agreement PDF emailed 10-01; Jack 10-02: partner reviewing over the weekend, and the PDF reads "149 plus 149/mo", unlike the Zoom call. Alfonso answered 10-02 19:05: "only 149/month for you". Tail ours, 5 days. He reopened the demo 2026-10-06 19:51Z (7 opens total).
 Draft:
-Jack, so it's clear for your partner: $149 a month, setup free, month to month, and Nonlinear Tennis, the content and the members stay yours. the agreement goes over again without that setup line. happy to show your partner around it live, 15 minutes?
+SUPERSEDED 2026-10-07. Approved LinkedIn follow-up, sends 10-08 if his tail is still ours (no price until Alfonso settles $150/$200 vs $149):
+Jack, has your partner had a chance to go through the agreement? if anything in it needs clearing up, send it over and i'll answer in writing, or take you both through it live, 15 minutes.
 Flags:
 - needs Alfonso: corrected written agreement doc (remove the $149 setup line so it matches "setup free"), then send it to broudy@broudytennis.com.
 - Zone if he says yes: Mountain (he said "9:00am mountain time" 09-28). Note the config window is 7pm to 9pm MT evenings only; his 09-28 call ran at his 9am, outside the config.
