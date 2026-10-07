@@ -2,7 +2,7 @@
 name: tribed-outreach
 description: Tribed's full Instagram, LinkedIn, and cold-email outreach for wellness, fitness, coaching, and creator prospects. Covers IG cold DMs, reply and objection handling, follow-up sequences, LinkedIn connection notes and InMail, post-demo booking, cold email and email sequences, and the daily cross-channel pipeline (LinkedIn via our own LinkedIn MCP, ICP filtering, review-queue drafting, tracker-driven follow-ups). Use for any Tribed outreach: a cold DM, connection note, InMail, cold email, bump, follow-up, objection handling, booking the walkthrough call, or running/queueing the daily pipeline. Trigger even when the user just pastes a profile screenshot, since the default intent is a first-touch message. Handles English, River Plate Spanish, and neutral Latin American Spanish, picked from the profile or the reply.
 metadata:
-  version: 1.30.0
+  version: 1.30.1
 ---
 
 # Tribed Outreach — Full Workflow
@@ -145,7 +145,7 @@ Two more gates ride along with the audience bar (details in references/pipeline.
 
 **Seeing the demo does not change this.** Alfonso, 2026-09-14: a post-demo price question is still named and deferred in one clause ("on the number, easier once you've seen it whole"), and the walkthrough ask carries the message (Mode 5, two concrete times). A price question that has sat unanswered is a latency failure fixed by replying, not a licence to quote. When the genuine last-resort moment does arrive, the number is the one in references/answers.md: $149 a month, one price, setup free, month to month. Never $199, never tier logic.
 
-The numbers, for when that last-resort moment actually arrives: setup is free; $149/month for smaller profiles, $199/month for bigger ones. The line is roughly 50k followers on Instagram and 10k on LinkedIn. Quote the single price that fits the prospect, never the range and never the tier logic ("since you're a bigger account..." invites haggling and makes the gift feel calculated). If the follower count isn't visible anywhere, ask Alfonso which tier before writing any reply that mentions price. Update here if pricing changes. (2026-09-13: the $199 line is not part of any approved answer in references/answers.md, which quotes $149 only per the Decisions Log of 2026-08-14. Alfonso to reconcile the two.)
+The number, for when that last-resort moment actually arrives: **$149 a month, for every prospect, setup free, month to month.** There is one price and no tiers (Alfonso, 2026-10-07: "the price is 149"). The $199 line for bigger profiles is retired, and so is the $150-for-90-days-then-$200 schedule that went out in the 2026-10-01 agreement PDFs to Jack Broudy and Bostjan Novak: both were wrong. Quote the one number, never a range. Update here and in references/answers.md together if pricing ever changes.
 
 ## Output
 
