@@ -26,6 +26,10 @@ Each yes makes the next one cheaper, and by the time the call is offered it is a
 
 **Until then, every reply ends on a question they can answer in one word without opening a calendar.**
 
+**The gate governs replies, not the silent ladder (Alfonso, 2026-10-07).** A prospect who has had their app for three days and said nothing gets demo bump 1, which offers the live tour as a yes or no ("want me to show you around it live? 15 minutes"). That question needs no calendar, so it sits inside the gate's own rule. A yes passes the gate: answer it with "The yes" below. On 2026-10-07 the account had 46 delivered demos, 26 opened, and 0 new meetings in six weeks, because no message on the ladder asked for the walkthrough.
+
+**Hot leads skip the gate entirely.** A prospect who asked for a call, proposed a time, accepted the price, or asked for terms or an agreement has committed. Their reply goes out the same day it is read, never held for a later run. If the answer needs Alfonso (a product fact, a written agreement, a slot only he can confirm), the run alerts him that day and names the lead, the ask, and how many days it has waited.
+
 ## Classify the post-demo reply
 
 **Asked a question about it ("did you build this from my site?", "does it do X or Y?").** The most common post-demo reply and the one most often mishandled. Questions are engagement, not commitment. Answer them straight and in the order asked, briefly, then close on a yes about their material or their people. No call. A question answered well buys the next turn, and the next turn is where the call becomes askable. **If the question is one of the five in references/answers.md** (price or tiers, ownership and export, what Tribed runs vs what they do, the AI's role, whether an app flattens their method), draft from that file and carry its `ready` / `needs Alfonso` label; a reply asking several of them gets one message answering each in order.
@@ -36,7 +40,7 @@ Each yes makes the next one cheaper, and by the time the call is offered it is a
 
 **Buying objections.** Now they're real objections about paying, not brush-offs. Directions below, same rule as Mode 2: write fresh every time, never paste the samples.
 
-**Silence after a delivered demo.** The post-demo ladder in references/followups.md owns it: bump 1 three days after the demo went out, bump 2 (the audit offer) four days after that, bump 3 (the video walkthrough) four days later, then park. The daily routine enrols the lead with `enrol_demo_ladder` and the channel's hosted rail sends the bumps. Read that section before writing any of them. The only silence rule that outranks it is "The 48-hour bump" below, which owns the lead whose last message from us was the two-slot offer.
+**Silence after a delivered demo.** The post-demo ladder in references/followups.md owns it: bump 1 (the live tour offer, a yes or no, no times) three days after the demo went out, bump 2 (the audit offer) four days after that, bump 3 (the video walkthrough) four days later, then park. The daily routine enrols the lead with `enrol_demo_ladder` and the channel's hosted rail sends the bumps. Read that section before writing any of them. The only silence rule that outranks it is "The 48-hour bump" below, which owns the lead whose last message from us was the two-slot offer.
 
 **No after seeing it.** Same graceful exit as Mode 2. The demo stays live, door stays open.
 

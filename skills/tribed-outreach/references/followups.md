@@ -46,7 +46,7 @@ The ladder above is for a prospect who never replied to the opener. This one is 
 | Touch | When | Angle | Copy field |
 |---|---|---|---|
 | Demo delivered | day 0 | the link itself, by the drip's demo rail or by hand | `li_demo_message` on LinkedIn |
-| Demo bump 1 | 3 days after delivery, no reply | curiosity, anchored on ONE thing inside THEIR app ("did you find the AI coach, ask it about deloading"). When open tracking is live and `data.demo_opened_at` is absent, ask whether the link opened instead | `li_demo_fu1` on LinkedIn, `x_demo_fu1` on X, `ig_demo_fu1` on Instagram |
+| Demo bump 1 | 3 days after delivery, no reply | THE TOUR OFFER: ONE real thing inside THEIR app, then offer to show them around it live, 15 minutes, as a one-word yes. No times, no link, no price. When open tracking is live and `data.demo_opened_at` is absent, ask whether the link opened and offer the tour as the easier way in | `li_demo_fu1` on LinkedIn, `x_demo_fu1` on X, `ig_demo_fu1` on Instagram |
 | Demo bump 2 | 4 days after bump 1, no reply | THE AUDIT OFFER: one line naming what the audit would look at in THEIR funnel, one question answerable in a word. No link, no page, no price. The page is built only after they say yes | `li_demo_fu2` on LinkedIn, `x_demo_fu2` on X, `ig_demo_fu2` on Instagram |
 | Demo bump 3 | 4 days after bump 2, no reply | the video walkthrough: offer to walk them through their app, or to send a short video of it. One soft question, never a `[video link]` placeholder | `li_demo_fu3` on LinkedIn, `x_demo_fu3` on X, `ig_demo_fu3` on Instagram |
 | Stop | 14 quiet days after bump 3 | `nextAction: "Park (demo ladder done)"`, stage unchanged, door open. The daily report lists them; nobody auto-marks them lost | none |
@@ -59,22 +59,32 @@ Any reply at any point stops the ladder. The ladder state field is rail-prefixed
 
 **The timing is enforced in code, so do not restate it from memory.** `DEMO_FU1_DELAY_DAYS` (3), `DEMO_FU2_DELAY_DAYS` (4), `DEMO_FU3_DELAY_DAYS` (4) and `DEMO_LADDER_REST_DAYS` (14) live in `NobleAdmin/mcp/src/repos/demoLadder.ts`, the one module all three rails share. If a constant changes, change this table in the same commit, the same rule `FOLLOWUP_2_DELAY_DAYS` carries above.
 
-**Bump 1, 3 days after delivery, the one thing inside their app.** Name a single feature that is really in their build and give them a reason to poke at it, in their own words. Curiosity, not pressure. No price, no booking link, no count of how long they have been quiet. One question at the end, answerable in a word.
+**Bump 1, 3 days after delivery, the tour offer (Alfonso, 2026-10-07).** Name a single feature that is really in their build, in their own words, then offer to show them around it live, 15 minutes. The question is a yes or no, answerable in a word: "want me to show you around it live?" It never carries times, a booking link, a price, or a count of how long they have been quiet. Under 35 words. A yes is a reply, so it stops the ladder, and the run answers it with the Mode 5 yes in references/postdemo.md: two concrete times in their timezone. Rotate the word "call": tour, walkthrough, "show you around it", "te la muestro en vivo".
+
+Why the ask moved to bump 1: on 2026-10-07 the account had 46 delivered demos, 26 of them opened, and 0 new meetings in six weeks. Until then bump 1 asked about the product ("did you open it?"), bump 2 offered an audit, and nothing on the ladder asked for the walkthrough before day 11. Every win came through a meeting. The commitment gate in references/postdemo.md still governs REPLIES; the silent ladder is not a reply, and a prospect who has had their app for three days has had the gift. The tour is offered once as a yes or no, never pushed.
 
 **Bump 2, 4 days later, the audit offer.** This bump OFFERS the audit. It does not deliver one. Write one line naming what the audit would look at in THEIR funnel, something specific you saw, then one question answerable in a word: "want me to put it together?". No link, no page, no price, no booking link. Build nothing before the send. We only build the audit once they agree to it, because a page nobody asked for is work thrown at silence. A yes is a reply, so it stops the ladder like any other reply. The run that handles that reply builds the page with the sales toolset (`enable_tools` for `sales`, read `get_proposal_guide`, then `upsert_proposal`) and sends the share link in the answer, stamping `data.proposalUrl`. When the account's configured stages include `audit_proposal`, the rail moves the lead to that stage on the bump 2 send.
 
-**Bump 3, 4 days after that, the video.** Offer the 60-second video of their own app, or offer to walk them through it. This is the asset Mode 5 owns, and this is the only bump on the ladder that offers it. Never write a [video link] placeholder here: offer the video, let them say yes, then send it. No price, no booking link, one soft question.
+**Bump 3, 4 days after that, the video.** Offer the 60-second video of their own app. The live tour was bump 1's offer, so this rung is for the prospect who does not want a call; it may mention the live option in a few words, never as the lead ask. This is the asset Mode 5 owns, and this is the only bump on the ladder that offers it. Never write a [video link] placeholder here: offer the video, let them say yes, then send it. No price, no booking link, one soft question.
 
 ### Examples
 
+Each bump 1 names one real thing in that prospect's app and ends on a yes or no about the live tour. No times, no link.
+
 **Demo bump 1, LinkedIn (English):**
-Tim, one thing worth two minutes: ask the AI coach what to do with a client who stalls at week six. Its answer comes out of your own method. Did you get to it?
+Tim, the AI coach answers a client who stalls at week six straight out of your method. It lands better live than through a link. Want me to show you around it, 15 minutes?
 
 **Demo bump 1, Instagram (English):**
-Kat, ok slightly nosy question. the habits tab in your app splits your 12 weeks into daily reps, and i want to know if that matches how you run it. did you open it?
+Kat, the habits tab splits your 12 weeks into daily reps, the way you run them. i can walk you through the whole app live, 15 min. want that?
 
 **Demo bump 1, X (English):**
-Marco, your app has the AI coach trained on your own rest-week guidance. most people test that one first. did you open it yet?
+Marco, the AI coach in your app answers from your own rest-week guidance. happy to show you around it live, 15 minutes. up for it?
+
+**Demo bump 1, neutral Spanish:**
+Lucía, tus 12 semanas ya están ahí como hábitos diarios, en el orden en que las das. ¿te la muestro en vivo? son 15 minutos.
+
+**Demo bump 1, link not opened (open tracking live, `data.demo_opened_at` absent):**
+Tim, not sure the link opened on your side. Easier if I show you around it live, 15 minutes. Want that?
 
 The bump 2 examples carry no link, because there is no page yet. Each one names one real thing in that prospect's funnel and ends on a one-word question.
 
