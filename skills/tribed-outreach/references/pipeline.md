@@ -1,3 +1,5 @@
+> **Paid research applies to manual and delegated demo builds too.** Before building/delegating, apply the paid-research section in `../SKILL.md`: read Second Brain main policy, share the live budget and requestKeys, reuse cached evidence, and require Tribed's guarded actor path. A demo skill's direct Apify examples do not override that policy. If guard tools are missing, continue free/cached work or defer the missing material.
+
 # Mode 7 — Pipeline ops: LinkedIn sequences, the review queue, and the daily run
 
 LinkedIn outreach runs on the self-hosted **LinkedIn MCP** (`linkedin` server, stickerdaniel/linkedin-mcp-server) driving Alfonso's real LinkedIn session, with the **Tribed outreach tracker** as the record of state. This replaced Gojiberry. There is no campaign engine anymore: the daily run IS the campaign engine. Requires the `linkedin` MCP (actions), the Tribed MCP (outreach lead + queue tools, community onboarding for Job D), and the Apify MCP (follower enrichment).
