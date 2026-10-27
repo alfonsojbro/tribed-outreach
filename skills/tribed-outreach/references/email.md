@@ -95,6 +95,11 @@ The gift-first reveal (the demo already exists, built around their work, free to
 >
 > Maya, slightly strange intro: I already built you a demo app. Your 5-Minute Reset series gave me the idea, so it's your method inside it, not a template. It's done and it's free to look at. Want to see it?
 
+**skool-app** (leads with `data.copyFormat: "skool-app"`, owners of a paid Skool community, approved 2026-10-27). Detail → reveal → ask, plus one clause: their own app in the App Store and Google Play under their name, instead of a tab inside Skool. Never claim it is published. Tag `format: "skool-app"`.
+> subject: Spine Awakens, as its own app
+>
+> Ilana, Ilana's Method already runs like a daily program, so I built it into an app. Spine Awakens as a daily plan your members open each morning, your own app in the App Store and Google Play rather than a Skool tab. Want to see it?
+
 **Their world → bridge → ask** (for a named program/challenge/book).
 > subject: your reto 21 días
 >

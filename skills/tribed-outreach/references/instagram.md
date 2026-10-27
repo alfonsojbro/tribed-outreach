@@ -17,7 +17,7 @@ Give the app THEIR name: their program, method, or brand ("the Momfidence app", 
 Pick ONE format per lead. Never the same format twice in a row in a session. At send time, stamp the lead via `update_outreach_lead`:
 
 ```
-patch.data.dm_format  = "aida" | "pas" | "bab" | "reveal"
+patch.data.dm_format  = "aida" | "pas" | "bab" | "reveal" | "skool-app"
 patch.data.dm_chars   = <length of the sent message>
 ```
 
@@ -48,6 +48,24 @@ Before = where their method lives now (dms, pdfs, posts, check ins). After = the
 The confession/reveal skeleton from before, sharpened: open with the app by name existing, then why they qualified, then CTA.
 
 > Meghann, weird one, I built you an app. Fuel for Life, your carb loading and race week guidance as a real daily plan people follow. it exists, want a look?
+
+### skool-app — owners of a paid Skool community (approved by Alfonso 2026-10-27)
+
+Use it only for leads with `data.copyFormat: "skool-app"` (source `skool-discovery`). Those
+leads are not rotated into the other formats. Their paying members already prove the fit, so
+the message points at the community they run.
+
+Use the winning detail-first shape: their own named method or community quoted verbatim, the
+app already exists, one question CTA, about 33 words, no links. Then add the Skool point as
+**one clause only**: their own app in the App Store and Google Play, under their name, instead
+of a tab inside Skool. **Never say it is already published.** It is built, and it goes live
+under their account once they say yes.
+
+> Ilana, Ilana's Method is basically an app already, so I built it. your Spine Awakens routine as a daily plan, on the App Store and Google Play under your name instead of inside Skool. want a look?
+
+On the automated IG rail (`tribed-daily-instagram`), the DM keeps that routine's five-beat
+house shape. The Skool point goes into beats 3 and 4: "I checked out <community> on Skool, and
+made the <AppName> app around it, ready for the App Store and Google Play under your name".
 
 ## Reading the screenshot
 
