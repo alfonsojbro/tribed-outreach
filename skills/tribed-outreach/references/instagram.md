@@ -67,6 +67,11 @@ On the automated IG rail (`tribed-daily-instagram`), the DM keeps that routine's
 house shape. The Skool point goes into beats 3 and 4: "I checked out <community> on Skool, and
 made the <AppName> app around it, ready for the App Store and Google Play under your name".
 
+**Personalize with two facts that belong only to them** (Alfonso 2026-10-27: "make the outreach
+more personalized"). Take the compliment from their own story or result on the Skool About page
+(`data.skool_hook`), and the product beat from a named part of their offer
+(`data.skool_offer_parts`). Never invent either fact. A generic compliment is a rewrite.
+
 ## Reading the screenshot
 
 Pull before writing: first name or handle (first name warms it up), the one anchor detail (rule zero), their own vocabulary for their audience ("athletes", "warriors", "mi gente"), program or challenge names — the program name doubles as the app name — language and region cues (Spanish bio, voseo, .ar links, location, flag emoji). If no anchor detail is visible, ask the user, don't pad.
