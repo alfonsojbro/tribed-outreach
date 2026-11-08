@@ -46,6 +46,8 @@ A no ends the pitch, not the conversation. Every decline runs two steps in this 
 
 **If they stay silent** for 7 days after the why-question, close the lead. Send nothing more and no referral ask.
 
+**We do not respond to declined InMails**, because a reply spends another InMail credit. A thread marked "Declined your InMail" gets neither step. Log the reason they wrote, or `unstated`, close the lead, and send nothing. An InMail they accepted and then answered with a no follows the normal process.
+
 Do not re-pitch, do not bargain, and do not slip "if you ever change your mind" in before the ask, because that reads as not accepting their answer. A DIY claim ("I already built one") is an objection, not a decline: follow the cost question in the routine, and hold the referral until a final no.
 
 Make the referral ask answerable with a name, not a category. "Do you know anyone in your circle who has already got the content built up?" beats "know anyone who might be interested". Aim the description at the specific thing that made THEM a fit, so they picture one person instead of a market. And offer the gift forward, since that is what makes the ask generous rather than extractive: you will build that person one too, free to look at, exactly like theirs.
