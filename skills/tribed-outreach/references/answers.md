@@ -1,12 +1,12 @@
 # Approved answers — the recurring post-demo questions
 
-Read this from Mode 2 (references/replies.md) and Mode 5 (references/postdemo.md) whenever a prospect's reply asks one of the thirteen questions below. Added 2026-09-13.
+Read this from Mode 2 (references/replies.md) and Mode 5 (references/postdemo.md) whenever a prospect's reply asks one of the fifteen questions below. Added 2026-09-13.
 
 **Why this file exists.** Warm prospects were dying on reply latency, not on copy. Tony Omary waited 51 days for pricing tiers and ownership terms. Marnus Marx waited 39 days after nine specific questions. Angela Soltan asked four of these same questions on 2026-09-12. The LinkedIn funnel read `interested` 112 → `meeting` 5 on 2026-09-13. Every one of those threads stalled because the run had no approved answer and escalated the whole reply to Alfonso. This file holds the approved answers, so the run drafts the reply itself and Alfonso only fills a blank when one is genuinely his to fill.
 
 ## How to use it
 
-1. **Match.** The reply asks one of the thirteen questions below, in any wording or language. A reply that asks several of them (Angela's four, Marnus's nine) gets ONE message answering each in the order asked.
+1. **Match.** The reply asks one of the fifteen questions below, in any wording or language. A reply that asks several of them (Angela's four, Marnus's nine) gets ONE message answering each in the order asked.
 2. **Draft fresh.** The facts come from here; the wording is written new every time in the prospect's register and language (SKILL.md language rules, references/voice.md). The samples show register. Never paste them.
 3. **Label the draft.** Every reply draft built from this file carries one of two labels, in chat when the draft is shown and in the run note:
    - **`ready`** — every fact in the message is confirmed below and no `[ALFONSO TO CONFIRM]` blank is touched. Queue it like any reply (`queue_outreach_drafts`, `slot: "reply"`, pending for the dashboard). It does NOT go in the report's "Waiting on Alfonso" line. Nothing is auto-sent; a human still approves it in the dashboard, but nobody has to write it.
@@ -15,7 +15,7 @@ Read this from Mode 2 (references/replies.md) and Mode 5 (references/postdemo.md
 5. **Never go past the facts.** Anything a prospect asks that is not on the fact list below falls under the existing rule (references/postdemo.md, "Facts rule"): do not invent, ask Alfonso. Questions seen more than once that are NOT yet here, from `wiki/Coach Buying Questions.md`: where clients book, whether the app replaces their website, content import (articles, reviews), offline use, and whether their material is ever used outside their own app (the exposure fear in the Marnus note). Candidates for the next additions to this file.
 6. **A written-scope ask is still an artifact.** When the prospect asks for a proposal or a written scope (Marnus: "make it concrete..."), the rule in references/replies.md holds: build the proposal page and send the link. The approved answers supply the DM cover line and the proposal's content; they do not replace the page.
 
-The price is the exception to "answer it": SKILL.md's "hold the number back" rule applies before AND after the demo (Alfonso, 2026-09-14). Entry 1 below gives the deferral wording that is the normal answer, and keeps the number only for the one moment the deal genuinely stops without it. The other twelve entries are answered in full.
+The price is the exception to "answer it": SKILL.md's "hold the number back" rule applies before AND after the demo (Alfonso, 2026-09-14). Entry 1 below gives the deferral wording that is the normal answer, and keeps the number only for the one moment the deal genuinely stops without it. The other fourteen entries are answered in full.
 
 ## The facts (the only product facts approved for these replies)
 
@@ -40,7 +40,7 @@ The price is the exception to "answer it": SKILL.md's "hold the number back" rul
 - **Demos and their material (Alfonso, 2026-10-01).** A demo is built only from the prospect's PUBLIC material (their site, public posts, published photos), never paid course content. It is kept unlisted: set inactive, out of the tribed.io sitemap and listings until the prospect approves. It has no noindex tag and that is accepted as is, so say "unlisted" and "not linked from anywhere", never "private" or "can't be found". The demo can be deleted on request. No turnaround time.
 - **How outreach and demos are made (Alfonso, 2026-10-01).** Admit it plainly: it is powered by AI, on top of a lot of backend infrastructure Tribed built to make the demo. Never deny AI involvement and never dodge the question.
 
-## The thirteen answers
+## The fifteen answers
 
 Each entry: what triggers it, the direction of the answer, the label it carries, and one English sample for register. Samples were re-checked 2026-09-14 against the core's structural-tells list: no feature-list runs, no "not X but Y", no announcing the point, no tailing negation, and the prospect's own name for their method wherever the sample allows it. Spanish replies use the same facts and labels in the prospect's Spanish per SKILL.md.
 
@@ -196,6 +196,28 @@ Each entry: what triggers it, the direction of the answer, the label it carries,
 
 **Sample:**
 > fair hit, and yes. it's powered by AI, on top of a lot of backend we built to make the demo, which is the same thing i build for experts, so i'd rather be straight about it. what's in the demo is your own work though. if it's not for you, no hard feelings.
+
+### 14. "I already built one" / "I can build it myself with Claude Code" / "a friend is building it"
+
+**Triggers:** the top decline reason, 9 of 55 stated reasons by 2026-11-09. Josh Braun, David Reveles, Eugen Mihai, Monique Bradley, Roxana Soetebeer, Swati Madan, Chace Chambers, Lucia Hegenbartova, Lea Turner.
+
+**Answer:** this is an objection, not a decline (Alfonso, 2026-10-05). Agree that they can, and name what they built if you know it. Then ask ONE personal question about what it costs them: what an hour of their time is worth, and how long it would take to build and keep running something truly valuable for their audience. No pitch, no referral ask, no sign-off. If they answer, say what Tribed runs, from entry 3. The referral ask comes only after a final no.
+
+**Label:** `ready`.
+
+**Sample:**
+> no doubt you can, <what they built> proves it. what's an hour of your time worth, and how many would it take to turn all of <their method> into something <their people> use every day, and keep it running?
+
+### 15. "I had an app like this and it did not bring more revenue"
+
+**Triggers:** Dr Els van der Helm (InMail decline, 2026-05-23: a startup built what we propose, and it did not lead to more revenue). "Tried an app before, nobody used it" is the usage version in references/replies.md.
+
+**Answer:** agree in the first clause. An app alone does not create revenue. It pays when it carries something they already sell to people who already follow them. Then ask ONE question about what that app sold, and to whom. Do not promise revenue, and do not quote another coach's results. A real number is `[ALFONSO TO CONFIRM]`. If they declined the InMail, do not reply at all (references/replies.md).
+
+**Label:** `ready` without a number. `needs Alfonso` if the prospect asks for revenue results.
+
+**Sample:**
+> fair, an app on its own doesn't make money. it pays when it carries something you already sell to people who already follow you. what was that one selling, and to who?
 
 ## Keeping this file honest
 
